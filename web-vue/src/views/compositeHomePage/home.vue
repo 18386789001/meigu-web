@@ -80,6 +80,155 @@
             </el-icon>
           </button>
         </div>
+
+        <!-- All RWA Section -->
+        <section class="all-rwa-section">
+          <div class="section-header">
+            <h2 class="section-title">All RWA</h2>
+            <p class="section-subtitle">Trade up to 233 RWA & 78 contracts</p>
+          </div>
+
+          <div class="ranking-grid">
+            <!-- Left Panel: Hot Contracts / Hot RWA -->
+            <div class="ranking-panel">
+              <div class="panel-tabs">
+                <button :class="['tab-btn', { active: activeLeftTab === 'contracts' }]"
+                  @click="switchLeftTab('contracts')">
+                  Hot Contracts
+                </button>
+                <button :class="['tab-btn', { active: activeLeftTab === 'rwa' }]" @click="switchLeftTab('rwa')">
+                  Hot RWA
+                </button>
+                <button class="more-btn" @click="handleMore">More ›</button>
+              </div>
+
+              <div class="ranking-list">
+                <div v-for="(item, index) in currentLeftList" :key="item.id"
+                  :class="['ranking-item', { 'item-appear': item.visible }]"
+                  :style="{ animationDelay: `${index * 0.1}s` }">
+                  <!-- <div class="rank-number">{{ index + 1 }}</div> -->
+                  <img :src="item.icon" :alt="item.symbol" class="token-icon" />
+                  <div class="token-info">
+                    <div class="token-symbol">{{ item.symbol }}</div>
+                    <div class="token-name">{{ item.name }}</div>
+                  </div>
+                  <div class="token-price">${{ item.price }}</div>
+                  <div :class="['token-change', item.change >= 0 ? 'positive' : 'negative']">
+                    {{ item.change >= 0 ? '+' : '' }}{{ item.change }}%
+                  </div>
+                  <div class="token-chart">
+                    <div v-if="item.chart === 'line-chart'" class="line-chart">
+                      <svg width="100%" height="100%" viewBox="0 0 100 40">
+                        <!-- 定义渐变色 -->
+                        <defs>
+                          <!-- 向下荧光渐变 -->
+                          <linearGradient :id="`glowGradient_${item.id}`" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:0.5`" />
+                            <stop offset="30%" :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:0.2`" />
+                            <stop offset="100%" :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:0`" />
+                          </linearGradient>
+                          <!-- 线条渐变 -->
+                          <linearGradient :id="`lineGradient_${item.id}`" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:1`" />
+                            <stop offset="50%" :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:1`" />
+                            <stop offset="100%" :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:1`" />
+                          </linearGradient>
+                        </defs>
+                        <!-- 绘制向下荧光填充区域 -->
+                        <path
+                          :d="getAreaPath(item.chartData)"
+                          :fill="`url(#glowGradient_${item.id})`"
+                          stroke="none"
+                        />
+                        <!-- 绘制折线 -->
+                        <polyline
+                          :points="getLinePoints(item.chartData)"
+                          fill="none"
+                          :stroke="`url(#lineGradient_${item.id})`"
+                          stroke-width="1"
+                          stroke-linejoin="round"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <img v-else :src="item.chart" :alt="'chart'" class="chart-img" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="pagination-dots">
+                <span v-for="page in 3" :key="page" :class="['dot', { active: currentLeftPage === page }]"
+                  @click="changeLeftPage(page)"></span>
+              </div>
+            </div>
+
+            <!-- Right Top Panel: Contract Rising List / RWA Rising List -->
+            <div class="ranking-panel">
+              <div class="panel-tabs">
+                <button :class="['tab-btn', { active: activeRightTopTab === 'contracts' }]"
+                  @click="switchRightTopTab('contracts')">
+                  Contract Rising List
+                </button>
+                <button :class="['tab-btn', { active: activeRightTopTab === 'rwa' }]" @click="switchRightTopTab('rwa')">
+                  RWA Rising List
+                </button>
+                <button class="more-btn" @click="handleMore">More ›</button>
+              </div>
+
+              <div class="ranking-list compact">
+                <div v-for="(item, index) in currentRightTopList" :key="item.id"
+                  :class="['ranking-item', { 'item-appear': item.visible }]"
+                  :style="{ animationDelay: `${index * 0.1}s` }">
+                  <!-- <div class="rank-number">{{ index + 1 }}</div> -->
+                  <img :src="item.icon" :alt="item.symbol" class="token-icon" />
+                  <div class="token-info">
+                    <div class="token-symbol">{{ item.symbol }}</div>
+                    <div class="token-name">{{ item.name }}</div>
+                  </div>
+                  <div class="token-price">${{ item.price }}</div>
+                  <div :class="['token-change', item.change >= 0 ? 'positive' : 'negative']">
+                    {{ item.change >= 0 ? '+' : '' }}{{ item.change }}%
+                  </div>
+                </div>
+              </div>
+
+              <div class="pagination-dots">
+                <span v-for="page in 3" :key="page" :class="['dot', { active: currentRightTopPage === page }]"
+                  @click="changeRightTopPage(page)"></span>
+              </div>
+            </div>
+
+            <!-- Right Bottom Panel: New RWA Listings -->
+            <div class="ranking-panel">
+              <div class="panel-tabs">
+                <button class="tab-btn active">New RWA Listings</button>
+                <button class="more-btn" @click="handleMore">More ›</button>
+              </div>
+
+              <div class="ranking-list compact">
+                <div v-for="(item, index) in currentNewRwaList" :key="item.id"
+                  :class="['ranking-item', { 'item-appear': item.visible }]"
+                  :style="{ animationDelay: `${index * 0.1}s` }">
+                  <!-- <div class="rank-number">{{ index + 1 }}</div> -->
+                  <img :src="item.icon" :alt="item.symbol" class="token-icon" />
+                  <div class="token-info">
+                    <div class="token-symbol">{{ item.symbol }}</div>
+                    <div class="token-name">{{ item.name }}</div>
+                  </div>
+                  <div class="token-price">${{ item.price }}</div>
+                  <div :class="['token-change', item.change >= 0 ? 'positive' : 'negative']">
+                    {{ item.change >= 0 ? '+' : '' }}{{ item.change }}%
+                  </div>
+                </div>
+              </div>
+
+              <div class="pagination-dots">
+                <span v-for="page in 3" :key="page" :class="['dot', { active: currentNewRwaPage === page }]"
+                  @click="changeNewRwaPage(page)"></span>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </section>
 
@@ -241,10 +390,382 @@ watch(bannerList, () => {
   }
 }, { immediate: true });
 
+// ============ 榜单数据和逻辑 ============
+
+// 榜单标签页状态
+const activeLeftTab = ref('contracts');
+const activeRightTopTab = ref('contracts');
+
+// 分页状态
+const currentLeftPage = ref(1);
+const currentRightTopPage = ref(1);
+const currentNewRwaPage = ref(1);
+
+// 生成价格数据函数
+const generatePriceData = (basePrice, changePercent, count = 500) => {
+  const data = [];
+  const targetPrice = basePrice * (1 + changePercent / 100);
+  const step = (targetPrice - basePrice) / count;
+  const volatility = Math.abs(basePrice * 0.002); // 0.2%的波动，更加平滑
+
+  for (let i = 0; i < count; i++) {
+    let trendValue = basePrice + step * i;
+
+    // 添加轻微的自然波动，使用正弦函数让曲线更平滑
+    const waveOffset = Math.sin((i / count) * Math.PI * 2) * volatility * 0.3;
+    const randomNoise = (Math.random() - 0.5) * volatility * 0.5;
+
+    const currentPrice = trendValue + waveOffset + randomNoise;
+    data.push(parseFloat(currentPrice.toFixed(4)));
+  }
+
+  // 确保最后一个数据点接近目标价格，保持趋势的一致性
+  data[data.length - 1] = targetPrice;
+  return data;
+};
+
+// 模拟榜单数据
+const hotContractsData = ref([
+  {
+    id: 1,
+    symbol: 'BTCUSDT',
+    name: 'Bitcoin',
+    icon: '/image/RWA-1.svg',
+    price: '98136',
+    change: -0.01,
+    chart: 'line-chart',
+    chartData: generatePriceData(98150, -0.01, 50),
+    visible: false
+  },
+  {
+    id: 2,
+    symbol: 'ASML.M',
+    name: 'ASML Holding NV',
+    icon: '/image/RWA-2.png',
+    price: '1055.5',
+    change: -0.42,
+    chart: 'line-chart',
+    chartData: generatePriceData(1060, -0.42, 50),
+    visible: false
+  },
+  {
+    id: 3,
+    symbol: 'ETHUSDT',
+    name: 'Ethereum',
+    icon: '/image/RWA-3.svg',
+    price: '2599.85',
+    change: -0.07,
+    chart: 'line-chart',
+    chartData: generatePriceData(2605, -0.07, 50),
+    visible: false
+  },
+  {
+    id: 4,
+    symbol: 'BNBUSDT',
+    name: 'BNB',
+    icon: '/image/BNB.webp',
+    price: '980',
+    change: -0.85,
+    chart: 'line-chart',
+    chartData: generatePriceData(985, -0.85, 50),
+    visible: false
+  },
+  {
+    id: 5,
+    symbol: 'GOOGL.M',
+    name: 'Alphabet Inc. Class...',
+    icon: '/image/RWA-2.png',
+    price: '538.88',
+    change: -0.08,
+    chart: 'line-chart',
+    chartData: generatePriceData(540, -0.08, 50),
+    visible: false
+  },
+  {
+    id: 6,
+    symbol: 'PYPL.M',
+    name: 'Paypal Holdings In...',
+    icon: '/image/RWA-2.png',
+    price: '62.67',
+    change: -0.53,
+    chart: 'line-chart',
+    chartData: generatePriceData(63, -0.53, 50),
+    visible: false
+  },
+  {
+    id: 7,
+    symbol: 'ZECUSDT',
+    name: 'Zcash',
+    icon: '/image/RWA-7.svg',
+    price: '458.55',
+    change: +1.52,
+    chart: 'line-chart',
+    chartData: generatePriceData(455, 1.52, 50),
+    visible: false
+  },
+  {
+    id: 8,
+    symbol: 'SOLUSDT',
+    name: 'Solana',
+    icon: '/image/SOL.webp',
+    price: '238.45',
+    change: +2.18,
+    chart: 'line-chart',
+    chartData: generatePriceData(235, 2.18, 50),
+    visible: false
+  },
+]);
+
+const hotRwaData = ref([
+  {
+    id: 11,
+    symbol: 'ASML.M',
+    name: 'ASML Holding NV',
+    icon: '/image/RWA-2.png',
+    price: '1055.5',
+    change: -0.42,
+    chart: 'line-chart',
+    chartData: generatePriceData(1060, -0.42, 50),
+    visible: false
+  },
+  {
+    id: 12,
+    symbol: 'GOOGL.M',
+    name: 'Alphabet Inc.',
+    icon: '/image/RWA-2.png',
+    price: '538.88',
+    change: -0.08,
+    chart: 'line-chart',
+    chartData: generatePriceData(540, -0.08, 50),
+    visible: false
+  },
+  {
+    id: 13,
+    symbol: 'PYPL.M',
+    name: 'Paypal Holdings',
+    icon: '/image/RWA-2.png',
+    price: '62.67',
+    change: -0.53,
+    chart: 'line-chart',
+    chartData: generatePriceData(63, -0.53, 50),
+    visible: false
+  },
+  {
+    id: 14,
+    symbol: 'TSLA.M',
+    name: 'Tesla Inc.',
+    icon: '/image/RWA-2.png',
+    price: '345.20',
+    change: +2.15,
+    chart: 'line-chart',
+    chartData: generatePriceData(340, 2.15, 50),
+    visible: false
+  },
+  {
+    id: 15,
+    symbol: 'AAPL.M',
+    name: 'Apple Inc.',
+    icon: '/image/RWA-2.png',
+    price: '189.50',
+    change: +1.05,
+    chart: 'line-chart',
+    chartData: generatePriceData(187, 1.05, 50),
+    visible: false
+  },
+  {
+    id: 16,
+    symbol: 'MSFT.M',
+    name: 'Microsoft Corp.',
+    icon: '/image/RWA-2.png',
+    price: '378.90',
+    change: +0.85,
+    chart: 'line-chart',
+    chartData: generatePriceData(376, 0.85, 50),
+    visible: false
+  },
+  {
+    id: 17,
+    symbol: 'AMZN.M',
+    name: 'Amazon.com Inc.',
+    icon: '/image/RWA-2.png',
+    price: '156.30',
+    change: +1.20,
+    chart: 'line-chart',
+    chartData: generatePriceData(154, 1.20, 50),
+    visible: false
+  },
+  {
+    id: 18,
+    symbol: 'META.M',
+    name: 'Meta Platforms',
+    icon: '/image/RWA-1.svg',
+    price: '485.20',
+    change: +0.95,
+    chart: 'line-chart',
+    chartData: generatePriceData(482, 0.95, 50),
+    visible: false
+  },
+]);
+
+const contractRisingData = ref([
+  { id: 21, symbol: 'ONTM.M', name: 'Quantum Enigma Inc...', icon: '/image/RWA-2.png', price: '9.96', change: +2.68, visible: false },
+  { id: 22, symbol: 'MYXUSDT.M', name: 'MSX Token', icon: '/image/RWA-1.svg', price: '2.599', change: +2.95, visible: false },
+  { id: 23, symbol: 'BMNR.M', name: 'BeMine Immersion ...', icon: '/image/RWA-2.png', price: '33.85', change: +2.20, visible: false },
+]);
+
+const rwaRisingData = ref([
+  { id: 31, symbol: 'TSLA.M', name: 'Tesla Inc.', icon: '/image/RWA-2.png', price: '345.20', change: +3.15, visible: false },
+  { id: 32, symbol: 'NVDA.M', name: 'NVIDIA Corp.', icon: '/image/RWA-2.png', price: '489.50', change: +2.85, visible: false },
+  { id: 33, symbol: 'AMD.M', name: 'Advanced Micro...', icon: '/image/RWA-2.png', price: '125.30', change: +2.45, visible: false },
+]);
+
+const newRwaData = ref([
+  { id: 41, symbol: 'ABBV.M', name: 'AbbVie Inc.', icon: '/image/RWA-2.png', price: '227.7', change: 0.00, visible: false },
+  { id: 42, symbol: 'MRK.M', name: 'Merck & Co. Inc.', icon: '/image/RWA-2.png', price: '104.83', change: 0.00, visible: false },
+  { id: 43, symbol: 'ONDS.M', name: 'Ondas Holdings In...', icon: '/image/RWA-2.png', price: '9.93', change: +0.38, visible: false },
+]);
+
+// 当前显示的列表
+const currentLeftList = computed(() => {
+  return activeLeftTab.value === 'contracts' ? hotContractsData.value : hotRwaData.value;
+});
+
+const currentRightTopList = computed(() => {
+  return activeRightTopTab.value === 'contracts' ? contractRisingData.value : rwaRisingData.value;
+});
+
+const currentNewRwaList = computed(() => {
+  return newRwaData.value;
+});
+
+// 切换标签页
+const switchLeftTab = (tab) => {
+  activeLeftTab.value = tab;
+  loadListWithAnimation(activeLeftTab.value === 'contracts' ? hotContractsData : hotRwaData);
+};
+
+const switchRightTopTab = (tab) => {
+  activeRightTopTab.value = tab;
+  loadListWithAnimation(activeRightTopTab.value === 'contracts' ? contractRisingData : rwaRisingData);
+};
+
+// 分页切换
+const changeLeftPage = (page) => {
+  currentLeftPage.value = page;
+  loadListWithAnimation(activeLeftTab.value === 'contracts' ? hotContractsData : hotRwaData);
+};
+
+const changeRightTopPage = (page) => {
+  currentRightTopPage.value = page;
+  loadListWithAnimation(activeRightTopTab.value === 'contracts' ? contractRisingData : rwaRisingData);
+};
+
+const changeNewRwaPage = (page) => {
+  currentNewRwaPage.value = page;
+  loadListWithAnimation(newRwaData);
+};
+
+// 加载列表的动画效果
+const loadListWithAnimation = (listRef) => {
+  // 首先隐藏所有项
+  listRef.value.forEach(item => {
+    item.visible = false;
+  });
+
+  // 逐个显示
+  listRef.value.forEach((item, index) => {
+    setTimeout(() => {
+      item.visible = true;
+    }, index * 100); // 每个项延迟100ms
+  });
+};
+
+// 折线图处理函数
+const getLinePoints = (data) => {
+  if (!data || data.length === 0) return '';
+
+  const width = 100;
+  const height = 40;
+  const padding = 5;
+  const chartWidth = width - 2 * padding;
+  const chartHeight = height - 2 * padding;
+
+  const minPrice = Math.min(...data);
+  const maxPrice = Math.max(...data);
+  const priceRange = maxPrice - minPrice || 1;
+
+  return data.map((price, index) => {
+    const x = padding + (index / (data.length - 1)) * chartWidth;
+    const y = padding + (1 - (price - minPrice) / priceRange) * chartHeight;
+    return `${x},${y}`;
+  }).join(' ');
+};
+
+const getLineDataPoints = (data) => {
+  if (!data || data.length === 0) return [];
+
+  const width = 100;
+  const height = 40;
+  const padding = 5;
+  const chartWidth = width - 2 * padding;
+  const chartHeight = height - 2 * padding;
+
+  const minPrice = Math.min(...data);
+  const maxPrice = Math.max(...data);
+  const priceRange = maxPrice - minPrice || 1;
+
+  return data.map((price, index) => {
+    const x = padding + (index / (data.length - 1)) * chartWidth;
+    const y = padding + (1 - (price - minPrice) / priceRange) * chartHeight;
+    return { x, y };
+  });
+};
+
+// 生成向下荧光填充区域的路径
+const getAreaPath = (data) => {
+  if (!data || data.length === 0) return '';
+
+  const width = 100;
+  const height = 40;
+  const padding = 5;
+  const chartWidth = width - 2 * padding;
+  const chartHeight = height - 2 * padding;
+
+  const minPrice = Math.min(...data);
+  const maxPrice = Math.max(...data);
+  const priceRange = maxPrice - minPrice || 1;
+
+  // 生成折线点
+  const linePoints = data.map((price, index) => {
+    const x = padding + (index / (data.length - 1)) * chartWidth;
+    const y = padding + (1 - (price - minPrice) / priceRange) * chartHeight;
+    return `${x},${y}`;
+  }).join(' ');
+
+  // 生成填充区域路径：从左下角开始 -> 沿折线 -> 到右下角 -> 闭合
+  const startX = padding;
+  const endX = width - padding;
+  const bottomY = height - padding;
+
+  return `M ${startX} ${bottomY} L ${linePoints} L ${endX} ${bottomY} Z`;
+};
+
+// More按钮处理
+const handleMore = () => {
+  console.log('More clicked');
+};
+
 onMounted(() => {
   setTimeout(() => {
     animateStats();
   }, 800);
+
+  // 初始化榜单动画
+  setTimeout(() => {
+    loadListWithAnimation(hotContractsData);
+    loadListWithAnimation(contractRisingData);
+    loadListWithAnimation(newRwaData);
+  }, 1500);
 });
 </script>
 
@@ -293,6 +814,7 @@ onMounted(() => {
   line-height: 1.1;
   margin-bottom: 24px;
   background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.7) 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
@@ -341,7 +863,7 @@ onMounted(() => {
   gap: 24px;
   width: 100%;
   margin-top: auto;
-  padding-bottom: 200px;
+  padding-bottom: 80px;
 }
 
 .stat-item {
@@ -377,7 +899,8 @@ onMounted(() => {
 .banner-carousel {
   width: 100%;
   position: relative;
-  margin-top: -100px;
+  margin-top: 60px;
+  margin-bottom: 80px;
   padding: 0 70px;
   /* Space for arrows */
 
@@ -495,6 +1018,320 @@ onMounted(() => {
   }
 }
 
+/* ============ All RWA Section ============ */
+.all-rwa-section {
+  width: 100%;
+  margin-top: 0;
+  padding: 0 20px 60px;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 16px;
+  background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.8) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-subtitle {
+  font-size: 16px;
+  color: #888;
+}
+
+.ranking-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.ranking-panel {
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  border-radius: 16px;
+  padding: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &:first-child {
+    grid-row: 1 / 3; // 左侧面板占两行
+    min-height: 600px; // 设置最小高度，减少空隙
+    justify-content: flex-start; // 内容从顶部开始排列
+    padding-top: 40px; // 内容整体下移
+    padding-left: 30px; // 增加左边距，解决数据太靠左的问题
+  }
+
+  &:nth-child(2) {
+    // 右上角面板 - 进一步增加高度以容纳3个项目
+    height: 380px; // 进一步增加高度
+    min-height: 380px;
+    max-height: 380px;
+  }
+
+  &:nth-child(3) {
+    // 右下角面板
+    min-height: 280px;
+  }
+}
+
+.panel-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #1a1a1a;
+  padding-bottom: 12px;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 6px;
+
+  &:hover {
+    color: #aaa;
+  }
+
+  &.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.more-btn {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #bcff2f;
+  }
+}
+
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  justify-content: flex-start;
+  height: auto; // 改为自动高度
+  overflow: hidden;
+
+  &.compact {
+    min-height: 150px;
+    height: 250px; // 紧凑模式进一步增加高度以容纳3个项目
+  }
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  transition: all 0.3s;
+  opacity: 0;
+  transform: translateY(20px);
+
+  &.item-appear {
+    animation: slideInUp 0.5s forwards;
+  }
+}
+
+// 左侧面板的特殊布局
+.ranking-panel:first-child .ranking-item {
+  justify-content: space-between;
+
+  .token-info {
+    flex: 0 0 auto; // 不占满剩余空间
+    min-width: 120px;
+  }
+
+  .token-price {
+    margin-left: 80px; // 进一步增加左边距，向右移动更多
+    margin-right: 40px; // 保持与波动率的间隔
+    text-align: center;
+  }
+
+  .token-change {
+    margin-right: 80px; // 进一步增加右边距，保持平衡
+    text-align: center;
+  }
+
+  .token-chart {
+    flex: 1;
+    margin-left: auto;
+    margin-right: 0;
+    max-width: 150px; // K线图加长
+  }
+}
+
+// 右侧面板的特殊布局
+.ranking-panel:not(:first-child) .ranking-item {
+  justify-content: space-between;
+  align-items: center;
+
+  .token-info {
+    flex: 0 0 auto;
+    min-width: 120px;
+    margin-right: auto; // logo和名字靠左
+  }
+
+  .token-price {
+    text-align: center;
+    margin: 0 15px;
+  }
+
+  .token-change {
+    text-align: center;
+    margin: 0 15px 0 0;
+  }
+
+  // 右侧面板没有chart，所以不需要调整
+}
+
+@keyframes slideInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rank-number {
+  width: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  text-align: center;
+}
+
+.token-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.token-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.token-symbol {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+  text-align: left; // 确保左对齐
+}
+
+.token-name {
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left; // 确保左对齐
+}
+
+.token-price {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  min-width: 80px;
+  text-align: right;
+}
+
+.token-change {
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 70px;
+  text-align: right;
+
+  &.positive {
+    color: #4caf50;
+  }
+
+  &.negative {
+    color: #f44336;
+  }
+}
+
+.token-chart {
+  width: 100px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  .chart-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: slideInChart 0.6s forwards;
+    animation-delay: 0.3s;
+  }
+}
+
+@keyframes slideInChart {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.pagination-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #1a1a1a;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.3s;
+  opacity: 0.4;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &.active {
+    opacity: 1;
+  }
+}
+
 /* 轮播图卡片样式 */
 .banner-card {
   flex: 0 0 calc((100% - 56px) / 3);
@@ -546,6 +1383,22 @@ onMounted(() => {
     height: auto;
     min-height: 160px;
   }
+
+  .ranking-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ranking-panel:first-child {
+    grid-row: auto;
+  }
+
+  .section-title {
+    font-size: 36px;
+  }
+
+  .token-chart {
+    width: 80px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -556,5 +1409,29 @@ onMounted(() => {
   .stats-grid {
     grid-template-columns: 1fr;
   }
+
+  .section-title {
+    font-size: 28px;
+  }
+
+  .token-chart {
+    display: none; // 移动端隐藏趋势图
+  }
+
+  .ranking-item {
+    gap: 12px;
+    padding: 12px 8px;
+  }
+
+  .token-price {
+    min-width: 60px;
+    font-size: 13px;
+  }
+
+  .token-change {
+    min-width: 55px;
+    font-size: 13px;
+  }
 }
+
 </style>
