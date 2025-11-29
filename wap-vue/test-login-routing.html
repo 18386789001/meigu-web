@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAP-Vue登录路由测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            background-color: #fff0f0;
+        }
+        .success {
+            color: green;
+            background-color: #f0fff0;
+        }
+        .info {
+            color: blue;
+            background-color: #f0f8ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>WAP-Vue登录路由测试</h1>
+        
+        <div class="test-item info">
+            <h3>当前路径信息</h3>
+            <p><strong>window.location.href:</strong> <span id="current-href"></span></p>
+            <p><strong>window.location.pathname:</strong> <span id="current-pathname"></span></p>
+            <p><strong>window.location.hash:</strong> <span id="current-hash"></span></p>
+            <p><strong>是否包含/syn:</strong> <span id="contains-syn"></span></p>
+        </div>
+        
+        <div class="test-item">
+            <h3>路由测试</h3>
+            <button class="button" onclick="testRoute('/login')">测试跳转到 /login</button>
+            <button class="button" onclick="testRoute('/register')">测试跳转到 /register</button>
+            <button class="button" onclick="testRoute('/')">测试跳转到 /</button>
+            <button class="button" onclick="testRoute('/quotes')">测试跳转到 /quotes</button>
+        </div>
+        
+        <div class="test-item">
+            <h3>模拟登录按钮点击</h3>
+            <button class="button" onclick="simulateLoginClick()">模拟登录按钮点击</button>
+        </div>
+        
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        // 显示当前路径信息
+        function updatePathInfo() {
+            document.getElementById('current-href').textContent = window.location.href;
+            document.getElementById('current-pathname').textContent = window.location.pathname;
+            document.getElementById('current-hash').textContent = window.location.hash;
+            document.getElementById('contains-syn').textContent = window.location.pathname.includes('/syn') ? '是' : '否';
+        }
+        
+        // 模拟路由跳转测试
+        function testRoute(path) {
+            const resultsContainer = document.getElementById('test-results');
+            const testItem = document.createElement('div');
+            testItem.className = 'test-item';
+            
+            try {
+                // 模拟Vue Router的push方法
+                if (path.startsWith('/')) {
+                    // 对于hash路由，应该使用hash
+                    const newHash = '#' + path;
+                    window.location.hash = newHash;
+                    testItem.className += ' success';
+                    testItem.innerHTML = `<strong>成功:</strong> 跳转到 ${path}，当前hash: ${window.location.hash}`;
+                } else {
+                    testItem.className += ' error';
+                    testItem.innerHTML = `<strong>错误:</strong> 无效路径 ${path}`;
+                }
+            } catch (error) {
+                testItem.className += ' error';
+                testItem.innerHTML = `<strong>错误:</strong> ${error.message}`;
+            }
+            
+            resultsContainer.appendChild(testItem);
+            updatePathInfo();
+        }
+        
+        // 模拟登录按钮点击
+        function simulateLoginClick() {
+            const resultsContainer = document.getElementById('test-results');
+            const testItem = document.createElement('div');
+            testItem.className = 'test-item';
+            
+            // 检查当前路径是否包含/syn
+            if (window.location.pathname.includes('/syn')) {
+                testItem.className += ' info';
+                testItem.innerHTML = `
+                    <strong>检测到/syn路径:</strong> 当前路径包含/syn，这可能会影响路由跳转。
+                    <br><strong>当前路径:</strong> ${window.location.pathname}
+                    <br><strong>当前hash:</strong> ${window.location.hash}
+                `;
+            } else {
+                testItem.className += ' success';
+                testItem.innerHTML = `<strong>正常路径:</strong> 当前路径不包含/syn，路由应该正常工作。`;
+            }
+            
+            resultsContainer.appendChild(testItem);
+            
+            // 尝试跳转到登录页面
+            setTimeout(() => {
+                testRoute('/login');
+            }, 1000);
+        }
+        
+        // 监听hash变化
+        window.addEventListener('hashchange', function() {
+            updatePathInfo();
+            const resultsContainer = document.getElementById('test-results');
+            const testItem = document.createElement('div');
+            testItem.className = 'test-item info';
+            testItem.innerHTML = `<strong>Hash变化:</strong> 新的hash是 ${window.location.hash}`;
+            resultsContainer.appendChild(testItem);
+        });
+        
+        // 初始化
+        updatePathInfo();
+        
+        // 定期更新路径信息
+        setInterval(updatePathInfo, 2000);
+    </script>
+</body>
+</html>

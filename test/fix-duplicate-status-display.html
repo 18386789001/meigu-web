@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>银行卡充值记录状态显示修复</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status-demo {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        .status-icon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-icon-success {
+            background: #28a745;
+        }
+        .status-icon-cancelled {
+            background: #007bff;
+        }
+        .status-icon-pending {
+            background: #F5D658;
+        }
+        .status-text-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-text-cancelled {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .status-text-pending {
+            color: #F5D658;
+            font-weight: bold;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .fix-section {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .problem-section {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+        .before-after {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+        }
+        .before, .after {
+            flex: 1;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .before {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        .after {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 银行卡充值记录状态显示修复</h1>
+        
+        <div class="problem-section">
+            <h3>❌ 问题描述</h3>
+            <p>从图片中可以看到，银行卡充值记录同时显示了两个状态：</p>
+            <ul>
+                <li>蓝色的"cancelled"（已取消）</li>
+                <li>黄色的"确定中"（确认中）</li>
+            </ul>
+            <p>这导致用户界面混乱，需要修复为只显示一个正确的状态。</p>
+        </div>
+        
+        <div class="fix-section">
+            <h3>✅ 问题原因</h3>
+            <p>问题出现在Vue模板的条件判断逻辑上：</p>
+            <ul>
+                <li>使用了多个独立的 <code>v-if</code> 条件</li>
+                <li>当状态值为4时，既满足了"已取消"条件，又满足了"其他状态值"条件</li>
+                <li>导致两个状态同时渲染显示</li>
+            </ul>
+        </div>
+        
+        <h2>修复方案</h2>
+        
+        <div class="before-after">
+            <div class="before">
+                <h4>❌ 修复前（有问题的代码）</h4>
+                <div class="code-block">
+&lt;template v-if="getStatusValue(item) == 3"&gt;
+    &lt;!-- 成功状态 --&gt;
+&lt;/template&gt;
+&lt;template v-if="getStatusValue(item) == 4"&gt;
+    &lt;!-- 已取消状态 --&gt;
+&lt;/template&gt;
+&lt;template v-if="getStatusValue(item) !== 3 && getStatusValue(item) !== 4"&gt;
+    &lt;!-- 确认中状态 --&gt;
+&lt;/template&gt;
+                </div>
+                <p><strong>问题：</strong>多个独立的v-if条件可能同时满足</p>
+            </div>
+            
+            <div class="after">
+                <h4>✅ 修复后（正确的代码）</h4>
+                <div class="code-block">
+&lt;template v-if="getStatusValue(item) == 3"&gt;
+    &lt;!-- 成功状态 --&gt;
+&lt;/template&gt;
+&lt;template v-else-if="getStatusValue(item) == 4"&gt;
+    &lt;!-- 已取消状态 --&gt;
+&lt;/template&gt;
+&lt;template v-else&gt;
+    &lt;!-- 确认中状态 --&gt;
+&lt;/template&gt;
+                </div>
+                <p><strong>解决：</strong>使用v-else-if和v-else确保只有一个条件执行</p>
+            </div>
+        </div>
+        
+        <h2>修复的具体内容</h2>
+        
+        <h3>模板修改</h3>
+        <div class="code-block">
+&lt;!-- 银行卡充值记录状态映射 --&gt;
+&lt;template v-if="selectIndexActive == 0"&gt;
+    &lt;!-- 银行卡充值记录：状态3=成功，状态4=已取消 --&gt;
+    &lt;template v-if="getStatusValue(item) == 3"&gt;
+        &lt;div class="status-icon status-icon-color1 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-success"&gt;{{ $t('success') }}&lt;/span&gt;
+    &lt;/template&gt;
+    &lt;template v-else-if="getStatusValue(item) == 4"&gt;
+        &lt;div class="status-icon status-icon-color4 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-cancelled"&gt;{{ $t('cancelled') }}&lt;/span&gt;
+    &lt;/template&gt;
+    &lt;!-- 其他状态值显示为确认中 --&gt;
+    &lt;template v-else&gt;
+        &lt;div class="status-icon status-icon-color3 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-pending"&gt;{{ $t('confirming') }}&lt;/span&gt;
+    &lt;/template&gt;
+&lt;/template&gt;
+        </div>
+        
+        <h2>修复效果</h2>
+        
+        <div class="fix-section">
+            <h3>🎯 修复后的状态显示</h3>
+            <p>现在每个银行卡充值记录只会显示一个正确的状态：</p>
+        </div>
+        
+        <div class="status-demo">
+            <div class="status-icon status-icon-success"></div>
+            <span class="status-text-success">成功</span>
+            <span style="margin-left: 20px; color: #666;">(状态值: 3) - 只显示绿色成功状态</span>
+        </div>
+        
+        <div class="status-demo">
+            <div class="status-icon status-icon-cancelled"></div>
+            <span class="status-text-cancelled">已取消</span>
+            <span style="margin-left: 20px; color: #666;">(状态值: 4) - 只显示蓝色已取消状态</span>
+        </div>
+        
+        <div class="status-demo">
+            <div class="status-icon status-icon-pending"></div>
+            <span class="status-text-pending">确定中</span>
+            <span style="margin-left: 20px; color: #666;">(其他状态值) - 只显示黄色确认中状态</span>
+        </div>
+        
+        <h2>Vue条件渲染说明</h2>
+        
+        <div class="fix-section">
+            <h3>Vue模板条件渲染机制</h3>
+            <ul>
+                <li><strong>v-if:</strong> 独立条件，每个都会单独判断</li>
+                <li><strong>v-else-if:</strong> 前一个条件不满足时才判断</li>
+                <li><strong>v-else:</strong> 前面所有条件都不满足时执行</li>
+            </ul>
+            <p><strong>关键点：</strong>使用 v-else-if 和 v-else 确保条件互斥，只有一个会被执行。</p>
+        </div>
+        
+        <h2>验证步骤</h2>
+        
+        <div class="fix-section">
+            <h3>🔍 验证修复效果</h3>
+            <ol>
+                <li><strong>刷新银行卡充值记录页面</strong></li>
+                <li><strong>检查状态值4的记录</strong> - 应该只显示蓝色"已取消"，不再显示黄色"确定中"</li>
+                <li><strong>检查状态值3的记录</strong> - 应该只显示绿色"成功"</li>
+                <li><strong>检查其他状态值的记录</strong> - 应该只显示黄色"确定中"</li>
+                <li><strong>确认每个记录只有一个状态显示</strong></li>
+            </ol>
+        </div>
+        
+        <h2>技术要点</h2>
+        
+        <div class="code-block">
+// Vue条件渲染最佳实践
+&lt;!-- ❌ 错误：多个独立条件可能同时满足 --&gt;
+&lt;template v-if="condition1"&gt;...&lt;/template&gt;
+&lt;template v-if="condition2"&gt;...&lt;/template&gt;
+&lt;template v-if="condition3"&gt;...&lt;/template&gt;
+
+&lt;!-- ✅ 正确：使用互斥条件确保只有一个执行 --&gt;
+&lt;template v-if="condition1"&gt;...&lt;/template&gt;
+&lt;template v-else-if="condition2"&gt;...&lt;/template&gt;
+&lt;template v-else&gt;...&lt;/template&gt;
+        </div>
+        
+        <div class="fix-section">
+            <h3>✅ 修复完成</h3>
+            <p>现在银行卡充值记录的状态显示已经修复：</p>
+            <ul>
+                <li>✅ 状态值3 → 只显示绿色"成功"</li>
+                <li>✅ 状态值4 → 只显示蓝色"已取消"（不再显示黄色"确定中"）</li>
+                <li>✅ 其他状态值 → 只显示黄色"确定中"</li>
+                <li>✅ 每个记录只显示一个状态，界面清晰</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

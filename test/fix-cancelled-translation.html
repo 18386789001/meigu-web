@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>银行卡提现记录状态翻译修复</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status-demo {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        .status-icon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-icon-success {
+            background: #28a745;
+        }
+        .status-icon-cancelled {
+            background: #007bff;
+        }
+        .status-text-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-text-cancelled {
+            color: #007bff;
+            font-weight: bold;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .fix-section {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .problem-section {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+        .before-after {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+        }
+        .before, .after {
+            flex: 1;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .before {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        .after {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .translation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .translation-table th,
+        .translation-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .translation-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .translation-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 银行卡提现记录状态翻译修复</h1>
+        
+        <div class="problem-section">
+            <h3>❌ 问题描述</h3>
+            <p>从图片中可以看到，在中文环境下，银行卡提现记录的"已取消"状态仍然显示为英文的"cancelled"而不是中文的"已取消"。</p>
+            <p>这导致用户界面语言不一致，影响用户体验。</p>
+        </div>
+        
+        <div class="fix-section">
+            <h3>🔍 问题原因</h3>
+            <p>问题出现在Vue模板中使用的翻译键不正确：</p>
+            <ul>
+                <li><strong>代码中使用:</strong> <code>{{ $t('cancelled') }}</code> (全小写)</li>
+                <li><strong>语言文件中定义:</strong> <code>Cancelled: "已取消"</code> (首字母大写)</li>
+                <li><strong>结果:</strong> 找不到翻译键，显示原始键名"cancelled"</li>
+            </ul>
+        </div>
+        
+        <h2>修复方案</h2>
+        
+        <div class="before-after">
+            <div class="before">
+                <h4>❌ 修复前（有问题的代码）</h4>
+                <div class="code-block">
+&lt;template v-else-if="getStatusValue(item) == 4"&gt;
+    &lt;div class="status-icon status-icon-color4 mr-2"&gt;&lt;/div&gt;
+    &lt;span class="status-text status-text-cancelled"&gt;{{ $t('cancelled') }}&lt;/span&gt;
+&lt;/template&gt;
+                </div>
+                <p><strong>问题：</strong> 翻译键 'cancelled' 不存在，显示原始键名</p>
+            </div>
+            
+            <div class="after">
+                <h4>✅ 修复后（正确的代码）</h4>
+                <div class="code-block">
+&lt;template v-else-if="getStatusValue(item) == 4"&gt;
+    &lt;div class="status-icon status-icon-color4 mr-2"&gt;&lt;/div&gt;
+    &lt;span class="status-text status-text-cancelled"&gt;{{ $t('Cancelled') }}&lt;/span&gt;
+&lt;/template&gt;
+                </div>
+                <p><strong>解决：</strong> 使用正确的翻译键 'Cancelled'</p>
+            </div>
+        </div>
+        
+        <h2>翻译键对照表</h2>
+        
+        <table class="translation-table">
+            <thead>
+                <tr>
+                    <th>状态</th>
+                    <th>错误的键</th>
+                    <th>正确的键</th>
+                    <th>中文翻译</th>
+                    <th>英文翻译</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>已取消</strong></td>
+                    <td style="color: red;">cancelled</td>
+                    <td style="color: green;">Cancelled</td>
+                    <td>已取消</td>
+                    <td>Cancelled</td>
+                </tr>
+                <tr>
+                    <td><strong>成功</strong></td>
+                    <td style="color: green;">success</td>
+                    <td style="color: green;">success</td>
+                    <td>成功</td>
+                    <td>Success</td>
+                </tr>
+                <tr>
+                    <td><strong>失败</strong></td>
+                    <td style="color: green;">fail</td>
+                    <td style="color: green;">fail</td>
+                    <td>失败</td>
+                    <td>Fail</td>
+                </tr>
+                <tr>
+                    <td><strong>确定中</strong></td>
+                    <td style="color: green;">confirming</td>
+                    <td style="color: green;">confirming</td>
+                    <td>确定中</td>
+                    <td>Confirming</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h2>修复效果</h2>
+        
+        <div class="fix-section">
+            <h3>🎯 修复后的状态显示</h3>
+            <p>现在银行卡提现记录的状态将正确显示中文：</p>
+        </div>
+        
+        <div class="status-demo">
+            <div class="status-icon status-icon-success"></div>
+            <span class="status-text-success">成功</span>
+            <span style="margin-left: 20px; color: #666;">(状态值: 3) - 正确显示中文</span>
+        </div>
+        
+        <div class="status-demo">
+            <div class="status-icon status-icon-cancelled"></div>
+            <span class="status-text-cancelled">已取消</span>
+            <span style="margin-left: 20px; color: #666;">(状态值: 4) - 现在正确显示中文"已取消"</span>
+        </div>
+        
+        <h2>语言文件验证</h2>
+        
+        <div class="code-block">
+// 中文语言文件 (zh-CN.js)
+Cancelled: "已取消",    // ✅ 正确的翻译键
+
+// 英文语言文件 (en.js)  
+Cancelled: "Cancelled", // ✅ 正确的翻译键
+
+// 日文语言文件 (Japanese.js)
+Cancelled: "キャンセルされました", // ✅ 正确的翻译键
+
+// 韩文语言文件 (Korean.js)
+Cancelled: "취소됨", // ✅ 正确的翻译键
+
+// 德文语言文件 (de.js)
+Cancelled: "Storniert", // ✅ 正确的翻译键
+
+// 法文语言文件 (fr.js)
+Cancelled: "Annulé", // ✅ 正确的翻译键
+        </div>
+        
+        <h2>Vue i18n翻译机制</h2>
+        
+        <div class="fix-section">
+            <h3>🔧 Vue i18n工作原理</h3>
+            <ol>
+                <li><strong>查找翻译键:</strong> Vue i18n根据当前语言查找对应的翻译键</li>
+                <li><strong>键名匹配:</strong> 必须完全匹配语言文件中定义的键名</li>
+                <li><strong>大小写敏感:</strong> 'cancelled' ≠ 'Cancelled'</li>
+                <li><strong>回退机制:</strong> 找不到翻译键时显示原始键名</li>
+            </ol>
+        </div>
+        
+        <h2>验证步骤</h2>
+        
+        <div class="fix-section">
+            <h3>🔍 验证修复效果</h3>
+            <ol>
+                <li><strong>刷新银行卡提现记录页面</strong></li>
+                <li><strong>检查状态值4的记录</strong> - 应该显示蓝色"已取消"而不是"cancelled"</li>
+                <li><strong>切换语言</strong> - 验证其他语言也正确显示</li>
+                <li><strong>检查充值记录</strong> - 确认充值记录的状态也正确显示</li>
+            </ol>
+        </div>
+        
+        <h2>技术要点</h2>
+        
+        <div class="code-block">
+// Vue i18n最佳实践
+// ✅ 正确：使用语言文件中定义的准确键名
+{{ $t('Cancelled') }}  // 显示：已取消 / Cancelled / キャンセルされました
+
+// ❌ 错误：键名不匹配
+{{ $t('cancelled') }}  // 显示：cancelled (找不到翻译)
+
+// 🔍 调试技巧
+console.log(this.$t('Cancelled')); // 检查翻译是否正确
+        </div>
+        
+        <div class="fix-section">
+            <h3>✅ 修复完成</h3>
+            <p>银行卡提现记录的"已取消"状态翻译问题已修复：</p>
+            <ul>
+                <li>✅ 修复了翻译键大小写问题</li>
+                <li>✅ 中文环境下正确显示"已取消"</li>
+                <li>✅ 其他语言环境下也正确显示对应翻译</li>
+                <li>✅ 保持了状态颜色和样式不变</li>
+                <li>✅ 充值记录和提现记录都使用相同的翻译键</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

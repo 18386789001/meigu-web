@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧪 本地开发环境 - 语言参数传递测试</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 40px;
+    }
+
+    .section {
+      margin-bottom: 40px;
+      padding: 30px;
+      background: #f8f9fa;
+      border-radius: 15px;
+      border-left: 5px solid #667eea;
+    }
+
+    .section h2 {
+      color: #667eea;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+    }
+
+    .section h3 {
+      color: #764ba2;
+      margin-top: 25px;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+    }
+
+    .step {
+      background: white;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .step-number {
+      display: inline-block;
+      width: 35px;
+      height: 35px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 35px;
+      font-weight: bold;
+      margin-right: 15px;
+      font-size: 1.1em;
+    }
+
+    .step-content {
+      display: inline-block;
+      vertical-align: top;
+      width: calc(100% - 55px);
+    }
+
+    .code-block {
+      background: #282c34;
+      color: #abb2bf;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 15px 0;
+      overflow-x: auto;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.95em;
+      line-height: 1.6;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .code-block .comment {
+      color: #5c6370;
+      font-style: italic;
+    }
+
+    .code-block .keyword {
+      color: #c678dd;
+    }
+
+    .code-block .string {
+      color: #98c379;
+    }
+
+    .code-block .url {
+      color: #61afef;
+      text-decoration: underline;
+    }
+
+    .url-box {
+      background: #e7f3ff;
+      border: 2px solid #2196F3;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px 0;
+      font-family: 'Consolas', 'Monaco', monospace;
+      word-break: break-all;
+    }
+
+    .url-box.correct {
+      background: #e8f5e9;
+      border-color: #4caf50;
+    }
+
+    .url-box.wrong {
+      background: #ffebee;
+      border-color: #f44336;
+    }
+
+    .url-label {
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+
+    .url-label.correct::before {
+      content: '✅ ';
+    }
+
+    .url-label.wrong::before {
+      content: '❌ ';
+    }
+
+    .url-text {
+      font-size: 1.05em;
+      line-height: 1.8;
+    }
+
+    .highlight {
+      background: #fff59d;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+      color: #f57f17;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 1.1em;
+      font-weight: bold;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      margin: 10px 10px 10px 0;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+    }
+
+    .btn-success:hover {
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+    }
+
+    .status-box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      border: 2px solid #ddd;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      margin: 8px 0;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .status-icon {
+      font-size: 1.5em;
+      margin-right: 15px;
+    }
+
+    .status-text {
+      flex: 1;
+      font-size: 1.05em;
+    }
+
+    .status-value {
+      font-weight: bold;
+      color: #667eea;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+
+    .warning {
+      background: #fff3cd;
+      border: 2px solid #ffc107;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .warning-title {
+      color: #856404;
+      font-weight: bold;
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+
+    .warning-text {
+      color: #856404;
+      line-height: 1.8;
+    }
+
+    .success {
+      background: #d4edda;
+      border: 2px solid #28a745;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .success-title {
+      color: #155724;
+      font-weight: bold;
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+
+    .success-text {
+      color: #155724;
+      line-height: 1.8;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-weight: bold;
+    }
+
+    tr:hover {
+      background: #f8f9fa;
+    }
+
+    .footer {
+      background: #f8f9fa;
+      padding: 30px;
+      text-align: center;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🧪 本地开发环境测试</h1>
+      <p>H5-Vue → WAP-Vue 语言参数传递功能</p>
+    </div>
+
+    <div class="content">
+      <!-- 环境检查 -->
+      <div class="section">
+        <h2>🔍 步骤 1：环境检查</h2>
+        
+        <div class="warning">
+          <div class="warning-title">⚠️ 重要提示</div>
+          <div class="warning-text">
+            请确保您已经启动了<strong>两个开发服务器</strong>，否则测试将无法进行！
+          </div>
+        </div>
+
+        <h3>1.1 启动 WAP-Vue 开发服务器（端口 333）</h3>
+        <div class="code-block">
+<span class="comment"># 打开 PowerShell 终端</span>
+<span class="keyword">cd</span> D:\Awww\mt5new\template\wap-vue
+<span class="keyword">yarn</span> dev
+        </div>
+        <div class="status-box">
+          <div class="status-item">
+            <span class="status-icon">🌐</span>
+            <span class="status-text">WAP-Vue 地址：<span class="status-value">http://localhost:333/syn/</span></span>
+          </div>
+          <div class="status-item">
+            <span class="status-icon">✅</span>
+            <span class="status-text">如果成功，您会看到："Network: use --host to expose"</span>
+          </div>
+        </div>
+
+        <h3>1.2 启动 H5-Vue 开发服务器（端口 3333）</h3>
+        <div class="code-block">
+<span class="comment"># 打开另一个 PowerShell 终端</span>
+<span class="keyword">cd</span> D:\Awww\mt5new\template\h5-vue
+<span class="keyword">yarn</span> dev
+        </div>
+        <div class="status-box">
+          <div class="status-item">
+            <span class="status-icon">🌐</span>
+            <span class="status-text">H5-Vue 地址：<span class="status-value">http://localhost:3333/h5/</span></span>
+          </div>
+          <div class="status-item">
+            <span class="status-icon">✅</span>
+            <span class="status-text">如果成功，浏览器会自动打开 H5 页面</span>
+          </div>
+        </div>
+
+        <h3>1.3 测试服务器连通性</h3>
+        <div class="step">
+          <span class="step-number">1</span>
+          <div class="step-content">
+            <strong>测试 WAP-Vue：</strong>
+            <a href="http://localhost:333/syn/" target="_blank" class="btn btn-success">打开 WAP-Vue</a>
+            <div style="margin-top: 10px; color: #666;">
+              如果能正常打开，说明 WAP-Vue 服务器运行正常 ✅
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="step-number">2</span>
+          <div class="step-content">
+            <strong>测试 H5-Vue：</strong>
+            <a href="http://localhost:3333/h5/" target="_blank" class="btn btn-success">打开 H5-Vue</a>
+            <div style="margin-top: 10px; color: #666;">
+              如果能正常打开，说明 H5-Vue 服务器运行正常 ✅
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 功能测试 -->
+      <div class="section">
+        <h2>🎯 步骤 2：语言参数传递测试</h2>
+
+        <div class="success">
+          <div class="success-title">✅ 测试目标</div>
+          <div class="success-text">
+            验证从 H5-Vue 选择语言后，点击"登录"或"注册"按钮，能够正确跳转到 WAP-Vue 并携带语言参数。
+          </div>
+        </div>
+
+        <h3>2.1 打开 H5-Vue 应用</h3>
+        <div class="step">
+          <span class="step-number">1</span>
+          <div class="step-content">
+            <strong>访问 H5-Vue 首页：</strong>
+            <a href="http://localhost:3333/h5/" target="_blank" class="btn">http://localhost:3333/h5/</a>
+          </div>
+        </div>
+
+        <h3>2.2 打开浏览器开发者工具</h3>
+        <div class="step">
+          <span class="step-number">2</span>
+          <div class="step-content">
+            <strong>按 F12 打开开发者工具</strong>
+            <div style="margin-top: 10px;">
+              <span class="highlight">切换到 Console（控制台）标签</span>
+            </div>
+            <div style="margin-top: 10px; color: #666;">
+              这样可以看到详细的调试日志
+            </div>
+          </div>
+        </div>
+
+        <h3>2.3 选择日语</h3>
+        <div class="step">
+          <span class="step-number">3</span>
+          <div class="step-content">
+            <strong>点击右上角的语言选择器</strong>
+            <div style="margin-top: 10px;">
+              选择 <span class="highlight">日本語 (Japanese)</span>
+            </div>
+            <div style="margin-top: 15px; color: #666;">
+              <strong>控制台应该显示：</strong>
+              <div class="code-block" style="margin-top: 10px;">
+选择语言: {code: <span class="string">"ja-JP"</span>, name: <span class="string">"日本語"</span>, flag: <span class="string">"🇯🇵"</span>}
+规范化后的语言代码: <span class="string">ja-JP</span>
+语言切换完成，当前语言: <span class="string">ja-JP</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3>2.4 点击"Login Account"（登录账户）</h3>
+        <div class="step">
+          <span class="step-number">4</span>
+          <div class="step-content">
+            <strong>点击左上角汉堡菜单 → Login Account</strong>
+            <div style="margin-top: 15px; color: #666;">
+              <strong>控制台应该显示：</strong>
+              <div class="code-block" style="margin-top: 10px;">
+🔗 跳转到登录页
+📝 当前语言代码 (H5): <span class="string">ja-JP</span>
+📝 转换后语言代码 (WAP): <span class="string">Japanese</span>
+🌐 生成的登录URL: <span class="url">http://localhost:333/syn/?lang=Japanese#/my/index</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3>2.5 验证 URL 格式</h3>
+        <div class="url-box correct">
+          <div class="url-label correct">正确的 URL 格式</div>
+          <div class="url-text">
+            http://localhost:333/syn/<span class="highlight">?lang=Japanese</span>#/my/index
+          </div>
+          <div style="margin-top: 10px; color: #2e7d32;">
+            ✅ 查询参数 <code>?lang=Japanese</code> 在 <code>#</code> 之前
+          </div>
+        </div>
+
+        <div class="url-box wrong">
+          <div class="url-label wrong">错误的 URL 格式</div>
+          <div class="url-text">
+            http://localhost:333/syn/#/my/index<span class="highlight">?lang=Japanese</span>
+          </div>
+          <div style="margin-top: 10px; color: #c62828;">
+            ❌ 查询参数在 <code>#</code> 之后，无法被 WAP-Vue 读取
+          </div>
+        </div>
+
+        <h3>2.6 验证 WAP-Vue 接收</h3>
+        <div class="step">
+          <span class="step-number">5</span>
+          <div class="step-content">
+            <strong>自动跳转到 WAP-Vue 后，查看控制台</strong>
+            <div style="margin-top: 15px; color: #666;">
+              <strong>控制台应该显示：</strong>
+              <div class="code-block" style="margin-top: 10px;">
+🚀 WAP-Vue 应用启动
+🌐 WAP-Vue: 开始语言初始化...
+🌐 WAP-Vue: 从URL获取到语言参数: <span class="string">Japanese</span>
+🌐 WAP-Vue: 检测到URL语言参数，设置语言为: <span class="string">Japanese</span>
+🌐 从H5页面接收到语言参数: <span class="string">Japanese</span>
+🌐 已自动切换到指定语言
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3>2.7 验证语言显示</h3>
+        <div class="step">
+          <span class="step-number">6</span>
+          <div class="step-content">
+            <strong>检查 WAP-Vue 页面语言</strong>
+            <div style="margin-top: 10px;">
+              <span class="highlight">页面应该显示为日语</span>
+            </div>
+            <div style="margin-top: 10px; color: #666;">
+              <strong>验证方法：</strong>
+              <ul style="margin-top: 10px; line-height: 1.8;">
+                <li>打开 F12 → Application → Local Storage → http://localhost:333</li>
+                <li>查看 <code>lang</code> 键的值，应该是 <code>Japanese</code></li>
+                <li>查看 <code>langSource</code> 键的值，应该是 <code>url</code></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 语言映射表 -->
+      <div class="section">
+        <h2>🌍 步骤 3：测试其他语言</h2>
+
+        <p style="margin-bottom: 20px; line-height: 1.8; font-size: 1.05em;">
+          您可以重复步骤 2，测试以下所有语言的参数传递是否正常：
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>语言</th>
+                <th>H5-Vue 代码</th>
+                <th>WAP-Vue 代码</th>
+                <th>测试 URL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>🇬🇧 英语</td>
+                <td><code>en-US</code></td>
+                <td><code>en</code></td>
+                <td><code>http://localhost:333/syn/?lang=en#/my/index</code></td>
+              </tr>
+              <tr>
+                <td>🇯🇵 日语</td>
+                <td><code>ja-JP</code></td>
+                <td><code>Japanese</code></td>
+                <td><code>http://localhost:333/syn/?lang=Japanese#/my/index</code></td>
+              </tr>
+              <tr>
+                <td>🇰🇷 韩语</td>
+                <td><code>ko-KR</code></td>
+                <td><code>Korean</code></td>
+                <td><code>http://localhost:333/syn/?lang=Korean#/my/index</code></td>
+              </tr>
+              <tr>
+                <td>🇹🇭 泰语</td>
+                <td><code>th-TH</code></td>
+                <td><code>th</code></td>
+                <td><code>http://localhost:333/syn/?lang=th#/my/index</code></td>
+              </tr>
+              <tr>
+                <td>🇻🇳 越南语</td>
+                <td><code>vi-VN</code></td>
+                <td><code>vi</code></td>
+                <td><code>http://localhost:333/syn/?lang=vi#/my/index</code></td>
+              </tr>
+              <tr>
+                <td>🇩🇪 德语</td>
+                <td><code>de-DE</code></td>
+                <td><code>de</code></td>
+                <td><code>http://localhost:333/syn/?lang=de#/my/index</code></td>
+              </tr>
+              <tr>
+                <td>🇪🇸 西班牙语</td>
+                <td><code>es-ES</code></td>
+                <td><code>es</code></td>
+                <td><code>http://localhost:333/syn/?lang=es#/my/index</code></td>
+              </tr>
+              <tr>
+                <td>🇫🇷 法语</td>
+                <td><code>fr-FR</code></td>
+                <td><code>fr</code></td>
+                <td><code>http://localhost:333/syn/?lang=fr#/my/index</code></td>
+              </tr>
+              <tr>
+                <td>🇮🇹 意大利语</td>
+                <td><code>it-IT</code></td>
+                <td><code>Italy</code></td>
+                <td><code>http://localhost:333/syn/?lang=Italy#/my/index</code></td>
+              </tr>
+              <tr>
+                <td>🇵🇹 葡萄牙语</td>
+                <td><code>pt-PT</code></td>
+                <td><code>pt</code></td>
+                <td><code>http://localhost:333/syn/?lang=pt#/my/index</code></td>
+              </tr>
+              <tr>
+                <td>🇬🇷 希腊语</td>
+                <td><code>el-GR</code></td>
+                <td><code>gr</code></td>
+                <td><code>http://localhost:333/syn/?lang=gr#/my/index</code></td>
+              </tr>
+              <tr>
+                <td>🇨🇳 简体中文</td>
+                <td><code>zh-CN</code></td>
+                <td><code>CN</code></td>
+                <td><code>http://localhost:333/syn/?lang=CN#/my/index</code></td>
+              </tr>
+              <tr>
+                <td>🇨🇳 繁体中文</td>
+                <td><code>zh-TW</code></td>
+                <td><code>CN</code></td>
+                <td><code>http://localhost:333/syn/?lang=CN#/my/index</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 快速验证 -->
+      <div class="section">
+        <h2>⚡ 步骤 4：快速验证链接</h2>
+
+        <p style="margin-bottom: 20px; line-height: 1.8; font-size: 1.05em;">
+          您可以直接点击以下链接，快速测试 WAP-Vue 是否能正确接收并应用语言参数：
+        </p>
+
+        <div class="warning">
+          <div class="warning-title">⚠️ 前提条件</div>
+          <div class="warning-text">
+            确保 WAP-Vue 开发服务器（端口 333）正在运行！
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-top: 20px;">
+          <a href="http://localhost:333/syn/?lang=en#/my/index" target="_blank" class="btn">🇬🇧 English</a>
+          <a href="http://localhost:333/syn/?lang=Japanese#/my/index" target="_blank" class="btn">🇯🇵 日本語</a>
+          <a href="http://localhost:333/syn/?lang=Korean#/my/index" target="_blank" class="btn">🇰🇷 한국어</a>
+          <a href="http://localhost:333/syn/?lang=th#/my/index" target="_blank" class="btn">🇹🇭 ไทย</a>
+          <a href="http://localhost:333/syn/?lang=vi#/my/index" target="_blank" class="btn">🇻🇳 Tiếng Việt</a>
+          <a href="http://localhost:333/syn/?lang=de#/my/index" target="_blank" class="btn">🇩🇪 Deutsch</a>
+          <a href="http://localhost:333/syn/?lang=es#/my/index" target="_blank" class="btn">🇪🇸 Español</a>
+          <a href="http://localhost:333/syn/?lang=fr#/my/index" target="_blank" class="btn">🇫🇷 Français</a>
+          <a href="http://localhost:333/syn/?lang=Italy#/my/index" target="_blank" class="btn">🇮🇹 Italiano</a>
+          <a href="http://localhost:333/syn/?lang=pt#/my/index" target="_blank" class="btn">🇵🇹 Português</a>
+          <a href="http://localhost:333/syn/?lang=gr#/my/index" target="_blank" class="btn">🇬🇷 Ελληνικά</a>
+          <a href="http://localhost:333/syn/?lang=CN#/my/index" target="_blank" class="btn">🇨🇳 简体中文</a>
+        </div>
+
+        <div style="margin-top: 25px; padding: 20px; background: white; border-radius: 10px; border: 2px solid #667eea;">
+          <strong style="color: #667eea; font-size: 1.1em;">💡 验证方法：</strong>
+          <ol style="margin-top: 15px; line-height: 2; color: #555;">
+            <li>点击上面任意一个语言按钮</li>
+            <li>打开浏览器开发者工具（F12）→ Console</li>
+            <li>查看是否显示：<code>🌐 从H5页面接收到语言参数: [语言代码]</code></li>
+            <li>检查 Application → Local Storage → <code>lang</code> 的值是否正确</li>
+            <li>验证页面是否显示为对应语言</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- 故障排查 -->
+      <div class="section">
+        <h2>🔧 步骤 5：故障排查</h2>
+
+        <h3>问题 1：H5-Vue 无法访问</h3>
+        <div class="step">
+          <span class="step-number">?</span>
+          <div class="step-content">
+            <strong>解决方案：</strong>
+            <ul style="margin-top: 10px; line-height: 1.8;">
+              <li>检查 PowerShell 终端是否显示 "VITE ready"</li>
+              <li>确认端口 3333 没有被其他程序占用</li>
+              <li>尝试重启 H5-Vue 开发服务器</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>问题 2：WAP-Vue 无法访问</h3>
+        <div class="step">
+          <span class="step-number">?</span>
+          <div class="step-content">
+            <strong>解决方案：</strong>
+            <ul style="margin-top: 10px; line-height: 1.8;">
+              <li>检查 PowerShell 终端是否显示 "Network: use --host to expose"</li>
+              <li>确认端口 333 没有被其他程序占用</li>
+              <li>尝试重启 WAP-Vue 开发服务器</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>问题 3：URL 中没有语言参数</h3>
+        <div class="step">
+          <span class="step-number">?</span>
+          <div class="step-content">
+            <strong>解决方案：</strong>
+            <ul style="margin-top: 10px; line-height: 1.8;">
+              <li>清除浏览器缓存（Ctrl + Shift + Delete）</li>
+              <li>硬刷新 H5-Vue 页面（Ctrl + F5）</li>
+              <li>检查控制台是否有错误信息</li>
+              <li>确认 <code>domainManager.js</code> 修改已保存并生效</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>问题 4：WAP-Vue 语言没有切换</h3>
+        <div class="step">
+          <span class="step-number">?</span>
+          <div class="step-content">
+            <strong>解决方案：</strong>
+            <ul style="margin-top: 10px; line-height: 1.8;">
+              <li>打开 F12 → Application → Local Storage</li>
+              <li>清除 <code>http://localhost:333</code> 的所有数据</li>
+              <li>刷新页面（F5）</li>
+              <li>重新点击带语言参数的链接</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>问题 5：控制台没有日志输出</h3>
+        <div class="step">
+          <span class="step-number">?</span>
+          <div class="step-content">
+            <strong>解决方案：</strong>
+            <ul style="margin-top: 10px; line-height: 1.8;">
+              <li>确认开发者工具的 Console 面板已打开</li>
+              <li>检查 Console 过滤器，确保没有隐藏 Info 级别日志</li>
+              <li>清除 Console（点击 🚫 图标）</li>
+              <li>重新执行操作</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 总结 -->
+      <div class="section">
+        <h2>✅ 成功标志</h2>
+
+        <div class="success">
+          <div class="success-title">🎉 如果看到以下现象，说明功能正常：</div>
+          <div class="success-text">
+            <ol style="line-height: 2; margin-top: 10px;">
+              <li><strong>H5-Vue 控制台</strong>显示生成的 URL 包含语言参数</li>
+              <li><strong>浏览器地址栏</strong>的 URL 格式为 <code>http://localhost:333/syn/?lang=xxx#/my/index</code></li>
+              <li><strong>WAP-Vue 控制台</strong>显示 "从URL获取到语言参数"</li>
+              <li><strong>WAP-Vue 页面</strong>显示为对应的语言</li>
+              <li><strong>LocalStorage</strong> 中 <code>lang</code> 的值与 URL 参数一致</li>
+            </ol>
+          </div>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center;">
+          <a href="语言参数传递完整方案.md" class="btn btn-success" style="font-size: 1.2em; padding: 20px 40px;">
+            📖 查看完整技术文档
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p style="font-size: 1.1em; margin-bottom: 10px;">
+        <strong>🚀 功能已完成！开始测试吧！</strong>
+      </p>
+      <p style="color: #999;">
+        如有问题，请查看控制台日志或参考技术文档
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+

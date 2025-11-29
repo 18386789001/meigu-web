@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>客服对接测试 - Web Vue PC端</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 900px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+    
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    
+    .section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border-left: 4px solid #667eea;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .section-title::before {
+      content: "📌";
+      margin-right: 8px;
+    }
+    
+    .info-box {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    
+    .info-item {
+      display: flex;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    
+    .info-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .info-label {
+      font-weight: 600;
+      color: #555;
+      min-width: 120px;
+    }
+    
+    .info-value {
+      color: #333;
+      word-break: break-all;
+    }
+    
+    .code-block {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: "Consolas", "Monaco", "Courier New", monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      margin-bottom: 15px;
+    }
+    
+    .highlight {
+      color: #a6e22e;
+      font-weight: 600;
+    }
+    
+    .url {
+      color: #66d9ef;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(245, 87, 108, 0.4);
+    }
+    
+    .status {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+      margin-top: 10px;
+    }
+    
+    .status-success {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .status-warning {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .checklist {
+      list-style: none;
+    }
+    
+    .checklist li {
+      padding: 10px 0;
+      padding-left: 30px;
+      position: relative;
+      color: #555;
+      font-size: 14px;
+    }
+    
+    .checklist li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #28a745;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    .warning-box {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 15px;
+    }
+    
+    .warning-box::before {
+      content: "⚠️ ";
+      font-size: 16px;
+    }
+    
+    .warning-box p {
+      margin: 5px 0;
+      color: #856404;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 客服对接测试 - Web Vue PC端</h1>
+    <p class="subtitle">测试第三方客服链接对接功能（未登录/已登录场景）</p>
+    
+    <!-- 基础信息 -->
+    <div class="section">
+      <div class="section-title">基础配置信息</div>
+      <div class="info-box">
+        <div class="info-item">
+          <span class="info-label">客服基础链接：</span>
+          <span class="info-value">https://chat.jpmx.app/chat/index</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">固定参数：</span>
+          <span class="info-value">noCanClose=1 & token=282ba867e4ea0a2bc6792f52728c28d8</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">动态参数：</span>
+          <span class="info-value">uid（用户ID）、phone（用户邮箱）</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 场景1：未登录用户 -->
+    <div class="section">
+      <div class="section-title">场景1：未登录用户（游客）</div>
+      <div class="info-box">
+        <p style="margin-bottom: 15px; color: #666; font-size: 14px;">
+          当用户未登录时，点击客服图标会跳转到基础客服链接，不携带任何用户信息参数。
+        </p>
+        <div class="code-block">
+          <span class="url">https://chat.jpmx.app/chat/index?noCanClose=1&token=282ba867e4ea0a2bc6792f52728c28d8</span>
+        </div>
+        <div class="button-group">
+          <button class="btn-primary" onclick="testGuestLink()">🔗 模拟游客点击客服</button>
+        </div>
+        <div class="status status-warning" id="guestStatus" style="display: none;"></div>
+      </div>
+    </div>
+    
+    <!-- 场景2：已登录用户 -->
+    <div class="section">
+      <div class="section-title">场景2：已登录用户</div>
+      <div class="info-box">
+        <p style="margin-bottom: 15px; color: #666; font-size: 14px;">
+          当用户已登录时，点击客服图标会跳转到客服链接，并自动携带用户的 UID 和邮箱信息。
+        </p>
+        <div class="code-block">
+          <span class="url">https://chat.jpmx.app/chat/index?noCanClose=1&token=282ba867e4ea0a2bc6792f52728c28d8</span><br>
+          <span class="highlight">&uid=40002095</span><br>
+          <span class="highlight">&phone=laohu1234</span>
+        </div>
+        <div style="margin: 15px 0;">
+          <p style="color: #666; font-size: 13px; margin-bottom: 10px;">测试用户信息（来自登录接口）：</p>
+          <div class="code-block">
+{<br>
+  <span class="highlight">"usercode"</span>: <span class="url">"40002095"</span>,<br>
+  <span class="highlight">"username"</span>: <span class="url">"laohu1234"</span>,<br>
+  <span class="highlight">"token"</span>: <span class="url">"Bzw3LwRm13Nt/SpmErwMCc+SmR0JpXUyP1i6YY9gOQLe1yuB9OhkAHKjZhU/EfqW"</span><br>
+}
+          </div>
+        </div>
+        <div class="button-group">
+          <button class="btn-secondary" onclick="testLoggedInLink()">🔗 模拟已登录用户点击客服</button>
+        </div>
+        <div class="status status-success" id="loggedInStatus" style="display: none;"></div>
+      </div>
+    </div>
+    
+    <!-- 实现说明 -->
+    <div class="section">
+      <div class="section-title">实现说明</div>
+      <ul class="checklist">
+        <li>创建了 <strong>/src/utils/customerService.js</strong> 工具文件</li>
+        <li>实现了 <strong>openThirdPartyCustomerService()</strong> 函数</li>
+        <li>修改了 <strong>App.vue</strong>，客服图标点击时调用新函数</li>
+        <li>根据 <strong>userStore.existToken</strong> 判断用户登录状态</li>
+        <li>已登录用户自动附加 <strong>uid（usercode）</strong> 和 <strong>phone（username）</strong> 参数</li>
+        <li>使用 <strong>window.open()</strong> 在新窗口打开客服链接</li>
+      </ul>
+      
+      <div class="warning-box">
+        <p><strong>注意事项：</strong></p>
+        <p>1. 确保用户登录后 userStore 中有正确的 usercode 和 username</p>
+        <p>2. 浏览器可能会阻止弹窗，请允许弹窗权限</p>
+        <p>3. 参数使用 encodeURIComponent 进行 URL 编码</p>
+      </div>
+    </div>
+    
+    <!-- 文件修改清单 -->
+    <div class="section">
+      <div class="section-title">文件修改清单</div>
+      <div class="info-box">
+        <div class="info-item">
+          <span class="info-label">📄 新增文件：</span>
+          <span class="info-value">/web-vue/src/utils/customerService.js</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">📝 修改文件：</span>
+          <span class="info-value">/web-vue/src/App.vue</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">🔧 修改内容：</span>
+          <span class="info-value">
+            1. 导入 customerService 工具<br>
+            2. 添加 handleCustomerService 函数<br>
+            3. 修改客服图标点击事件
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function testGuestLink() {
+      const guestUrl = 'https://chat.jpmx.app/chat/index?noCanClose=1&token=282ba867e4ea0a2bc6792f52728c28d8';
+      console.log('🎯 游客点击客服链接:', guestUrl);
+      
+      const statusEl = document.getElementById('guestStatus');
+      statusEl.style.display = 'inline-block';
+      statusEl.textContent = '✓ 正在打开客服链接（无用户参数）...';
+      
+      setTimeout(() => {
+        window.open(guestUrl, '_blank');
+      }, 500);
+    }
+    
+    function testLoggedInLink() {
+      const loggedInUrl = 'https://chat.jpmx.app/chat/index?noCanClose=1&token=282ba867e4ea0a2bc6792f52728c28d8&uid=40002095&phone=laohu1234';
+      console.log('🎯 已登录用户点击客服链接:', loggedInUrl);
+      
+      const statusEl = document.getElementById('loggedInStatus');
+      statusEl.style.display = 'inline-block';
+      statusEl.textContent = '✓ 正在打开客服链接（带用户参数：uid=40002095, phone=laohu1234）...';
+      
+      setTimeout(() => {
+        window.open(loggedInUrl, '_blank');
+      }, 500);
+    }
+    
+    console.log('='.repeat(80));
+    console.log('🎯 Web Vue PC端 - 客服对接测试页面已加载');
+    console.log('='.repeat(80));
+    console.log('');
+    console.log('📋 测试场景：');
+    console.log('  1. 游客（未登录）：不带用户参数');
+    console.log('  2. 已登录用户：带 uid 和 phone 参数');
+    console.log('');
+    console.log('🔗 客服基础链接：');
+    console.log('  https://chat.jpmx.app/chat/index?noCanClose=1&token=282ba867e4ea0a2bc6792f52728c28d8');
+    console.log('');
+    console.log('📝 测试用户信息：');
+    console.log('  usercode: 40002095');
+    console.log('  username: laohu1234');
+    console.log('');
+    console.log('='.repeat(80));
+  </script>
+</body>
+</html>
+

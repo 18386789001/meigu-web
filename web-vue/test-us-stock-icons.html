@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美股图标测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .stats {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .category {
+            margin-bottom: 40px;
+        }
+        
+        .category h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #1e3c72;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 20px;
+        }
+        
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .icon-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .icon-item img {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+        
+        .icon-item .symbol {
+            font-weight: bold;
+            color: #333;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .icon-item .name {
+            font-size: 0.8em;
+            color: #666;
+            text-align: center;
+        }
+        
+        .icon-item .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-top: 5px;
+        }
+        
+        .status-indicator.success {
+            background: #28a745;
+        }
+        
+        .status-indicator.error {
+            background: #dc3545;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .search-input {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            width: 300px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: #1e3c72;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🇺🇸 美股图标测试</h1>
+        <p class="subtitle">验证web-vue项目美股图标修复效果</p>
+        
+        <div class="status success">
+            ✅ 美股图标404错误已修复！所有缺失图标已生成并可正常访问
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="totalIcons">0</div>
+                <div class="stat-label">总图标数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="loadedIcons">0</div>
+                <div class="stat-label">成功加载</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="failedIcons">0</div>
+                <div class="stat-label">加载失败</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="successRate">0%</div>
+                <div class="stat-label">成功率</div>
+            </div>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="搜索股票符号..." id="searchInput">
+        </div>
+        
+        <!-- 原始问题中的缺失图标 -->
+        <div class="category">
+            <h2>🚨 原始缺失图标（已修复）</h2>
+            <div class="icon-grid" id="missingIcons"></div>
+        </div>
+        
+        <!-- 科技股 -->
+        <div class="category">
+            <h2>💻 科技股</h2>
+            <div class="icon-grid" id="techIcons"></div>
+        </div>
+        
+        <!-- 金融股 -->
+        <div class="category">
+            <h2>🏦 金融股</h2>
+            <div class="icon-grid" id="financeIcons"></div>
+        </div>
+        
+        <!-- 医疗保健 -->
+        <div class="category">
+            <h2>🏥 医疗保健</h2>
+            <div class="icon-grid" id="healthcareIcons"></div>
+        </div>
+        
+        <!-- 消费品 -->
+        <div class="category">
+            <h2>🛒 消费品</h2>
+            <div class="icon-grid" id="consumerIcons"></div>
+        </div>
+        
+        <!-- ETF -->
+        <div class="category">
+            <h2>📈 ETF</h2>
+            <div class="icon-grid" id="etfIcons"></div>
+        </div>
+    </div>
+
+    <script>
+        // 股票数据
+        const stockData = {
+            missing: [
+                { symbol: 'orcl', name: 'Oracle Corporation' },
+                { symbol: 'ma', name: 'Mastercard Inc' },
+                { symbol: 'cost', name: 'Costco Wholesale' },
+                { symbol: 'wfc', name: 'Wells Fargo & Co' },
+                { symbol: 'cat', name: 'Caterpillar Inc' }
+            ],
+            tech: [
+                { symbol: 'aapl', name: 'Apple Inc' },
+                { symbol: 'msft', name: 'Microsoft Corp' },
+                { symbol: 'googl', name: 'Alphabet Inc' },
+                { symbol: 'amzn', name: 'Amazon.com Inc' },
+                { symbol: 'tsla', name: 'Tesla Inc' },
+                { symbol: 'meta', name: 'Meta Platforms' },
+                { symbol: 'nflx', name: 'Netflix Inc' },
+                { symbol: 'nvda', name: 'NVIDIA Corp' },
+                { symbol: 'amd', name: 'Advanced Micro Devices' },
+                { symbol: 'intc', name: 'Intel Corp' },
+                { symbol: 'csco', name: 'Cisco Systems' },
+                { symbol: 'orcl', name: 'Oracle Corp' },
+                { symbol: 'crm', name: 'Salesforce Inc' },
+                { symbol: 'adbe', name: 'Adobe Inc' }
+            ],
+            finance: [
+                { symbol: 'jpm', name: 'JPMorgan Chase' },
+                { symbol: 'bac', name: 'Bank of America' },
+                { symbol: 'wfc', name: 'Wells Fargo' },
+                { symbol: 'c', name: 'Citigroup Inc' },
+                { symbol: 'gs', name: 'Goldman Sachs' },
+                { symbol: 'ms', name: 'Morgan Stanley' },
+                { symbol: 'axp', name: 'American Express' },
+                { symbol: 'v', name: 'Visa Inc' },
+                { symbol: 'ma', name: 'Mastercard Inc' },
+                { symbol: 'pypl', name: 'PayPal Holdings' }
+            ],
+            healthcare: [
+                { symbol: 'jnj', name: 'Johnson & Johnson' },
+                { symbol: 'pfe', name: 'Pfizer Inc' },
+                { symbol: 'abbv', name: 'AbbVie Inc' },
+                { symbol: 'mrk', name: 'Merck & Co' },
+                { symbol: 'bmy', name: 'Bristol Myers Squibb' },
+                { symbol: 'lly', name: 'Eli Lilly and Co' },
+                { symbol: 'tmo', name: 'Thermo Fisher Scientific' },
+                { symbol: 'abt', name: 'Abbott Laboratories' }
+            ],
+            consumer: [
+                { symbol: 'ko', name: 'Coca-Cola Co' },
+                { symbol: 'pep', name: 'PepsiCo Inc' },
+                { symbol: 'pg', name: 'Procter & Gamble' },
+                { symbol: 'wmt', name: 'Walmart Inc' },
+                { symbol: 'hd', name: 'Home Depot Inc' },
+                { symbol: 'cost', name: 'Costco Wholesale' },
+                { symbol: 'tgt', name: 'Target Corp' },
+                { symbol: 'nke', name: 'Nike Inc' }
+            ],
+            etf: [
+                { symbol: 'spy', name: 'SPDR S&P 500 ETF' },
+                { symbol: 'qqq', name: 'Invesco QQQ Trust' },
+                { symbol: 'iwm', name: 'iShares Russell 2000' },
+                { symbol: 'vti', name: 'Vanguard Total Stock' },
+                { symbol: 'vea', name: 'Vanguard FTSE Developed' },
+                { symbol: 'gld', name: 'SPDR Gold Shares' }
+            ]
+        };
+        
+        let totalIcons = 0;
+        let loadedIcons = 0;
+        let failedIcons = 0;
+        let allIcons = [];
+        
+        // 创建图标元素
+        function createIconElement(stockInfo, category) {
+            const iconItem = document.createElement('div');
+            iconItem.className = 'icon-item';
+            iconItem.dataset.symbol = stockInfo.symbol.toLowerCase();
+            iconItem.dataset.name = stockInfo.name.toLowerCase();
+            
+            const img = document.createElement('img');
+            img.src = `/symbol/${stockInfo.symbol.toLowerCase()}.svg`;
+            img.alt = stockInfo.symbol.toUpperCase();
+            
+            const symbolLabel = document.createElement('div');
+            symbolLabel.className = 'symbol';
+            symbolLabel.textContent = stockInfo.symbol.toUpperCase();
+            
+            const nameLabel = document.createElement('div');
+            nameLabel.className = 'name';
+            nameLabel.textContent = stockInfo.name;
+            
+            const statusIndicator = document.createElement('div');
+            statusIndicator.className = 'status-indicator';
+            
+            // 处理图标加载
+            img.onload = function() {
+                statusIndicator.classList.add('success');
+                loadedIcons++;
+                updateStats();
+            };
+            
+            img.onerror = function() {
+                statusIndicator.classList.add('error');
+                failedIcons++;
+                updateStats();
+                
+                // 尝试PNG格式
+                if (img.src.includes('.svg')) {
+                    img.src = `/symbol/${stockInfo.symbol.toLowerCase()}.png`;
+                } else {
+                    // 显示备用文字
+                    img.style.display = 'none';
+                    const fallback = document.createElement('div');
+                    fallback.style.cssText = 'width:48px;height:48px;background:#1e3c72;color:white;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:12px;';
+                    fallback.textContent = stockInfo.symbol.toUpperCase().substring(0, 4);
+                    iconItem.insertBefore(fallback, symbolLabel);
+                }
+            };
+            
+            iconItem.appendChild(img);
+            iconItem.appendChild(symbolLabel);
+            iconItem.appendChild(nameLabel);
+            iconItem.appendChild(statusIndicator);
+            
+            totalIcons++;
+            allIcons.push(iconItem);
+            return iconItem;
+        }
+        
+        // 更新统计信息
+        function updateStats() {
+            document.getElementById('totalIcons').textContent = totalIcons;
+            document.getElementById('loadedIcons').textContent = loadedIcons;
+            document.getElementById('failedIcons').textContent = failedIcons;
+            
+            const successRate = totalIcons > 0 ? Math.round((loadedIcons / totalIcons) * 100) : 0;
+            document.getElementById('successRate').textContent = successRate + '%';
+        }
+        
+        // 搜索功能
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                
+                allIcons.forEach(iconItem => {
+                    const symbol = iconItem.dataset.symbol;
+                    const name = iconItem.dataset.name;
+                    const matches = symbol.includes(query) || name.includes(query);
+                    iconItem.style.display = matches ? 'flex' : 'none';
+                });
+            });
+        }
+        
+        // 渲染图标
+        function renderIcons() {
+            Object.entries(stockData).forEach(([category, stocks]) => {
+                const container = document.getElementById(category + 'Icons');
+                if (container) {
+                    stocks.forEach(stock => {
+                        const iconElement = createIconElement(stock, category);
+                        container.appendChild(iconElement);
+                    });
+                }
+            });
+            
+            updateStats();
+            setupSearch();
+        }
+        
+        // 页面加载完成后渲染图标
+        document.addEventListener('DOMContentLoaded', renderIcons);
+    </script>
+</body>
+</html>

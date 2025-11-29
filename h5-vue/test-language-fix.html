@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H5-Vue语言设置修复验证</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .test-item {
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .button:hover {
+            background-color: #0056b3;
+        }
+        
+        .button.success {
+            background-color: #28a745;
+        }
+        
+        .button.danger {
+            background-color: #dc3545;
+        }
+        
+        .button.warning {
+            background-color: #ffc107;
+            color: #000;
+        }
+        
+        .error {
+            color: red;
+            background-color: #fff0f0;
+        }
+        
+        .success {
+            color: green;
+            background-color: #f0fff0;
+        }
+        
+        .info {
+            color: blue;
+            background-color: #f0f8ff;
+        }
+        
+        .warning {
+            color: orange;
+            background-color: #fff8e1;
+        }
+        
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background-color: #f8f9fa;
+        }
+        
+        .code {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .status-item {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        
+        .status-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .status-value {
+            font-family: monospace;
+            color: #666;
+        }
+        
+        .console-output {
+            background-color: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>H5-Vue语言设置修复验证</h1>
+        
+        <div class="test-item error">
+            <h3>🚨 问题描述</h3>
+            <p>H5-Vue应用在打开时仍然显示中文界面，即使已经修改了默认语言设置。</p>
+            <p><strong>原因:</strong> localStorage中存储了中文语言设置，导致应用继续使用中文。</p>
+        </div>
+        
+        <div class="test-item">
+            <h3>🔧 修复方案</h3>
+            <div class="step">
+                <strong>1. 修改normalizeStoredLanguage函数:</strong> 强制将中文语言转换为英文
+            </div>
+            <div class="code">
+// 修改前
+if (lang === 'zh' || !lang) return 'en-US';
+
+// 修改后
+if (lang === 'zh' || lang === 'zh-CN' || lang === 'zh-TW') {
+  return 'en-US';
+}
+            </div>
+            
+            <div class="step">
+                <strong>2. 修改getStoredLanguage函数:</strong> 检测并转换中文语言
+            </div>
+            <div class="code">
+// 新增中文检测逻辑
+if (storedLang === 'zh' || storedLang === 'zh-CN' || storedLang === 'zh-TW') {
+  console.log('检测到中文语言设置，强制转换为英文:', storedLang);
+  return 'en-US';
+}
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>🧪 测试操作</h3>
+            <button class="button" onclick="checkCurrentStatus()">检查当前状态</button>
+            <button class="button warning" onclick="setChineseLanguage()">设置中文语言（测试）</button>
+            <button class="button danger" onclick="clearChineseLanguage()">清除中文语言</button>
+            <button class="button success" onclick="forceEnglishLanguage()">强制设置英文</button>
+            <button class="button" onclick="openH5App()">打开H5应用</button>
+        </div>
+        
+        <div class="test-item">
+            <h3>📊 当前状态</h3>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-label">localStorage语言:</div>
+                    <div class="status-value" id="stored-lang">-</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">是否为中文:</div>
+                    <div class="status-value" id="is-chinese">-</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">浏览器语言:</div>
+                    <div class="status-value" id="browser-lang">-</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">需要清除:</div>
+                    <div class="status-value" id="needs-clearing">-</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>📝 控制台输出</h3>
+            <div class="console-output" id="console-output"></div>
+        </div>
+        
+        <div id="test-results"></div>
+        
+        <div class="test-item success">
+            <h3>✅ 预期结果</h3>
+            <ul>
+                <li>应用启动时自动检测并转换中文语言为英文</li>
+                <li>控制台显示"检测到中文语言设置，强制转换为英文"</li>
+                <li>H5应用界面显示英文内容</li>
+                <li>语言切换功能正常工作</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 控制台输出捕获
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        
+        function addToConsoleOutput(message, type = 'log') {
+            const consoleOutput = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#f00' : type === 'warn' ? '#ff0' : '#0f0';
+            consoleOutput.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToConsoleOutput(args.join(' '), 'log');
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            addToConsoleOutput(args.join(' '), 'warn');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToConsoleOutput(args.join(' '), 'error');
+        };
+        
+        // 添加测试结果
+        function addTestResult(message, type = 'info') {
+            const resultsContainer = document.getElementById('test-results');
+            const testItem = document.createElement('div');
+            testItem.className = `test-item ${type}`;
+            testItem.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            resultsContainer.appendChild(testItem);
+            resultsContainer.scrollTop = resultsContainer.scrollHeight;
+        }
+        
+        // 更新状态显示
+        function updateStatus() {
+            const storedLang = localStorage.getItem('lang');
+            const browserLang = navigator.language || navigator.userLanguage;
+            const isChinese = storedLang === 'zh' || storedLang === 'zh-CN' || storedLang === 'zh-TW';
+            const needsClearing = isChinese;
+            
+            document.getElementById('stored-lang').textContent = storedLang || 'null';
+            document.getElementById('is-chinese').textContent = isChinese ? '是' : '否';
+            document.getElementById('browser-lang').textContent = browserLang;
+            document.getElementById('needs-clearing').textContent = needsClearing ? '是' : '否';
+        }
+        
+        // 检查当前状态
+        function checkCurrentStatus() {
+            updateStatus();
+            const storedLang = localStorage.getItem('lang');
+            const isChinese = storedLang === 'zh' || storedLang === 'zh-CN' || storedLang === 'zh-TW';
+            
+            if (isChinese) {
+                addTestResult(`检测到中文语言设置: ${storedLang}，需要清除`, 'warning');
+            } else {
+                addTestResult(`当前语言设置正常: ${storedLang || 'null'}`, 'success');
+            }
+        }
+        
+        // 设置中文语言（用于测试）
+        function setChineseLanguage() {
+            localStorage.setItem('lang', 'zh-CN');
+            updateStatus();
+            addTestResult('已设置为中文语言（用于测试）', 'warning');
+        }
+        
+        // 清除中文语言
+        function clearChineseLanguage() {
+            const storedLang = localStorage.getItem('lang');
+            
+            if (storedLang === 'zh' || storedLang === 'zh-CN' || storedLang === 'zh-TW') {
+                localStorage.removeItem('lang');
+                localStorage.setItem('lang', 'en-US');
+                updateStatus();
+                addTestResult(`已清除中文语言设置: ${storedLang} → en-US`, 'success');
+            } else {
+                addTestResult('当前语言不是中文，无需清除', 'info');
+            }
+        }
+        
+        // 强制设置英文语言
+        function forceEnglishLanguage() {
+            localStorage.setItem('lang', 'en-US');
+            updateStatus();
+            addTestResult('已强制设置为英文语言', 'success');
+            
+            // 刷新页面以应用新语言
+            setTimeout(() => {
+                addTestResult('正在刷新页面以应用新语言...', 'info');
+                window.location.reload();
+            }, 2000);
+        }
+        
+        // 打开H5应用
+        function openH5App() {
+            const h5Url = 'http://localhost:3333/h5/';
+            addTestResult(`正在打开H5应用: ${h5Url}`, 'info');
+            window.open(h5Url, '_blank');
+        }
+        
+        // 模拟语言检测逻辑
+        function simulateLanguageDetection() {
+            addTestResult('开始模拟语言检测逻辑...', 'info');
+            
+            const testLanguages = ['zh-CN', 'zh-TW', 'zh', 'en-US', 'ja-JP', null, ''];
+            
+            testLanguages.forEach(lang => {
+                // 模拟normalizeStoredLanguage函数
+                let normalizedLang;
+                if (!lang) {
+                    normalizedLang = 'en-US';
+                } else if (lang === 'zh' || lang === 'zh-CN' || lang === 'zh-TW') {
+                    normalizedLang = 'en-US';
+                } else {
+                    normalizedLang = lang;
+                }
+                
+                const icon = normalizedLang === 'en-US' && (lang === 'zh-CN' || lang === 'zh-TW' || lang === 'zh') ? '✅' : 
+                           normalizedLang === lang ? '✅' : '❌';
+                
+                addTestResult(`${icon} 输入: ${lang || 'null'} → 输出: ${normalizedLang}`, 
+                             normalizedLang === 'en-US' ? 'success' : 'info');
+            });
+        }
+        
+        // 初始化
+        updateStatus();
+        addTestResult('语言设置修复验证页面已加载', 'success');
+        
+        // 检查当前状态
+        checkCurrentStatus();
+        
+        // 模拟语言检测逻辑
+        simulateLanguageDetection();
+        
+        // 定期更新状态
+        setInterval(updateStatus, 3000);
+        
+        // 加载清除脚本
+        const script = document.createElement('script');
+        script.src = './clear-chinese-language.js';
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>

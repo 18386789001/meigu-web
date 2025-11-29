@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test IDCode API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 3px;
+            white-space: pre-wrap;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>IDCode API 测试页面</h1>
+    
+    <div class="test-section">
+        <h2>测试邮箱验证码API</h2>
+        <p>测试新的API格式：<code>api/idcode/execute?language=en-US&target=ld19921123@gmail.com&areacode=</code></p>
+        
+        <div>
+            <label>邮箱地址:</label>
+            <input type="email" id="emailInput" value="ld19921123@gmail.com" placeholder="输入邮箱地址">
+        </div>
+        
+        <div>
+            <label>语言:</label>
+            <select id="languageSelect">
+                <option value="en-US">en-US</option>
+                <option value="zh-CN">zh-CN</option>
+                <option value="en">en</option>
+            </select>
+        </div>
+        
+        <div>
+            <label>区号:</label>
+            <input type="text" id="areacodeInput" value="" placeholder="区号（可选）">
+        </div>
+        
+        <button onclick="testEmailAPI()">测试邮箱验证码</button>
+        <button onclick="testPhoneAPI()">测试手机验证码</button>
+        
+        <div class="result" id="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>请求URL预览</h2>
+        <div id="urlPreview" class="result"></div>
+        <button onclick="updatePreview()">更新预览</button>
+    </div>
+
+    <script>
+        function updatePreview() {
+            const email = document.getElementById('emailInput').value;
+            const language = document.getElementById('languageSelect').value;
+            const areacode = document.getElementById('areacodeInput').value;
+            
+            const baseUrl = 'http://localhost:333/api/idcode/execute';
+            const url = `${baseUrl}?language=${language}&target=${email}&areacode=${areacode}`;
+            
+            document.getElementById('urlPreview').textContent = url;
+        }
+
+        function testEmailAPI() {
+            const email = document.getElementById('emailInput').value;
+            const language = document.getElementById('languageSelect').value;
+            const areacode = document.getElementById('areacodeInput').value;
+            
+            if (!email) {
+                alert('请输入邮箱地址');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = '发送请求中...';
+            
+            // 构建请求URL
+            const baseUrl = 'http://localhost:333/api/idcode/execute';
+            const url = `${baseUrl}?language=${language}&target=${email}&areacode=${areacode}`;
+            
+            // 发送POST请求
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => {
+                const info = {
+                    status: response.status,
+                    statusText: response.statusText,
+                    url: url,
+                    headers: Object.fromEntries(response.headers.entries())
+                };
+                
+                return response.text().then(text => {
+                    try {
+                        const json = JSON.parse(text);
+                        return { ...info, data: json, rawText: text };
+                    } catch (e) {
+                        return { ...info, data: null, rawText: text, parseError: e.message };
+                    }
+                });
+            })
+            .then(result => {
+                resultDiv.textContent = `请求结果：
+URL: ${result.url}
+状态: ${result.status} ${result.statusText}
+响应数据: ${JSON.stringify(result.data, null, 2)}
+原始响应: ${result.rawText}`;
+            })
+            .catch(error => {
+                resultDiv.textContent = `请求失败: ${error.message}
+URL: ${url}`;
+            });
+        }
+
+        function testPhoneAPI() {
+            const phone = '+8613800138000'; // 示例手机号
+            const language = document.getElementById('languageSelect').value;
+            const areacode = '+86';
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = '发送请求中...';
+            
+            // 构建请求URL
+            const baseUrl = 'http://localhost:333/api/idcode/execute';
+            const url = `${baseUrl}?language=${language}&target=${phone}&areacode=${areacode}`;
+            
+            // 发送POST请求
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => {
+                const info = {
+                    status: response.status,
+                    statusText: response.statusText,
+                    url: url,
+                    headers: Object.fromEntries(response.headers.entries())
+                };
+                
+                return response.text().then(text => {
+                    try {
+                        const json = JSON.parse(text);
+                        return { ...info, data: json, rawText: text };
+                    } catch (e) {
+                        return { ...info, data: null, rawText: text, parseError: e.message };
+                    }
+                });
+            })
+            .then(result => {
+                resultDiv.textContent = `请求结果：
+URL: ${result.url}
+状态: ${result.status} ${result.statusText}
+响应数据: ${JSON.stringify(result.data, null, 2)}
+原始响应: ${result.rawText}`;
+            })
+            .catch(error => {
+                resultDiv.textContent = `请求失败: ${error.message}
+URL: ${url}`;
+            });
+        }
+
+        // 页面加载时更新预览
+        window.onload = function() {
+            updatePreview();
+            
+            // 监听输入变化
+            document.getElementById('emailInput').addEventListener('input', updatePreview);
+            document.getElementById('languageSelect').addEventListener('change', updatePreview);
+            document.getElementById('areacodeInput').addEventListener('input', updatePreview);
+        };
+    </script>
+</body>
+</html>

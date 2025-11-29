@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DepositAndWithdrawal页面ETH转换状态测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .status-failed {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .status-converted {
+            color: #17a2b8;
+            font-weight: bold;
+        }
+        .description {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+        .api-info {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DepositAndWithdrawal页面ETH转换状态测试</h1>
+        
+        <div class="api-info">
+            <h3>API接口信息</h3>
+            <p><strong>接口地址:</strong> <a href="https://jpmx.xyz/api/rechargeBlockchain/list?page_no=1&language=zh-CN" target="_blank">https://jpmx.xyz/api/rechargeBlockchain/list?page_no=1&language=zh-CN</a></p>
+            <p><strong>请求方法:</strong> GET</p>
+            <p><strong>请求参数:</strong> page_no=1&language=zh-CN</p>
+            <p><strong>当前状态:</strong> 需要登录认证（返回403错误）</p>
+        </div>
+        
+        <h2>修改内容说明</h2>
+        <p>在 <code>wap-vue/src/views/Record/DepositAndWithdrawal.vue</code> 页面中，当API返回的 <code>failure_msg</code> 为 "当前币种为eth直接完成订单" 时，前端会将充值订单状态显示为成功，并显示 "ETH已兑换为USDT" 的提示信息。</p>
+        
+        <h2>修改的具体内容</h2>
+        
+        <h3>1. 模板修改</h3>
+        <div class="code-block">
+&lt;div class="status flex"&gt;
+    &lt;template v-if="getStatusValue(item) == 0 && !isEthConverted(item)"&gt;
+        &lt;div class="status-icon status-icon-color3 mr-2"&gt;&lt;/div&gt;
+        {{ $t('confirming') }}
+    &lt;/template&gt;
+    &lt;template v-if="getStatusValue(item) == 1 || isEthConverted(item)"&gt;
+        &lt;div class="status-icon status-icon-color1 mr-2"&gt;&lt;/div&gt;
+        &lt;template v-if="isEthConverted(item)"&gt;
+            {{ $t('ethConvertedToUsdtNotice') }}
+        &lt;/template&gt;
+        &lt;template v-else&gt;
+            {{ $t('success') }}
+        &lt;/template&gt;
+    &lt;/template&gt;
+    &lt;template v-if="getStatusValue(item) == 2 && !isEthConverted(item)"&gt;
+        &lt;div class="status-icon status-icon-color2 mr-2"&gt;&lt;/div&gt;
+        {{ $t('fail') }}
+    &lt;/template&gt;
+&lt;/div&gt;
+        </div>
+        
+        <h3>2. 新增函数</h3>
+        <div class="code-block">
+// 判断是否为ETH转换状态
+const isEthConverted = (item) => {
+    if (selectIndexActive.value == 0) {
+        // 银行卡充提记录不涉及ETH转换
+        return false
+    } else {
+        // 数字货币充提记录，检查failure_msg
+        return item.failure_msg === '当前币种为eth直接完成订单'
+    }
+}
+        </div>
+        
+        <h2>测试用例</h2>
+        
+        <div class="test-item">
+            <h3>测试用例1: 正常成功状态</h3>
+            <div class="status-success">✓ 成功</div>
+            <div class="description">
+                <strong>API返回:</strong> status = 1, failure_msg = null<br>
+                <strong>预期显示:</strong> 绿色圆点 + "成功"
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>测试用例2: ETH转换成功状态</h3>
+            <div class="status-converted">✓ ETH已兑换为USDT</div>
+            <div class="description">
+                <strong>API返回:</strong> status = 0, failure_msg = "当前币种为eth直接完成订单"<br>
+                <strong>预期显示:</strong> 绿色圆点 + "ETH已兑换为USDT"
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>测试用例3: 正常确认中状态</h3>
+            <div class="status-pending">⏳ 确定中</div>
+            <div class="description">
+                <strong>API返回:</strong> status = 0, failure_msg = null 或其他值<br>
+                <strong>预期显示:</strong> 黄色圆点 + "确定中"
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>测试用例4: 正常失败状态</h3>
+            <div class="status-failed">✗ 失败</div>
+            <div class="description">
+                <strong>API返回:</strong> status = 2, failure_msg = "其他错误信息"<br>
+                <strong>预期显示:</strong> 红色圆点 + "失败"
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>测试用例5: ETH转换失败状态（不应出现）</h3>
+            <div class="status-failed">✗ 失败</div>
+            <div class="description">
+                <strong>API返回:</strong> status = 2, failure_msg = "当前币种为eth直接完成订单"<br>
+                <strong>预期显示:</strong> 红色圆点 + "失败"（这种情况理论上不应该出现）
+            </div>
+        </div>
+        
+        <h2>状态显示逻辑</h2>
+        <div class="test-item">
+            <h3>状态判断逻辑</h3>
+            <div class="description">
+                <strong>确认中状态:</strong> status == 0 && failure_msg != "当前币种为eth直接完成订单"<br>
+                <strong>成功状态:</strong> status == 1 || failure_msg == "当前币种为eth直接完成订单"<br>
+                <strong>失败状态:</strong> status == 2 && failure_msg != "当前币种为eth直接完成订单"<br>
+                <strong>ETH转换显示:</strong> failure_msg == "当前币种为eth直接完成订单" 时显示 "ETH已兑换为USDT"
+            </div>
+        </div>
+        
+        <h2>多语言支持</h2>
+        <div class="test-item">
+            <h3>支持的语言</h3>
+            <div class="description">
+                <strong>中文:</strong> ETH已兑换为USDT<br>
+                <strong>English:</strong> ETH converted to USDT<br>
+                <strong>日本語:</strong> ETHがUSDTに変換されました<br>
+                <strong>한국어:</strong> ETH가 USDT로 변환됨<br>
+                <strong>Deutsch:</strong> ETH zu USDT konvertiert<br>
+                <strong>Français:</strong> ETH converti en USDT
+            </div>
+        </div>
+        
+        <h2>实现要点</h2>
+        <ul>
+            <li>✅ 修改了DepositAndWithdrawal.vue页面的状态显示逻辑</li>
+            <li>✅ 添加了isEthConverted函数来判断ETH转换状态</li>
+            <li>✅ 当failure_msg为"当前币种为eth直接完成订单"时显示成功状态</li>
+            <li>✅ 显示"ETH已兑换为USDT"的提示信息</li>
+            <li>✅ 支持多语言切换</li>
+            <li>✅ 保持了原有的其他状态显示逻辑不变</li>
+            <li>✅ 只对数字货币充提记录生效，银行卡记录不受影响</li>
+        </ul>
+        
+        <h2>页面功能说明</h2>
+        <div class="test-item">
+            <h3>页面结构</h3>
+            <div class="description">
+                <strong>主要标签页:</strong> 充值 / 提现<br>
+                <strong>子标签页:</strong> 银行卡 / 数字货币<br>
+                <strong>数字货币充值:</strong> 使用getRechargeBlockchainList()函数调用API<br>
+                <strong>API参数:</strong> page_no, language: 'zh-CN'
+            </div>
+        </div>
+    </div>
+</body>
+</html>

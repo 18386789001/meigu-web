@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>银行卡充值记录状态调试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .debug-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .status-demo {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        .status-icon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-icon-success {
+            background: #28a745;
+        }
+        .status-icon-failed {
+            background: #EA0F0F;
+        }
+        .status-icon-pending {
+            background: #F5D658;
+        }
+        .status-text-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-text-failed {
+            color: #EA0F0F;
+            font-weight: bold;
+        }
+        .status-text-pending {
+            color: #F5D658;
+            font-weight: bold;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+        .api-info {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>银行卡充值记录状态调试指南</h1>
+        
+        <div class="api-info">
+            <h3>API接口信息</h3>
+            <p><strong>接口地址:</strong> https://jpmx.xyz/api/c2cOrder/list?page_no=1&direction=recharge&language=zh-CN</p>
+            <p><strong>请求方法:</strong> GET</p>
+            <p><strong>状态代码:</strong> 200 OK</p>
+            <p><strong>问题:</strong> 银行卡充值记录没有显示状态颜色</p>
+        </div>
+        
+        <div class="debug-section">
+            <h3>🔍 调试步骤</h3>
+            <ol>
+                <li><strong>打开浏览器开发者工具</strong> (F12)</li>
+                <li><strong>切换到Console标签页</strong></li>
+                <li><strong>刷新银行卡充值记录页面</strong></li>
+                <li><strong>查看控制台输出</strong>，寻找以下信息：
+                    <div class="code-block">
+银行卡记录状态: [状态值] 完整数据: [完整对象]
+                    </div>
+                </li>
+            </ol>
+        </div>
+        
+        <h2>可能的问题原因</h2>
+        
+        <div class="debug-section">
+            <h3>1. 状态字段名称不正确</h3>
+            <p>API返回的数据中，状态字段可能不是 <code>state</code>，而是其他名称，比如：</p>
+            <ul>
+                <li><code>status</code></li>
+                <li><code>order_status</code></li>
+                <li><code>pay_status</code></li>
+                <li><code>state_code</code></li>
+            </ul>
+        </div>
+        
+        <div class="debug-section">
+            <h3>2. 状态值不在预期范围内</h3>
+            <p>API返回的状态值可能不是 0、1、2，而是其他值，比如：</p>
+            <ul>
+                <li>字符串类型：<code>"success"</code>, <code>"failed"</code>, <code>"pending"</code></li>
+                <li>其他数字：<code>3</code>, <code>4</code>, <code>5</code></li>
+                <li>布尔值：<code>true</code>, <code>false</code></li>
+            </ul>
+        </div>
+        
+        <div class="debug-section">
+            <h3>3. 状态字段为空或undefined</h3>
+            <p>API返回的数据中可能没有状态字段，或者字段值为空。</p>
+        </div>
+        
+        <h2>修改后的代码逻辑</h2>
+        
+        <h3>1. 增强的状态获取函数</h3>
+        <div class="code-block">
+// 获取状态值
+const getStatusValue = (item) => {
+    if (selectIndexActive.value == 0) {
+        // 银行卡充提记录
+        console.log('银行卡记录状态:', item.state, '完整数据:', item);
+        return item.state !== undefined ? item.state : 0; // 默认返回0（确认中）
+    } else {
+        // 数字货币充提记录
+        console.log('数字货币记录状态:', item.status, '完整数据:', item);
+        return item.status !== undefined ? item.status : 0; // 默认返回0（确认中）
+    }
+}
+        </div>
+        
+        <h3>2. 增强的状态显示逻辑</h3>
+        <div class="code-block">
+&lt;div class="status flex"&gt;
+    &lt;template v-if="getStatusValue(item) == 0 && !isEthConverted(item)"&gt;
+        &lt;div class="status-icon status-icon-color3 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-pending"&gt;{{ $t('confirming') }}&lt;/span&gt;
+    &lt;/template&gt;
+    &lt;template v-if="getStatusValue(item) == 1 || isEthConverted(item)"&gt;
+        &lt;div class="status-icon status-icon-color1 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-success"&gt;{{ $t('success') }}&lt;/span&gt;
+    &lt;/template&gt;
+    &lt;template v-if="getStatusValue(item) == 2 && !isEthConverted(item)"&gt;
+        &lt;div class="status-icon status-icon-color2 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-failed"&gt;{{ $t('fail') }}&lt;/span&gt;
+    &lt;/template&gt;
+    &lt;!-- 添加默认状态显示，以防状态值不在预期范围内 --&gt;
+    &lt;template v-if="getStatusValue(item) !== 0 && getStatusValue(item) !== 1 && getStatusValue(item) !== 2"&gt;
+        &lt;div class="status-icon status-icon-color3 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-pending"&gt;{{ $t('confirming') }}&lt;/span&gt;
+    &lt;/template&gt;
+&lt;/div&gt;
+        </div>
+        
+        <h2>预期显示效果</h2>
+        
+        <div class="status-demo">
+            <div class="status-icon status-icon-success"></div>
+            <span class="status-text-success">成功</span>
+        </div>
+        <div class="status-demo">
+            <div class="status-icon status-icon-failed"></div>
+            <span class="status-text-failed">失败</span>
+        </div>
+        <div class="status-demo">
+            <div class="status-icon status-icon-pending"></div>
+            <span class="status-text-pending">确定中</span>
+        </div>
+        
+        <h2>下一步操作</h2>
+        
+        <div class="debug-section">
+            <h3>请按以下步骤操作：</h3>
+            <ol>
+                <li><strong>刷新页面</strong>，查看银行卡充值记录</li>
+                <li><strong>打开浏览器控制台</strong>，查看调试信息</li>
+                <li><strong>将控制台输出的完整数据截图或复制</strong>发送给我</li>
+                <li><strong>告诉我状态字段的实际名称和值</strong></li>
+            </ol>
+            <p>这样我就能根据实际的数据结构来调整代码，确保状态颜色能正确显示。</p>
+        </div>
+        
+        <h2>常见状态字段映射</h2>
+        
+        <div class="code-block">
+// 可能的字段名称和值映射
+const statusMapping = {
+    // 字段名称可能的变化
+    state: item.state,
+    status: item.status,
+    order_status: item.order_status,
+    pay_status: item.pay_status,
+    
+    // 状态值可能的变化
+    // 数字类型
+    0: '确认中',
+    1: '成功', 
+    2: '失败',
+    
+    // 字符串类型
+    'pending': '确认中',
+    'success': '成功',
+    'failed': '失败',
+    'completed': '成功',
+    'cancelled': '失败',
+    
+    // 布尔类型
+    true: '成功',
+    false: '失败'
+}
+        </div>
+    </div>
+</body>
+</html>

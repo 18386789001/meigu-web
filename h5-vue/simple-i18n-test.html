@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单国际化测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .key {
+            font-weight: bold;
+            color: #666;
+        }
+        .value {
+            color: #333;
+            margin-left: 10px;
+        }
+        .missing {
+            color: red;
+            font-weight: bold;
+        }
+        .found {
+            color: green;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        .language-selector {
+            margin: 20px 0;
+        }
+        select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>简单国际化测试</h1>
+        
+        <div class="language-selector">
+            <label for="langSelect">选择语言：</label>
+            <select id="langSelect" onchange="changeLanguage(this.value)">
+                <option value="zh-CN">简体中文</option>
+                <option value="en-US">English</option>
+                <option value="ja-JP">日本語</option>
+            </select>
+        </div>
+        
+        <div id="testResults"></div>
+        
+        <button onclick="runTest()">运行测试</button>
+        <button onclick="clearStorage()">清除存储</button>
+    </div>
+
+    <script>
+        // 模拟翻译数据
+        const translations = {
+            'zh-CN': {
+                'trading': {
+                    'forex': {
+                        'title': '外汇交易',
+                        'description': '全球主要货币对交易',
+                        'chart': '图表',
+                        'trade': '交易',
+                        'high': '最高',
+                        'low': '最低',
+                        'advantages': '交易优势'
+                    }
+                }
+            },
+            'en-US': {
+                'trading': {
+                    'forex': {
+                        'title': 'Forex Trading',
+                        'description': 'Global major currency pair trading',
+                        'chart': 'Chart',
+                        'trade': 'Trade',
+                        'high': 'High',
+                        'low': 'Low',
+                        'advantages': 'Trading Advantages'
+                    }
+                }
+            },
+            'ja-JP': {
+                'trading': {
+                    'forex': {
+                        'title': 'FX取引',
+                        'description': 'グローバル主要通貨ペア取引',
+                        'chart': 'チャート',
+                        'trade': '取引',
+                        'high': '高値',
+                        'low': '安値',
+                        'advantages': '取引メリット'
+                    }
+                }
+            }
+        };
+
+        function getCurrentLanguage() {
+            return localStorage.getItem('lang') || 'zh-CN';
+        }
+
+        function translate(key, lang = null) {
+            const language = lang || getCurrentLanguage();
+            const langTranslations = translations[language];
+            
+            if (!langTranslations) {
+                console.warn(`语言 ${language} 不存在`);
+                return key;
+            }
+            
+            const keys = key.split('.');
+            let translation = langTranslations;
+            
+            for (const k of keys) {
+                if (translation && typeof translation === 'object' && translation[k]) {
+                    translation = translation[k];
+                } else {
+                    translation = null;
+                    break;
+                }
+            }
+            
+            if (typeof translation === 'string') {
+                return translation;
+            }
+            
+            console.warn(`键值 ${key} 在语言 ${language} 中不存在`);
+            return key;
+        }
+
+        function changeLanguage(lang) {
+            console.log('切换语言到:', lang);
+            localStorage.setItem('lang', lang);
+            runTest();
+        }
+
+        function runTest() {
+            const currentLang = getCurrentLanguage();
+            document.getElementById('langSelect').value = currentLang;
+            
+            const testKeys = [
+                'trading.forex.title',
+                'trading.forex.description',
+                'trading.forex.chart',
+                'trading.forex.trade',
+                'trading.forex.high',
+                'trading.forex.low',
+                'trading.forex.advantages'
+            ];
+            
+            let html = `<h3>测试结果 (${currentLang}):</h3>`;
+            
+            testKeys.forEach(key => {
+                const translation = translate(key);
+                const isTranslated = translation !== key;
+                
+                html += `
+                    <div class="test-item">
+                        <span class="key">${key}:</span>
+                        <span class="value ${isTranslated ? 'found' : 'missing'}">${translation}</span>
+                        ${isTranslated ? '✓' : '✗'}
+                    </div>
+                `;
+            });
+            
+            document.getElementById('testResults').innerHTML = html;
+        }
+
+        function clearStorage() {
+            localStorage.clear();
+            runTest();
+            alert('LocalStorage已清除');
+        }
+
+        // 页面加载时运行测试
+        window.onload = function() {
+            runTest();
+        };
+    </script>
+</body>
+</html>

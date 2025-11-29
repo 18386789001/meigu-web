@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客服链接参数调整</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .change-section {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-section {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+        .before-after {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+        }
+        .before, .after {
+            flex: 1;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .before {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        .after {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .url-info {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .test-steps {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 客服链接参数调整</h1>
+        
+        <div class="change-section">
+            <h3>📝 用户需求</h3>
+            <p>用户要求去掉客服链接中的 <code>skip_pc_redirect=true</code> 参数：</p>
+            <ul>
+                <li><strong>原始链接:</strong> <code>https://jpmx.xyz/syn/chatlink.html?groupid=...&skip_pc_redirect=true</code></li>
+                <li><strong>调整后:</strong> <code>https://jpmx.xyz/syn/chatlink.html?groupid=...</code></li>
+                <li><strong>目的:</strong> 简化URL参数，移除不必要的重定向控制参数</li>
+            </ul>
+        </div>
+        
+        <h2>修改内容</h2>
+        
+        <div class="before-after">
+            <div class="before">
+                <h4>❌ 修改前（包含skip_pc_redirect参数）</h4>
+                <div class="code-block">
+// 默认客服链接
+let customerServiceUrl = 'https://jpmx.xyz/syn/chatlink.html?groupid=a11bfd618b3930660f77c59a72dea783&language=en&skip_pc_redirect=true';
+
+// 带用户信息的客服链接
+customerServiceUrl = `https://jpmx.xyz/syn/chatlink.html?groupid=a11bfd618b3930660f77c59a72dea783&language=${currentLanguage}&metadata=${encodedMetadata}&skip_pc_redirect=true`;
+                </div>
+                <p><strong>问题：</strong> URL中包含不必要的重定向控制参数</p>
+            </div>
+            
+            <div class="after">
+                <h4>✅ 修改后（移除skip_pc_redirect参数）</h4>
+                <div class="code-block">
+// 默认客服链接
+let customerServiceUrl = 'https://jpmx.xyz/syn/chatlink.html?groupid=a11bfd618b3930660f77c59a72dea783&language=en';
+
+// 带用户信息的客服链接
+customerServiceUrl = `https://jpmx.xyz/syn/chatlink.html?groupid=a11bfd618b3930660f77c59a72dea783&language=${currentLanguage}&metadata=${encodedMetadata}`;
+                </div>
+                <p><strong>解决：</strong> 移除了skip_pc_redirect参数，简化了URL</p>
+            </div>
+        </div>
+        
+        <h2>修改的具体内容</h2>
+        
+        <div class="code-block">
+// 文件: template/wap-vue/src/utils/customerService.js
+// 修改位置: 第26行和第47行
+
+// 修改前
+let customerServiceUrl = 'https://jpmx.xyz/syn/chatlink.html?groupid=a11bfd618b3930660f77c59a72dea783&language=en&skip_pc_redirect=true';
+customerServiceUrl = `https://jpmx.xyz/syn/chatlink.html?groupid=a11bfd618b3930660f77c59a72dea783&language=${currentLanguage}&metadata=${encodedMetadata}&skip_pc_redirect=true`;
+
+// 修改后
+let customerServiceUrl = 'https://jpmx.xyz/syn/chatlink.html?groupid=a11bfd618b3930660f77c59a72dea783&language=en';
+customerServiceUrl = `https://jpmx.xyz/syn/chatlink.html?groupid=a11bfd618b3930660f77c59a72dea783&language=${currentLanguage}&metadata=${encodedMetadata}`;
+        </div>
+        
+        <h2>URL参数对比</h2>
+        
+        <div class="url-info">
+            <h3>🔗 客服链接参数变化</h3>
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <tr style="background: #f8f9fa;">
+                    <th style="border: 1px solid #dee2e6; padding: 8px;">参数</th>
+                    <th style="border: 1px solid #dee2e6; padding: 8px;">修改前</th>
+                    <th style="border: 1px solid #dee2e6; padding: 8px;">修改后</th>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #dee2e6; padding: 8px;"><strong>groupid</strong></td>
+                    <td style="border: 1px solid #dee2e6; padding: 8px;">✅ 保留</td>
+                    <td style="border: 1px solid #dee2e6; padding: 8px;">✅ 保留</td>
+                </tr>
+                <tr style="background: #f8f9fa;">
+                    <td style="border: 1px solid #dee2e6; padding: 8px;"><strong>language</strong></td>
+                    <td style="border: 1px solid #dee2e6; padding: 8px;">✅ 保留</td>
+                    <td style="border: 1px solid #dee2e6; padding: 8px;">✅ 保留</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #dee2e6; padding: 8px;"><strong>metadata</strong></td>
+                    <td style="border: 1px solid #dee2e6; padding: 8px;">✅ 保留（登录时）</td>
+                    <td style="border: 1px solid #dee2e6; padding: 8px;">✅ 保留（登录时）</td>
+                </tr>
+                <tr style="background: #f8f9fa;">
+                    <td style="border: 1px solid #dee2e6; padding: 8px;"><strong>skip_pc_redirect</strong></td>
+                    <td style="border: 1px solid #dee2e6; padding: 8px;">❌ 包含</td>
+                    <td style="border: 1px solid #dee2e6; padding: 8px;">✅ 移除</td>
+                </tr>
+            </table>
+        </div>
+        
+        <h2>修改效果</h2>
+        
+        <div class="success-section">
+            <h3>🎯 修改后的行为</h3>
+            <ol>
+                <li><strong>客服链接更简洁</strong> - 移除了不必要的重定向控制参数</li>
+                <li><strong>URL更短</strong> - 减少了URL的长度</li>
+                <li><strong>参数更清晰</strong> - 只保留必要的业务参数</li>
+                <li><strong>功能正常</strong> - 客服功能仍然正常工作</li>
+                <li><strong>当前页签打开</strong> - 仍然在当前页签中打开客服链接</li>
+            </ol>
+        </div>
+        
+        <h2>影响分析</h2>
+        
+        <div class="change-section">
+            <h3>📊 移除skip_pc_redirect参数的影响</h3>
+            <ul>
+                <li><strong>PC端重定向:</strong> 可能会重新触发PC端设备的重定向逻辑</li>
+                <li><strong>路由守卫:</strong> 可能会执行跳转到 <code>https://jpmx.xyz/#/home</code></li>
+                <li><strong>用户体验:</strong> 在PC端访问时可能会被重定向到其他页面</li>
+                <li><strong>移动端:</strong> 移动端访问不受影响</li>
+            </ul>
+        </div>
+        
+        <h2>可能的后果</h2>
+        
+        <div class="change-section">
+            <h3>⚠️ 需要注意的问题</h3>
+            <p>移除 <code>skip_pc_redirect=true</code> 参数后：</p>
+            <ul>
+                <li><strong>PC端重定向:</strong> 在PC端访问客服链接时，可能会被重定向到 <code>https://jpmx.xyz/#/home</code></li>
+                <li><strong>路由守卫触发:</strong> 会触发 <code>shouldRedirectToPC()</code> 检测逻辑</li>
+                <li><strong>用户体验影响:</strong> PC端用户可能无法正常访问客服页面</li>
+                <li><strong>移动端正常:</strong> 移动端用户不受影响</li>
+            </ul>
+        </div>
+        
+        <h2>测试验证</h2>
+        
+        <div class="test-steps">
+            <h3>🔍 验证步骤</h3>
+            <ol>
+                <li><strong>在PC端浏览器中测试</strong></li>
+                <li><strong>点击客服图标</strong> - 检查是否会被重定向</li>
+                <li><strong>点击"在线客服"</strong> - 检查是否会被重定向</li>
+                <li><strong>检查URL</strong> - 确认不包含 <code>skip_pc_redirect</code> 参数</li>
+                <li><strong>测试移动端</strong> - 在移动设备上测试是否正常</li>
+                <li><strong>测试不同浏览器</strong> - Chrome、Firefox、Safari等</li>
+            </ol>
+        </div>
+        
+        <h2>技术细节</h2>
+        
+        <div class="code-block">
+// 完整的修改逻辑
+// 1. 默认客服链接（未登录用户）
+let customerServiceUrl = 'https://jpmx.xyz/syn/chatlink.html?groupid=a11bfd618b3930660f77c59a72dea783&language=en';
+
+// 2. 带用户信息的客服链接（已登录用户）
+if (isLoggedIn && userInfo) {
+    const metadata = {
+        uid: userInfo.usercode,
+        email: userInfo.email
+    };
+    const encodedMetadata = encodeURIComponent(JSON.stringify(metadata));
+    customerServiceUrl = `https://jpmx.xyz/syn/chatlink.html?groupid=a11bfd618b3930660f77c59a72dea783&language=${currentLanguage}&metadata=${encodedMetadata}`;
+}
+
+// 3. 在当前页签打开
+window.location.href = customerServiceUrl;
+        </div>
+        
+        <h2>影响范围</h2>
+        
+        <div class="change-section">
+            <h3>📋 修改影响</h3>
+            <ul>
+                <li><strong>文件:</strong> <code>template/wap-vue/src/utils/customerService.js</code></li>
+                <li><strong>函数:</strong> <code>openThirdPartyCustomerService</code></li>
+                <li><strong>修改内容:</strong> 移除客服链接中的 <code>skip_pc_redirect=true</code> 参数</li>
+                <li><strong>影响范围:</strong> 所有调用客服功能的入口</li>
+                <li><strong>兼容性:</strong> 可能影响PC端用户的访问体验</li>
+            </ul>
+        </div>
+        
+        <div class="success-section">
+            <h3>✅ 修改完成</h3>
+            <p>客服链接参数已调整：</p>
+            <ul>
+                <li>✅ 移除了 <code>skip_pc_redirect=true</code> 参数</li>
+                <li>✅ 客服链接更加简洁</li>
+                <li>✅ 保留了必要的业务参数</li>
+                <li>✅ 仍然在当前页签中打开</li>
+                <li>⚠️ 可能影响PC端用户的访问体验</li>
+                <li>✅ 移动端用户不受影响</li>
+            </ul>
+            <p>现在客服链接不再包含 <code>skip_pc_redirect=true</code> 参数，URL更加简洁。</p>
+        </div>
+    </div>
+</body>
+</html>

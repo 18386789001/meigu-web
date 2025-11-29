@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>翻译测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .original {
+            background-color: #f0f8ff;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 3px;
+        }
+        .translated {
+            background-color: #f0fff0;
+            padding: 10px;
+            border-radius: 3px;
+        }
+        .japanese {
+            background-color: #fff8f0;
+            padding: 10px;
+            border-radius: 3px;
+            margin-top: 10px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>新闻翻译精准度测试</h1>
+    
+    <div class="test-section">
+        <h3>测试新闻 1</h3>
+        <div class="original">
+            <strong>原文：</strong>美联储官员表示通胀仍是主要关注点，预计年内将维持当前利率水平不变。
+        </div>
+        <div class="translated" id="en1">
+            <strong>英文翻译：</strong><span id="en1-result">点击翻译按钮查看结果</span>
+        </div>
+        <div class="japanese" id="ja1">
+            <strong>日文翻译：</strong><span id="ja1-result">点击翻译按钮查看结果</span>
+        </div>
+        <button onclick="translateText('美联储官员表示通胀仍是主要关注点，预计年内将维持当前利率水平不变。', 'en', 'en1-result')">翻译为英文</button>
+        <button onclick="translateText('美联储官员表示通胀仍是主要关注点，预计年内将维持当前利率水平不变。', 'ja', 'ja1-result')">翻译为日文</button>
+    </div>
+
+    <div class="test-section">
+        <h3>测试新闻 2</h3>
+        <div class="original">
+            <strong>原文：</strong>香港生产商Kenvue宣布回购，获得4%涨幅，投资者信心增强。
+        </div>
+        <div class="translated" id="en2">
+            <strong>英文翻译：</strong><span id="en2-result">点击翻译按钮查看结果</span>
+        </div>
+        <div class="japanese" id="ja2">
+            <strong>日文翻译：</strong><span id="ja2-result">点击翻译按钮查看结果</span>
+        </div>
+        <button onclick="translateText('香港生产商Kenvue宣布回购，获得4%涨幅，投资者信心增强。', 'en', 'en2-result')">翻译为英文</button>
+        <button onclick="translateText('香港生产商Kenvue宣布回购，获得4%涨幅，投资者信心增强。', 'ja', 'ja2-result')">翻译为日文</button>
+    </div>
+
+    <div class="test-section">
+        <h3>测试新闻 3</h3>
+        <div class="original">
+            <strong>原文：</strong>中国央行宣布降准，释放流动性支持经济，市场预期进一步宽松政策。
+        </div>
+        <div class="translated" id="en3">
+            <strong>英文翻译：</strong><span id="en3-result">点击翻译按钮查看结果</span>
+        </div>
+        <div class="japanese" id="ja3">
+            <strong>日文翻译：</strong><span id="ja3-result">点击翻译按钮查看结果</span>
+        </div>
+        <button onclick="translateText('中国央行宣布降准，释放流动性支持经济，市场预期进一步宽松政策。', 'en', 'en3-result')">翻译为英文</button>
+        <button onclick="translateText('中国央行宣布降准，释放流动性支持经济，市场预期进一步宽松政策。', 'ja', 'ja3-result')">翻译为日文</button>
+    </div>
+
+    <script type="module">
+        // 模拟翻译服务类
+        class TranslationService {
+            constructor() {
+                this.cache = new Map();
+            }
+
+            stripHtml(html) {
+                const tmp = document.createElement('div');
+                tmp.innerHTML = html;
+                return tmp.textContent || tmp.innerText || '';
+            }
+
+            optimizeEnglishGrammar(text) {
+                if (!text) return text;
+                let optimized = text;
+                
+                const grammarRules = [
+                    [/\s+/g, ' '],
+                    [/\s+([,.!?;:])/g, '$1'],
+                    [/([,.!?;:])\s*([a-zA-Z])/g, '$1 $2'],
+                    [/^([a-z])/g, (match, p1) => p1.toUpperCase()],
+                ];
+
+                grammarRules.forEach(([pattern, replacement]) => {
+                    optimized = optimized.replace(pattern, replacement);
+                });
+
+                if (optimized && !/[.!?]$/.test(optimized.trim())) {
+                    optimized = optimized.trim() + '.';
+                }
+
+                return optimized.trim();
+            }
+
+            mockTranslateToEnglish(text) {
+                const cleanText = this.stripHtml(text);
+                
+                const translations = {
+                    '美联储官员表示通胀仍是主要关注点，预计年内将维持当前利率水平不变。': 'Federal Reserve officials state that inflation remains a major concern, expecting to maintain current interest rate levels unchanged throughout the year.',
+                    '香港生产商Kenvue宣布回购，获得4%涨幅，投资者信心增强。': 'Hong Kong producer Kenvue announces share buyback program, gains 4%, boosting investor confidence.',
+                    '中国央行宣布降准，释放流动性支持经济，市场预期进一步宽松政策。': 'China\'s central bank announces reserve requirement ratio cut to release liquidity and support the economy, with markets expecting further easing policies.'
+                };
+
+                if (translations[cleanText]) {
+                    return translations[cleanText];
+                }
+
+                // 关键词替换逻辑（简化版）
+                let result = cleanText;
+                const keywordMap = {
+                    '美联储': 'Federal Reserve',
+                    '央行': 'central bank',
+                    '通胀': 'inflation',
+                    '利率': 'interest rate',
+                    '香港': 'Hong Kong',
+                    '生产商': 'producer',
+                    '宣布': 'announces',
+                    '回购': 'share buyback',
+                    '获得': 'gains',
+                    '投资者': 'investors',
+                    '信心': 'confidence',
+                    '中国': 'China',
+                    '降准': 'reserve requirement ratio cut',
+                    '流动性': 'liquidity',
+                    '支持': 'support',
+                    '经济': 'economy',
+                    '市场': 'market',
+                    '预期': 'expects',
+                    '政策': 'policy'
+                };
+
+                Object.entries(keywordMap).forEach(([chinese, english]) => {
+                    result = result.replace(new RegExp(chinese, 'g'), english);
+                });
+
+                return this.optimizeEnglishGrammar(result);
+            }
+
+            mockTranslateToJapanese(text) {
+                const cleanText = this.stripHtml(text);
+                
+                const translations = {
+                    '美联储官员表示通胀仍是主要关注点，预计年内将维持当前利率水平不变。': 'FRB当局者はインフレが依然として主要な懸念事項であると述べ、年内は現在の金利水準を維持する見込みです。',
+                    '香港生产商Kenvue宣布回购，获得4%涨幅，投资者信心增强。': '香港の生産者Kenvueが自社株買いを発表、4%上昇し、投資家の信頼が強化されました。',
+                    '中国央行宣布降准，释放流动性支持经济，市场预期进一步宽松政策。': '中国中央銀行が預金準備率引き下げを発表、流動性を放出して経済を支援し、市場はさらなる緩和政策を期待しています。'
+                };
+
+                if (translations[cleanText]) {
+                    return translations[cleanText];
+                }
+
+                // 关键词替换逻辑（简化版）
+                let result = cleanText;
+                const keywordMap = {
+                    '美联储': 'FRB',
+                    '央行': '中央銀行',
+                    '通胀': 'インフレ',
+                    '利率': '金利',
+                    '香港': '香港',
+                    '生产商': '生産者',
+                    '宣布': '発表',
+                    '回购': '自社株買い',
+                    '获得': '上昇',
+                    '投资者': '投資家',
+                    '信心': '信頼',
+                    '中国': '中国',
+                    '降准': '預金準備率引き下げ',
+                    '流动性': '流動性',
+                    '支持': '支援',
+                    '经济': '経済',
+                    '市场': '市場',
+                    '预期': '期待',
+                    '政策': '政策'
+                };
+
+                Object.entries(keywordMap).forEach(([chinese, japanese]) => {
+                    result = result.replace(new RegExp(chinese, 'g'), japanese);
+                });
+
+                return result;
+            }
+
+            translateTextSync(text, targetLang) {
+                if (targetLang === 'en') {
+                    return this.mockTranslateToEnglish(text);
+                } else if (targetLang === 'ja') {
+                    return this.mockTranslateToJapanese(text);
+                }
+                return text;
+            }
+        }
+
+        // 创建翻译服务实例
+        const translationService = new TranslationService();
+
+        // 全局翻译函数
+        window.translateText = function(text, targetLang, resultElementId) {
+            const result = translationService.translateTextSync(text, targetLang);
+            document.getElementById(resultElementId).textContent = result;
+        };
+    </script>
+</body>
+</html>

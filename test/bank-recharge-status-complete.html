@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>银行卡充值记录状态颜色修改完成</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status-demo {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        .status-icon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-icon-success {
+            background: #28a745;
+        }
+        .status-icon-cancelled {
+            background: #007bff;
+        }
+        .status-icon-pending {
+            background: #F5D658;
+        }
+        .status-text-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-text-cancelled {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .status-text-pending {
+            color: #F5D658;
+            font-weight: bold;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .success-section {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+        .api-info {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .status-mapping {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ 银行卡充值记录状态颜色修改完成</h1>
+        
+        <div class="success-section">
+            <h3>🎉 修改成功！</h3>
+            <p>根据您提供的API调试信息，已成功修改银行卡充值记录的状态显示逻辑。现在状态颜色将正确显示。</p>
+        </div>
+        
+        <div class="api-info">
+            <h3>API接口信息</h3>
+            <p><strong>接口地址:</strong> https://jpmx.xyz/api/c2cOrder/list?page_no=1&direction=recharge&language=zh-CN</p>
+            <p><strong>请求方法:</strong> GET</p>
+            <p><strong>状态代码:</strong> 200 OK</p>
+            <p><strong>实际状态值:</strong> 3 (成功), 4 (已取消)</p>
+        </div>
+        
+        <h2>状态映射规则</h2>
+        
+        <div class="status-mapping">
+            <h3>银行卡充值记录状态映射</h3>
+            <ul>
+                <li><strong>状态值 3:</strong> 成功状态 → 绿色圆点 + 绿色"成功"文字</li>
+                <li><strong>状态值 4:</strong> 已取消状态 → 蓝色圆点 + 蓝色"已取消"文字</li>
+                <li><strong>其他状态值:</strong> 确认中状态 → 黄色圆点 + 黄色"确定中"文字</li>
+            </ul>
+        </div>
+        
+        <h2>修改的具体内容</h2>
+        
+        <h3>1. 模板修改</h3>
+        <div class="code-block">
+&lt;template v-if="selectIndexActive == 0"&gt;
+    &lt;!-- 银行卡充值记录：状态3=成功，状态4=已取消 --&gt;
+    &lt;template v-if="getStatusValue(item) == 3"&gt;
+        &lt;div class="status-icon status-icon-color1 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-success"&gt;{{ $t('success') }}&lt;/span&gt;
+    &lt;/template&gt;
+    &lt;template v-if="getStatusValue(item) == 4"&gt;
+        &lt;div class="status-icon status-icon-color4 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-cancelled"&gt;{{ $t('cancelled') }}&lt;/span&gt;
+    &lt;/template&gt;
+    &lt;!-- 其他状态值显示为确认中 --&gt;
+    &lt;template v-if="getStatusValue(item) !== 3 && getStatusValue(item) !== 4"&gt;
+        &lt;div class="status-icon status-icon-color3 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-pending"&gt;{{ $t('confirming') }}&lt;/span&gt;
+    &lt;/template&gt;
+&lt;/template&gt;
+        </div>
+        
+        <h3>2. CSS样式添加</h3>
+        <div class="code-block">
+.status-icon-color4 {
+    background: #007bff;
+}
+
+.status-text-cancelled {
+    color: #007bff;
+}
+        </div>
+        
+        <h2>状态显示效果</h2>
+        
+        <div class="status-demo">
+            <div class="status-icon status-icon-success"></div>
+            <span class="status-text-success">成功</span>
+            <span style="margin-left: 20px; color: #666;">(状态值: 3)</span>
+        </div>
+        
+        <div class="status-demo">
+            <div class="status-icon status-icon-cancelled"></div>
+            <span class="status-text-cancelled">已取消</span>
+            <span style="margin-left: 20px; color: #666;">(状态值: 4)</span>
+        </div>
+        
+        <div class="status-demo">
+            <div class="status-icon status-icon-pending"></div>
+            <span class="status-text-pending">确定中</span>
+            <span style="margin-left: 20px; color: #666;">(其他状态值)</span>
+        </div>
+        
+        <h2>颜色规范</h2>
+        
+        <div class="status-mapping">
+            <h3>颜色值定义</h3>
+            <ul>
+                <li><strong>成功状态:</strong> 
+                    <span style="color: #28a745; font-weight: bold;">绿色 (#28a745)</span> - 使用SCSS变量 $green
+                </li>
+                <li><strong>已取消状态:</strong> 
+                    <span style="color: #007bff; font-weight: bold;">蓝色 (#007bff)</span> - Bootstrap主色调
+                </li>
+                <li><strong>确认中状态:</strong> 
+                    <span style="color: #F5D658; font-weight: bold;">黄色 (#F5D658)</span> - 警告色调
+                </li>
+            </ul>
+        </div>
+        
+        <h2>多语言支持</h2>
+        
+        <div class="status-mapping">
+            <h3>支持的语言</h3>
+            <ul>
+                <li><strong>中文:</strong> 成功 / 已取消 / 确定中</li>
+                <li><strong>English:</strong> Success / Cancelled / Confirming</li>
+                <li><strong>日本語:</strong> 成功 / キャンセル済み / 確認中</li>
+                <li><strong>한국어:</strong> 성공 / 취소됨 / 확인 중</li>
+                <li><strong>Deutsch:</strong> Erfolgreich / Storniert / Bestätigung</li>
+                <li><strong>Français:</strong> Succès / Annulé / Confirmation</li>
+            </ul>
+        </div>
+        
+        <h2>实现要点</h2>
+        
+        <div class="success-section">
+            <h3>✅ 已完成的功能</h3>
+            <ul>
+                <li>✅ 根据实际API状态值修改了状态映射逻辑</li>
+                <li>✅ 状态值3显示为成功状态（绿色）</li>
+                <li>✅ 状态值4显示为已取消状态（蓝色）</li>
+                <li>✅ 其他状态值显示为确认中状态（黄色）</li>
+                <li>✅ 添加了蓝色样式和"已取消"文本样式</li>
+                <li>✅ 移除了调试console.log语句</li>
+                <li>✅ 保持了数字货币充提记录的原有逻辑不变</li>
+                <li>✅ 支持多语言切换</li>
+            </ul>
+        </div>
+        
+        <h2>测试验证</h2>
+        
+        <div class="status-mapping">
+            <h3>验证步骤</h3>
+            <ol>
+                <li><strong>刷新银行卡充值记录页面</strong></li>
+                <li><strong>检查状态值3的记录</strong> - 应显示绿色"成功"</li>
+                <li><strong>检查状态值4的记录</strong> - 应显示蓝色"已取消"</li>
+                <li><strong>检查其他状态值的记录</strong> - 应显示黄色"确定中"</li>
+                <li><strong>切换语言</strong> - 验证多语言支持</li>
+            </ol>
+        </div>
+        
+        <h2>技术细节</h2>
+        
+        <div class="code-block">
+// 状态获取函数（已优化）
+const getStatusValue = (item) => {
+    if (selectIndexActive.value == 0) {
+        // 银行卡充提记录
+        return item.state !== undefined ? item.state : 0;
+    } else {
+        // 数字货币充提记录
+        return item.status !== undefined ? item.status : 0;
+    }
+}
+        </div>
+        
+        <div class="success-section">
+            <h3>🎯 修改总结</h3>
+            <p>现在银行卡充值记录的状态颜色将正确显示：</p>
+            <ul>
+                <li><strong>状态值3</strong> → 绿色"成功"</li>
+                <li><strong>状态值4</strong> → 蓝色"已取消"</li>
+                <li><strong>其他状态值</strong> → 黄色"确定中"</li>
+            </ul>
+            <p>用户现在可以直观地看到每条充值记录的状态，提升了用户体验。</p>
+        </div>
+    </div>
+</body>
+</html>

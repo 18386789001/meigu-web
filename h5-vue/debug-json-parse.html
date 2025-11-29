@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON解析错误调试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .error {
+            color: #d32f2f;
+            background-color: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #2e7d32;
+            background-color: #e8f5e8;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .warning {
+            color: #f57c00;
+            background-color: #fff3e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #1565c0;
+        }
+        .danger {
+            background-color: #d32f2f;
+        }
+        .danger:hover {
+            background-color: #c62828;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JSON解析错误调试页面</h1>
+        <p>此页面用于调试和修复生产环境中的localStorage JSON解析错误。</p>
+        
+        <div class="section">
+            <h2>当前localStorage状态</h2>
+            <div id="localStorageStatus"></div>
+            <button onclick="checkLocalStorage()">检查localStorage</button>
+        </div>
+        
+        <div class="section">
+            <h2>模拟错误场景</h2>
+            <p>点击下面的按钮来模拟可能导致JSON解析错误的情况：</p>
+            <button onclick="simulateLanguageError()">模拟语言代码错误</button>
+            <button onclick="simulateJsonError()">模拟JSON格式错误</button>
+            <button onclick="simulateMixedData()">模拟混合数据错误</button>
+        </div>
+        
+        <div class="section">
+            <h2>修复工具</h2>
+            <p>使用下面的工具来修复localStorage中的问题：</p>
+            <button onclick="fixJsonParseIssues()">修复JSON解析问题</button>
+            <button onclick="clearAllData()" class="danger">清空所有数据</button>
+            <button onclick="resetToDefault()">重置为默认值</button>
+        </div>
+        
+        <div class="section">
+            <h2>测试结果</h2>
+            <div id="testResults"></div>
+        </div>
+    </div>
+
+    <script>
+        // 安全解析localStorage中的JSON数据
+        function safeParseStorage(key, defaultValue = null) {
+            try {
+                const value = localStorage.getItem(key);
+                
+                if (!value) {
+                    return defaultValue;
+                }
+                
+                // 如果值不是JSON格式（不以{或[开头），直接返回
+                if (typeof value === 'string' && !value.startsWith('{') && !value.startsWith('[')) {
+                    return value;
+                }
+                
+                // 尝试解析JSON
+                try {
+                    return JSON.parse(value);
+                } catch (parseError) {
+                    console.warn(`JSON解析失败 [${key}]:`, parseError);
+                    console.warn(`原始数据:`, value);
+                    
+                    // 清理无效数据
+                    localStorage.removeItem(key);
+                    return defaultValue;
+                }
+            } catch (error) {
+                console.error(`获取localStorage数据失败 [${key}]:`, error);
+                return defaultValue;
+            }
+        }
+
+        // 检查localStorage状态
+        function checkLocalStorage() {
+            const statusDiv = document.getElementById('localStorageStatus');
+            let html = '<h3>localStorage内容:</h3>';
+            
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    const value = localStorage.getItem(key);
+                    
+                    html += `<div><strong>${key}:</strong> `;
+                    
+                    if (value === null) {
+                        html += '<span class="warning">null</span>';
+                    } else if (typeof value === 'string') {
+                        if (value.startsWith('{') || value.startsWith('[')) {
+                            try {
+                                const parsed = JSON.parse(value);
+                                html += `<span class="success">有效JSON: ${JSON.stringify(parsed)}</span>`;
+                            } catch (error) {
+                                html += `<span class="error">无效JSON: ${value} (错误: ${error.message})</span>`;
+                            }
+                        } else {
+                            html += `<span class="success">字符串: ${value}</span>`;
+                        }
+                    } else {
+                        html += `<span class="warning">其他类型: ${typeof value}</span>`;
+                    }
+                    
+                    html += '</div>';
+                }
+                
+                if (localStorage.length === 0) {
+                    html += '<div class="warning">localStorage为空</div>';
+                }
+            } catch (error) {
+                html += `<div class="error">检查localStorage失败: ${error.message}</div>`;
+            }
+            
+            statusDiv.innerHTML = html;
+        }
+
+        // 模拟语言代码错误
+        function simulateLanguageError() {
+            try {
+                // 设置一个会导致JSON解析错误的语言代码
+                localStorage.setItem('lang', 'zh-CN');
+                addResult('已设置语言代码为: zh-CN', 'success');
+            } catch (error) {
+                addResult(`模拟语言代码错误失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 模拟JSON格式错误
+        function simulateJsonError() {
+            try {
+                // 设置一个无效的JSON字符串
+                localStorage.setItem('userInfo', 'zh-CN');
+                addResult('已设置userInfo为无效JSON: zh-CN', 'warning');
+            } catch (error) {
+                addResult(`模拟JSON格式错误失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 模拟混合数据错误
+        function simulateMixedData() {
+            try {
+                localStorage.setItem('lang', 'zh-CN');
+                localStorage.setItem('userInfo', 'zh-CN');
+                localStorage.setItem('theme', 'dark');
+                addResult('已设置混合数据（包含语言代码和JSON）', 'warning');
+            } catch (error) {
+                addResult(`模拟混合数据错误失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 修复JSON解析问题
+        function fixJsonParseIssues() {
+            const keysToCheck = ['lang', 'userInfo', 'token', 'theme', 'preferences', 'settings'];
+            let fixedCount = 0;
+            
+            keysToCheck.forEach(key => {
+                try {
+                    const value = localStorage.getItem(key);
+                    
+                    if (!value) {
+                        return;
+                    }
+                    
+                    // 检查是否是纯字符串（如语言代码）
+                    if (typeof value === 'string' && !value.startsWith('{') && !value.startsWith('[')) {
+                        // 对于语言代码，验证是否有效
+                        if (key === 'lang') {
+                            const validLanguages = [
+                                'zh-CN', 'zh-TW', 'en-US', 'ja-JP', 'ko-KR', 
+                                'th-TH', 'vi-VN', 'de-DE', 'es-ES', 'fr-FR', 
+                                'it-IT', 'pt-PT', 'el-GR', 'zh', 'en'
+                            ];
+                            
+                            if (!validLanguages.includes(value)) {
+                                localStorage.setItem(key, 'zh-CN');
+                                fixedCount++;
+                                addResult(`修复无效语言代码 [${key}]: ${value} -> zh-CN`, 'success');
+                            }
+                        }
+                        return;
+                    }
+                    
+                    // 尝试解析JSON
+                    try {
+                        JSON.parse(value);
+                        addResult(`✓ ${key}: JSON数据有效`, 'success');
+                    } catch (parseError) {
+                        localStorage.removeItem(key);
+                        fixedCount++;
+                        addResult(`✗ ${key}: 清理无效JSON数据`, 'warning');
+                    }
+                } catch (error) {
+                    addResult(`检查键 ${key} 时出错: ${error.message}`, 'error');
+                }
+            });
+            
+            if (fixedCount > 0) {
+                addResult(`修复完成，共修复 ${fixedCount} 个问题`, 'success');
+            } else {
+                addResult('未发现JSON解析问题', 'success');
+            }
+        }
+
+        // 清空所有数据
+        function clearAllData() {
+            try {
+                localStorage.clear();
+                addResult('已清空所有localStorage数据', 'warning');
+            } catch (error) {
+                addResult(`清空localStorage失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 重置为默认值
+        function resetToDefault() {
+            try {
+                localStorage.setItem('lang', 'zh-CN');
+                addResult('已重置语言为默认值: zh-CN', 'success');
+            } catch (error) {
+                addResult(`重置默认值失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 添加测试结果
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('testResults');
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = type;
+            div.innerHTML = `[${timestamp}] ${message}`;
+            resultsDiv.appendChild(div);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        // 页面加载时自动检查
+        window.addEventListener('load', () => {
+            checkLocalStorage();
+            addResult('页面加载完成，开始检查localStorage状态', 'info');
+        });
+    </script>
+</body>
+</html>

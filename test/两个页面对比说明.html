@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>H5-Vue vs WAP-Vue 页面对比</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #F56C6C;
+            text-align: center;
+            font-size: 36px;
+        }
+        .warning {
+            background: #fef0f0;
+            border: 3px solid #F56C6C;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        .page-card {
+            border: 3px solid #ddd;
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+        .page-card.correct {
+            border-color: #67C23A;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e1f5e1 100%);
+        }
+        .page-card.wrong {
+            border-color: #F56C6C;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+        }
+        .page-card h2 {
+            margin-top: 0;
+            font-size: 28px;
+        }
+        .page-card.correct h2 {
+            color: #67C23A;
+        }
+        .page-card.wrong h2 {
+            color: #F56C6C;
+        }
+        .screenshot {
+            width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .url-box {
+            background: #282c34;
+            color: #61dafb;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Consolas', monospace;
+            margin: 15px 0;
+            font-size: 14px;
+            word-break: break-all;
+        }
+        .features {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .features ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        .features li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        .step-box {
+            background: #e1f3ff;
+            border-left: 4px solid #409EFF;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .step-number {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background: #409EFF;
+            color: white;
+            text-align: center;
+            line-height: 35px;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .icon {
+            font-size: 48px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            font-size: 16px;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .test-link {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #67C23A;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        .test-link:hover {
+            background: #5daf34;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .test-link.wrong {
+            background: #F56C6C;
+        }
+        .test-link.wrong:hover {
+            background: #f04848;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚠️ 重要：您测试的页面不对！</h1>
+        
+        <div class="warning">
+            ❌ 您刚才访问的是 <strong>WAP-Vue</strong> 页面<br>
+            ✅ 应该从 <strong>H5-Vue</strong> 页面开始测试！
+        </div>
+
+        <div class="comparison">
+            <div class="page-card correct">
+                <div class="icon">✅</div>
+                <h2>H5-Vue（测试起点）</h2>
+                
+                <h3>🔗 访问地址：</h3>
+                <div class="url-box">
+开发环境：
+http://localhost:5173/
+
+生产环境：
+https://jpmx.xyz/h5/
+                </div>
+
+                <h3>📋 页面特征：</h3>
+                <div class="features">
+                    <ul>
+                        <li>✅ 桌面版/移动H5页面</li>
+                        <li>✅ 顶部有 "JPMX" logo</li>
+                        <li>✅ 右上角有语言选择器</li>
+                        <li>✅ 左上角有汉堡菜单（☰）</li>
+                        <li>✅ 中间有大标题和介绍文字</li>
+                        <li>✅ 有 "Start Trading" 按钮</li>
+                        <li>✅ 有 "Login Account" 按钮</li>
+                    </ul>
+                </div>
+
+                <h3>🎯 作用：</h3>
+                <p><strong>用户在这里选择语言，然后点击登录跳转</strong></p>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="http://localhost:5173/" class="test-link" target="_blank">
+                        🚀 在这里测试（开发环境）
+                    </a>
+                </div>
+            </div>
+
+            <div class="page-card wrong">
+                <div class="icon">❌</div>
+                <h2>WAP-Vue（测试终点）</h2>
+                
+                <h3>🔗 访问地址：</h3>
+                <div class="url-box">
+https://jpmx.xyz/syn/#/my/index
+                </div>
+
+                <h3>📋 页面特征：</h3>
+                <div class="features">
+                    <ul>
+                        <li>❌ 移动端交易应用</li>
+                        <li>❌ 底部有导航栏（Home, Trading, Market, More）</li>
+                        <li>❌ 页面是移动端样式</li>
+                        <li>❌ URL 包含 /syn/</li>
+                        <li>❌ 这是登录后的页面</li>
+                    </ul>
+                </div>
+
+                <h3>🎯 作用：</h3>
+                <p><strong>接收从 H5-Vue 传来的语言参数</strong></p>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="https://jpmx.xyz/syn/#/my/index" class="test-link wrong" target="_blank">
+                        ⛔ 不要直接访问这个！
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="text-align: center; color: #409EFF; margin-top: 50px;">
+            📖 正确的测试流程
+        </h2>
+
+        <div class="step-box">
+            <span class="step-number">1</span>
+            <strong style="font-size: 18px;">访问 H5-Vue 页面</strong>
+            <div class="url-box" style="margin-top: 10px;">
+http://localhost:5173/
+            </div>
+            <p style="margin: 10px 0 0 45px; color: #666;">
+                不是访问 WAP-Vue（/syn/）！
+            </p>
+        </div>
+
+        <div class="step-box">
+            <span class="step-number">2</span>
+            <strong style="font-size: 18px;">打开浏览器开发者工具</strong>
+            <p style="margin: 10px 0 0 45px;">
+                按 <code>F12</code> 键，切换到 <strong>Console</strong> 标签页
+            </p>
+        </div>
+
+        <div class="step-box">
+            <span class="step-number">3</span>
+            <strong style="font-size: 18px;">选择语言</strong>
+            <p style="margin: 10px 0 0 45px;">
+                点击右上角的语言选择器，选择 "日本語 🇯🇵"
+            </p>
+        </div>
+
+        <div class="step-box">
+            <span class="step-number">4</span>
+            <strong style="font-size: 18px;">打开侧边栏菜单</strong>
+            <p style="margin: 10px 0 0 45px;">
+                点击左上角的汉堡菜单按钮（☰）
+            </p>
+        </div>
+
+        <div class="step-box">
+            <span class="step-number">5</span>
+            <strong style="font-size: 18px;">点击登录按钮</strong>
+            <p style="margin: 10px 0 0 45px;">
+                在侧边栏的 "Account" 部分，点击 "Login" 按钮
+            </p>
+        </div>
+
+        <div class="step-box">
+            <span class="step-number">6</span>
+            <strong style="font-size: 18px;">查看控制台日志（关键！）</strong>
+            <p style="margin: 10px 0 0 45px;">
+                点击登录按钮后，<strong>立即</strong>查看控制台，应该看到：
+            </p>
+            <div class="url-box" style="margin: 10px 0 0 45px;">
+🔗 跳转到登录页
+📝 当前语言代码 (H5): ja-JP
+📝 转换后语言代码 (WAP): Japanese
+🌐 生成的登录URL: https://jpmx.xyz/syn/?lang=Japanese#/my/index
+            </div>
+        </div>
+
+        <div class="step-box">
+            <span class="step-number">7</span>
+            <strong style="font-size: 18px;">验证跳转后的 URL</strong>
+            <p style="margin: 10px 0 0 45px;">
+                跳转到 WAP-Vue 后，地址栏应该显示：
+            </p>
+            <div class="url-box" style="margin: 10px 0 0 45px;">
+https://jpmx.xyz/syn/?lang=Japanese#/my/index
+                      ↑
+                 语言参数！
+            </div>
+        </div>
+
+        <h2 style="text-align: center; color: #F56C6C; margin-top: 50px;">
+            🚫 您上次测试的错误
+        </h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>项目</th>
+                    <th>您的操作</th>
+                    <th>正确做法</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>访问的页面</strong></td>
+                    <td style="color: red;">
+                        ❌ 直接访问了 WAP-Vue<br>
+                        <code>https://jpmx.xyz/syn/#/my/index</code>
+                    </td>
+                    <td style="color: green;">
+                        ✅ 应该访问 H5-Vue<br>
+                        <code>http://localhost:5173/</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>看到的日志</strong></td>
+                    <td style="color: red;">
+                        ❌ WAP-Vue 的日志<br>
+                        "🚀 WAP-Vue 应用启动"<br>
+                        "🌐 当前语言: en"
+                    </td>
+                    <td style="color: green;">
+                        ✅ 应该看到 H5-Vue 的日志<br>
+                        "🔗 跳转到登录页"<br>
+                        "🌐 生成的登录URL: ..."
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>URL 中的参数</strong></td>
+                    <td style="color: red;">
+                        ❌ 没有语言参数<br>
+                        （因为直接访问）
+                    </td>
+                    <td style="color: green;">
+                        ✅ 应该有 ?lang=xxx<br>
+                        （通过点击跳转）
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 style="text-align: center; color: #67C23A; margin-top: 50px;">
+            ✅ 如何判断测试正确
+        </h2>
+
+        <div style="background: #f0f9ff; padding: 30px; border-radius: 8px; margin: 30px 0;">
+            <h3 style="margin-top: 0;">✅ 成功标志：</h3>
+            <ol style="font-size: 16px; line-height: 2;">
+                <li>在 <strong>H5-Vue 页面</strong>（localhost:5173）进行操作</li>
+                <li>控制台看到 <strong>"🔗 跳转到登录页"</strong> 日志</li>
+                <li>控制台显示完整的 URL：<code>?lang=Japanese#/my/index</code></li>
+                <li>实际跳转到的 URL 包含 <code>?lang=xxx</code> 参数</li>
+                <li>WAP-Vue 页面自动显示日语界面</li>
+            </ol>
+        </div>
+
+        <div style="background: #fef0f0; padding: 30px; border-radius: 8px; margin: 30px 0;">
+            <h3 style="margin-top: 0; color: #F56C6C;">❌ 失败标志：</h3>
+            <ol style="font-size: 16px; line-height: 2;">
+                <li>直接访问 WAP-Vue 页面（/syn/）</li>
+                <li>没有看到 "🔗 跳转到登录页" 日志</li>
+                <li>只看到 WAP-Vue 的启动日志</li>
+                <li>URL 中没有 <code>?lang=xxx</code> 参数</li>
+                <li>页面仍然显示英文（默认语言）</li>
+            </ol>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; border-radius: 12px; text-align: center; margin-top: 50px;">
+            <h2 style="margin: 0; color: white; font-size: 32px;">🎯 立即开始正确的测试！</h2>
+            <p style="font-size: 20px; margin: 30px 0;">
+                请按照上面的步骤，从 H5-Vue 页面开始测试<br>
+                不要直接访问 WAP-Vue 页面！
+            </p>
+            <a href="http://localhost:5173/" class="test-link" target="_blank" style="background: white; color: #667eea; font-size: 20px; padding: 20px 40px;">
+                🚀 点击这里开始测试
+            </a>
+        </div>
+    </div>
+</body>
+</html>
+

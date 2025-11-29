@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>入金报表页面测试指南</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #409EFF;
+            border-bottom: 3px solid #409EFF;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #333;
+            margin-top: 30px;
+        }
+        .success {
+            background: #f0f9ff;
+            border-left: 4px solid #67C23A;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .warning {
+            background: #fffbf0;
+            border-left: 4px solid #E6A23C;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .info {
+            background: #f4f4f5;
+            border-left: 4px solid #909399;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        code {
+            background: #f4f4f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+        }
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+        }
+        .step {
+            background: #ecf5ff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #409EFF;
+        }
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #409EFF;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #409EFF;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #409EFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #66b1ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ 入金报表页面 - 创建成功</h1>
+        
+        <div class="success">
+            <strong>🎉 页面已创建完成！</strong><br>
+            文件位置：<code>src/views/modules/order/rujin.vue</code>
+        </div>
+
+        <h2>📋 功能说明</h2>
+        <p>该页面整合了银行卡充值和数字货币充值两个接口的数据，统一显示在一个报表中。</p>
+        
+        <table>
+            <tr>
+                <th>功能</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>🔍 搜索功能</td>
+                <td>支持按订单号、用户名、用户UID搜索</td>
+            </tr>
+            <tr>
+                <td>🎯 筛选功能</td>
+                <td>可按入金方式（银行卡/数字货币）筛选</td>
+            </tr>
+            <tr>
+                <td>📊 数据整合</td>
+                <td>自动合并两个接口的数据</td>
+            </tr>
+            <tr>
+                <td>📄 分页功能</td>
+                <td>每页显示10条记录，可自定义</td>
+            </tr>
+            <tr>
+                <td>🔄 刷新功能</td>
+                <td>支持手动刷新最新数据</td>
+            </tr>
+        </table>
+
+        <h2>🚀 快速开始</h2>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>启动开发服务器</strong><br>
+            打开新的PowerShell窗口，执行：
+            <div class="code-block">
+cd D:\Awww\mt5new\template\admin-vue
+yarn dev
+            </div>
+        </div>
+
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>访问页面</strong><br>
+            在浏览器中打开：
+            <div class="code-block">
+http://localhost:9528/#/order/order-rujin
+            </div>
+            <div class="warning">
+                ⚠️ 注意：首次访问需要先登录系统
+            </div>
+        </div>
+
+        <div class="step">
+            <span class="step-number">3</span>
+            <strong>添加到菜单</strong><br>
+            在后台管理系统的菜单管理中添加新菜单项：
+            <ul>
+                <li>菜单名称：<code>入金报表</code></li>
+                <li>路由地址：<code>order/order-rujin</code></li>
+                <li>权限标识：<code>order:rujin:page</code></li>
+            </ul>
+        </div>
+
+        <h2>📊 数据字段说明</h2>
+        <table>
+            <tr>
+                <th>字段</th>
+                <th>银行卡充值</th>
+                <th>数字货币充值</th>
+            </tr>
+            <tr>
+                <td>订单号</td>
+                <td>✓</td>
+                <td>✓</td>
+            </tr>
+            <tr>
+                <td>用户名/UID</td>
+                <td>✓</td>
+                <td>✓</td>
+            </tr>
+            <tr>
+                <td>入金方式</td>
+                <td>银行卡充值</td>
+                <td>数字货币充值</td>
+            </tr>
+            <tr>
+                <td>支付币种</td>
+                <td>currency</td>
+                <td>coin</td>
+            </tr>
+            <tr>
+                <td>到账币种</td>
+                <td>symbol</td>
+                <td>USDT</td>
+            </tr>
+            <tr>
+                <td>币种数量</td>
+                <td>coin_amount</td>
+                <td>channelAmount</td>
+            </tr>
+            <tr>
+                <td>手续费</td>
+                <td>coin_amount_fee</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>充值币链</td>
+                <td>-</td>
+                <td>blockchainName</td>
+            </tr>
+            <tr>
+                <td>币链地址</td>
+                <td>-</td>
+                <td>channelAddress</td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td>✓</td>
+                <td>✓</td>
+            </tr>
+            <tr>
+                <td>创建/审核时间</td>
+                <td>✓</td>
+                <td>✓</td>
+            </tr>
+        </table>
+
+        <h2>🔌 API接口</h2>
+        
+        <h3>银行卡充值接口</h3>
+        <div class="info">
+            <strong>URL:</strong> <code>https://jpmx.xyz/apis/bankCardOrder/list</code><br>
+            <strong>方法:</strong> POST<br>
+            <strong>筛选:</strong> direction === "recharge" && state === "3" (已完成)
+        </div>
+
+        <h3>数字货币充值接口</h3>
+        <div class="info">
+            <strong>URL:</strong> <code>https://jpmx.xyz/apis/rechargeOrder/list</code><br>
+            <strong>方法:</strong> POST<br>
+            <strong>筛选:</strong> status === 1 (成功)
+        </div>
+
+        <h2>⚠️ 注意事项</h2>
+        <div class="warning">
+            <ul>
+                <li>页面需要登录后才能访问，否则API会返回403错误</li>
+                <li>当前使用前端分页，数据量较大时可能需要优化</li>
+                <li>两个接口数据会合并显示，某些字段可能为空是正常的</li>
+                <li>确保开发服务器正在运行（yarn dev）</li>
+            </ul>
+        </div>
+
+        <h2>🔧 故障排查</h2>
+        <ol>
+            <li><strong>页面无法访问？</strong> 检查路由是否正确，确保服务器已启动</li>
+            <li><strong>403错误？</strong> 需要先登录系统</li>
+            <li><strong>数据不显示？</strong> 打开浏览器开发者工具查看Network标签中的API请求</li>
+            <li><strong>菜单中看不到？</strong> 需要在后台菜单管理中添加菜单项</li>
+        </ol>
+
+        <h2>📚 相关文档</h2>
+        <p>详细配置说明请查看：<code>入金报表页面配置说明.md</code></p>
+
+        <div class="success" style="margin-top: 30px;">
+            <strong>✨ 开发完成！</strong><br>
+            如有问题，请检查浏览器控制台和Network请求。
+        </div>
+    </div>
+</body>
+</html>
+

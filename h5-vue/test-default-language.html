@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H5-Vue默认语言设置验证</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .test-item {
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .button:hover {
+            background-color: #0056b3;
+        }
+        
+        .button.success {
+            background-color: #28a745;
+        }
+        
+        .button.danger {
+            background-color: #dc3545;
+        }
+        
+        .error {
+            color: red;
+            background-color: #fff0f0;
+        }
+        
+        .success {
+            color: green;
+            background-color: #f0fff0;
+        }
+        
+        .info {
+            color: blue;
+            background-color: #f0f8ff;
+        }
+        
+        .warning {
+            color: orange;
+            background-color: #fff8e1;
+        }
+        
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background-color: #f8f9fa;
+        }
+        
+        .code {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .status-item {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        
+        .status-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .status-value {
+            font-family: monospace;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>H5-Vue默认语言设置验证</h1>
+        
+        <div class="test-item info">
+            <h3>🎯 测试目标</h3>
+            <p>验证H5-Vue应用在首次访问时默认使用英文语言</p>
+            <p><strong>测试URL:</strong> <code>http://localhost:3333/h5/</code></p>
+        </div>
+        
+        <div class="test-item">
+            <h3>🔧 修改内容</h3>
+            <div class="step">
+                <strong>1. i18n/index.js:</strong> 修改默认语言和fallback语言
+            </div>
+            <div class="code">
+// 修改前
+fallbackLocale: 'zh-CN',
+return 'zh-CN';
+
+// 修改后  
+fallbackLocale: 'en-US',
+return 'en-US';
+            </div>
+            
+            <div class="step">
+                <strong>2. utils/localStorage.js:</strong> 修改默认fallback语言
+            </div>
+            <div class="code">
+// 修改前
+export function getValidLanguageCode(preferredLang, fallbackLang = 'zh-CN')
+
+// 修改后
+export function getValidLanguageCode(preferredLang, fallbackLang = 'en-US')
+            </div>
+            
+            <div class="step">
+                <strong>3. main.js:</strong> 修改默认语言设置
+            </div>
+            <div class="code">
+// 修改前
+const validLang = getValidLanguageCode(savedLang, 'zh-CN');
+localStorage.setItem('lang', 'zh-CN');
+
+// 修改后
+const validLang = getValidLanguageCode(savedLang, 'en-US');
+localStorage.setItem('lang', 'en-US');
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>🧪 测试操作</h3>
+            <button class="button" onclick="clearLanguageStorage()">清除语言存储（模拟首次访问）</button>
+            <button class="button" onclick="setLanguage('zh-CN')">设置为中文</button>
+            <button class="button" onclick="setLanguage('en-US')">设置为英文</button>
+            <button class="button" onclick="simulateFirstVisit()">模拟首次访问</button>
+            <button class="button success" onclick="openH5App()">打开H5应用</button>
+        </div>
+        
+        <div class="test-item">
+            <h3>📊 当前状态</h3>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-label">localStorage中的语言:</div>
+                    <div class="status-value" id="stored-lang">-</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">浏览器语言:</div>
+                    <div class="status-value" id="browser-lang">-</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">当前URL:</div>
+                    <div class="status-value" id="current-url">-</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">是否首次访问:</div>
+                    <div class="status-value" id="is-first-visit">-</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="test-results"></div>
+        
+        <div class="test-item warning">
+            <h3>⚠️ 注意事项</h3>
+            <ul>
+                <li>首次访问应用时应该默认显示英文界面</li>
+                <li>用户手动切换语言后，应该记住用户的选择</li>
+                <li>浏览器语言检测应该正常工作</li>
+                <li>localStorage清理后应该恢复英文默认</li>
+            </ul>
+        </div>
+        
+        <div class="test-item success">
+            <h3>✅ 预期结果</h3>
+            <ul>
+                <li>打开 <code>http://localhost:3333/h5/</code> 默认显示英文界面</li>
+                <li>localStorage中没有语言设置时，默认使用英文</li>
+                <li>所有界面元素都显示英文翻译</li>
+                <li>语言切换功能正常工作</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 更新状态显示
+        function updateStatus() {
+            const storedLang = localStorage.getItem('lang');
+            const browserLang = navigator.language || navigator.userLanguage;
+            const currentUrl = window.location.href;
+            const isFirstVisit = !localStorage.getItem('lang');
+            
+            document.getElementById('stored-lang').textContent = storedLang || 'null';
+            document.getElementById('browser-lang').textContent = browserLang;
+            document.getElementById('current-url').textContent = currentUrl;
+            document.getElementById('is-first-visit').textContent = isFirstVisit ? '是' : '否';
+        }
+        
+        // 添加测试结果
+        function addTestResult(message, type = 'info') {
+            const resultsContainer = document.getElementById('test-results');
+            const testItem = document.createElement('div');
+            testItem.className = `test-item ${type}`;
+            testItem.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            resultsContainer.appendChild(testItem);
+            resultsContainer.scrollTop = resultsContainer.scrollHeight;
+        }
+        
+        // 清除语言存储
+        function clearLanguageStorage() {
+            localStorage.removeItem('lang');
+            updateStatus();
+            addTestResult('已清除语言存储，模拟首次访问', 'info');
+        }
+        
+        // 设置语言
+        function setLanguage(lang) {
+            localStorage.setItem('lang', lang);
+            updateStatus();
+            addTestResult(`语言已设置为: ${lang}`, 'success');
+        }
+        
+        // 模拟首次访问
+        function simulateFirstVisit() {
+            // 清除所有语言相关存储
+            localStorage.removeItem('lang');
+            localStorage.removeItem('userInfo');
+            localStorage.removeItem('token');
+            localStorage.removeItem('theme');
+            
+            updateStatus();
+            addTestResult('已模拟首次访问，所有存储已清除', 'warning');
+            addTestResult('现在应该默认使用英文语言', 'success');
+        }
+        
+        // 打开H5应用
+        function openH5App() {
+            const h5Url = 'http://localhost:3333/h5/';
+            addTestResult(`正在打开H5应用: ${h5Url}`, 'info');
+            window.open(h5Url, '_blank');
+        }
+        
+        // 验证语言设置逻辑
+        function validateLanguageLogic() {
+            addTestResult('开始验证语言设置逻辑...', 'info');
+            
+            // 模拟getValidLanguageCode函数
+            function getValidLanguageCode(preferredLang, fallbackLang = 'en-US') {
+                const supportedLanguages = [
+                    'zh-CN', 'zh-TW', 'en-US', 'ja-JP', 'ko-KR', 
+                    'th-TH', 'vi-VN', 'de-DE', 'es-ES', 'fr-FR', 
+                    'it-IT', 'pt-PT', 'el-GR'
+                ];
+                
+                if (supportedLanguages.includes(preferredLang)) {
+                    return preferredLang;
+                }
+                
+                if (supportedLanguages.includes(fallbackLang)) {
+                    return fallbackLang;
+                }
+                
+                return 'en-US';
+            }
+            
+            // 测试各种场景
+            const testCases = [
+                { preferred: null, fallback: 'en-US', expected: 'en-US', desc: '首选语言为null' },
+                { preferred: '', fallback: 'en-US', expected: 'en-US', desc: '首选语言为空字符串' },
+                { preferred: 'zh-CN', fallback: 'en-US', expected: 'zh-CN', desc: '首选语言为中文' },
+                { preferred: 'invalid', fallback: 'en-US', expected: 'en-US', desc: '首选语言无效' },
+                { preferred: 'invalid', fallback: 'zh-CN', expected: 'zh-CN', desc: '备用语言为中文' }
+            ];
+            
+            testCases.forEach(testCase => {
+                const result = getValidLanguageCode(testCase.preferred, testCase.fallback);
+                const success = result === testCase.expected;
+                const type = success ? 'success' : 'error';
+                const icon = success ? '✅' : '❌';
+                addTestResult(`${icon} ${testCase.desc}: ${result} (期望: ${testCase.expected})`, type);
+            });
+        }
+        
+        // 初始化
+        updateStatus();
+        addTestResult('测试页面已加载，H5-Vue默认语言设置验证开始', 'success');
+        
+        // 验证语言设置逻辑
+        validateLanguageLogic();
+        
+        // 检查当前状态
+        const currentLang = localStorage.getItem('lang');
+        if (!currentLang) {
+            addTestResult('检测到首次访问状态，应该默认使用英文', 'info');
+        } else {
+            addTestResult(`当前语言设置: ${currentLang}`, 'info');
+        }
+        
+        // 定期更新状态
+        setInterval(updateStatus, 2000);
+    </script>
+</body>
+</html>

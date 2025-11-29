@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>银行充值记录状态颜色测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .status-demo {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        .status-icon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-icon-success {
+            background: #28a745;
+        }
+        .status-icon-failed {
+            background: #EA0F0F;
+        }
+        .status-icon-pending {
+            background: #F5D658;
+        }
+        .status-text-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-text-failed {
+            color: #EA0F0F;
+            font-weight: bold;
+        }
+        .status-text-pending {
+            color: #F5D658;
+            font-weight: bold;
+        }
+        .description {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .api-info {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>银行充值记录状态颜色修改测试</h1>
+        
+        <div class="api-info">
+            <h3>API接口信息</h3>
+            <p><strong>接口地址:</strong> https://jpmx.xyz/api/c2cOrder/list?page_no=1&direction=recharge&language=zh-CN</p>
+            <p><strong>请求方法:</strong> GET</p>
+            <p><strong>状态代码:</strong> 200 OK</p>
+            <p><strong>功能:</strong> 银行充值记录列表</p>
+        </div>
+        
+        <h2>修改内容说明</h2>
+        <p>在 <code>wap-vue/src/views/Record/DepositAndWithdrawal.vue</code> 页面中，为银行充值记录的状态文本添加了颜色显示：</p>
+        <ul>
+            <li><strong>成功状态:</strong> 绿色 (#28a745)</li>
+            <li><strong>失败状态:</strong> 红色 (#EA0F0F)</li>
+            <li><strong>确认中状态:</strong> 黄色 (#F5D658)</li>
+        </ul>
+        
+        <h2>修改的具体内容</h2>
+        
+        <h3>1. 模板修改</h3>
+        <div class="code-block">
+&lt;div class="status flex"&gt;
+    &lt;template v-if="getStatusValue(item) == 0 && !isEthConverted(item)"&gt;
+        &lt;div class="status-icon status-icon-color3 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-pending"&gt;{{ $t('confirming') }}&lt;/span&gt;
+    &lt;/template&gt;
+    &lt;template v-if="getStatusValue(item) == 1 || isEthConverted(item)"&gt;
+        &lt;div class="status-icon status-icon-color1 mr-2"&gt;&lt;/div&gt;
+        &lt;template v-if="isEthConverted(item)"&gt;
+            &lt;span class="status-text status-text-success"&gt;{{ $t('ethConvertedToUsdtNotice') }}&lt;/span&gt;
+        &lt;/template&gt;
+        &lt;template v-else&gt;
+            &lt;span class="status-text status-text-success"&gt;{{ $t('success') }}&lt;/span&gt;
+        &lt;/template&gt;
+    &lt;/template&gt;
+    &lt;template v-if="getStatusValue(item) == 2 && !isEthConverted(item)"&gt;
+        &lt;div class="status-icon status-icon-color2 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-failed"&gt;{{ $t('fail') }}&lt;/span&gt;
+    &lt;/template&gt;
+&lt;/div&gt;
+        </div>
+        
+        <h3>2. CSS样式添加</h3>
+        <div class="code-block">
+// 状态文本颜色
+.status-text {
+    font-size: 14px;
+}
+
+.status-text-success {
+    color: $green;
+}
+
+.status-text-failed {
+    color: #EA0F0F;
+}
+
+.status-text-pending {
+    color: #F5D658;
+}
+        </div>
+        
+        <h2>状态显示效果</h2>
+        
+        <div class="test-item">
+            <h3>成功状态</h3>
+            <div class="status-demo">
+                <div class="status-icon status-icon-success"></div>
+                <span class="status-text-success">成功</span>
+            </div>
+            <div class="description">
+                <strong>API返回:</strong> state = 1<br>
+                <strong>显示效果:</strong> 绿色圆点 + 绿色"成功"文字
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>失败状态</h3>
+            <div class="status-demo">
+                <div class="status-icon status-icon-failed"></div>
+                <span class="status-text-failed">失败</span>
+            </div>
+            <div class="description">
+                <strong>API返回:</strong> state = 2<br>
+                <strong>显示效果:</strong> 红色圆点 + 红色"失败"文字
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>确认中状态</h3>
+            <div class="status-demo">
+                <div class="status-icon status-icon-pending"></div>
+                <span class="status-text-pending">确定中</span>
+            </div>
+            <div class="description">
+                <strong>API返回:</strong> state = 0<br>
+                <strong>显示效果:</strong> 黄色圆点 + 黄色"确定中"文字
+            </div>
+        </div>
+        
+        <h2>颜色规范</h2>
+        <div class="test-item">
+            <h3>颜色值定义</h3>
+            <div class="description">
+                <strong>成功状态:</strong> 
+                <span style="color: #28a745; font-weight: bold;">绿色 (#28a745)</span> - 使用SCSS变量 $green<br>
+                <strong>失败状态:</strong> 
+                <span style="color: #EA0F0F; font-weight: bold;">红色 (#EA0F0F)</span> - 直接使用颜色值<br>
+                <strong>确认中状态:</strong> 
+                <span style="color: #F5D658; font-weight: bold;">黄色 (#F5D658)</span> - 直接使用颜色值
+            </div>
+        </div>
+        
+        <h2>适用范围</h2>
+        <div class="test-item">
+            <h3>修改范围</h3>
+            <div class="description">
+                <strong>银行充值记录:</strong> ✅ 已添加状态文本颜色<br>
+                <strong>银行提现记录:</strong> ✅ 已添加状态文本颜色<br>
+                <strong>数字货币充值记录:</strong> ✅ 已添加状态文本颜色<br>
+                <strong>数字货币提现记录:</strong> ✅ 已添加状态文本颜色<br>
+                <strong>ETH转换状态:</strong> ✅ 使用成功状态的绿色
+            </div>
+        </div>
+        
+        <h2>实现要点</h2>
+        <ul>
+            <li>✅ 为所有状态文本添加了对应的颜色类</li>
+            <li>✅ 保持了原有的状态图标颜色不变</li>
+            <li>✅ 状态文本颜色与状态图标颜色保持一致</li>
+            <li>✅ 支持多语言状态文本的颜色显示</li>
+            <li>✅ 同时适用于银行和数字货币的充提记录</li>
+            <li>✅ ETH转换状态也使用成功状态的绿色</li>
+        </ul>
+        
+        <h2>状态映射</h2>
+        <div class="test-item">
+            <h3>状态值映射</h3>
+            <div class="description">
+                <strong>银行充值记录 (c2cOrder):</strong><br>
+                - state = 0 → 确定中 (黄色)<br>
+                - state = 1 → 成功 (绿色)<br>
+                - state = 2 → 失败 (红色)<br><br>
+                <strong>数字货币充提记录 (rechargeBlockchain):</strong><br>
+                - status = 0 → 确定中 (黄色)<br>
+                - status = 1 → 成功 (绿色)<br>
+                - status = 2 → 失败 (红色)<br>
+                - failure_msg = "当前币种为eth直接完成订单" → ETH已兑换为USDT (绿色)
+            </div>
+        </div>
+    </div>
+</body>
+</html>

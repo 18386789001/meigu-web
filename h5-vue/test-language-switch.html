@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>语言切换测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .warning { color: #ffc107; }
+        .info { color: #17a2b8; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .status {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .language-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .language-info div {
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>H5-Vue 语言切换功能测试</h1>
+        <p>此页面用于测试语言切换功能是否正常工作</p>
+
+        <div class="test-section">
+            <h3>当前语言状态</h3>
+            <div class="language-info">
+                <div>
+                    <strong>localStorage语言:</strong>
+                    <span id="localStorage-lang">-</span>
+                </div>
+                <div>
+                    <strong>浏览器语言:</strong>
+                    <span id="browser-lang">-</span>
+                </div>
+            </div>
+            <button onclick="checkCurrentLanguage()">检查当前语言状态</button>
+            <div id="current-status" class="status"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>测试语言切换</h3>
+            <p>点击下面的按钮模拟语言切换操作</p>
+            <button onclick="testLanguageSwitch('zh-CN', '简体中文')">切换到简体中文</button>
+            <button onclick="testLanguageSwitch('ja-JP', '日本語')">切换到日语</button>
+            <button onclick="testLanguageSwitch('en-US', 'English')">切换到英语</button>
+            <button onclick="testLanguageSwitch('ko-KR', '한국어')">切换到韩语</button>
+            <div id="switch-result" class="status"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>localStorage操作测试</h3>
+            <button onclick="clearLanguageSetting()">清除语言设置</button>
+            <button onclick="setLanguageSetting('zh-CN')">设置为中文</button>
+            <button onclick="setLanguageSetting('ja-JP')">设置为日语</button>
+            <div id="storage-result" class="status"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>页面跳转测试</h3>
+            <p>测试语言设置在页面跳转后是否保持</p>
+            <button onclick="goToMainPage()">跳转到主页</button>
+            <button onclick="goToTradingPage()">跳转到交易页面</button>
+            <div class="info">
+                <strong>测试步骤：</strong>
+                <ol>
+                    <li>选择一种语言</li>
+                    <li>点击跳转按钮</li>
+                    <li>观察目标页面的语言选择器是否显示正确</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>调试信息</h3>
+            <button onclick="showDebugInfo()">显示调试信息</button>
+            <div id="debug-info" class="status"></div>
+        </div>
+    </div>
+
+    <script>
+        // 检查当前语言状态
+        function checkCurrentLanguage() {
+            const localStorageLang = localStorage.getItem('lang') || '未设置';
+            const browserLang = navigator.language || navigator.userLanguage || '未知';
+            
+            document.getElementById('localStorage-lang').textContent = localStorageLang;
+            document.getElementById('browser-lang').textContent = browserLang;
+            
+            document.getElementById('current-status').innerHTML = `
+                <h4>当前语言状态</h4>
+                <p><strong>localStorage:</strong> ${localStorageLang}</p>
+                <p><strong>浏览器语言:</strong> ${browserLang}</p>
+                <p><strong>检查时间:</strong> ${new Date().toLocaleString()}</p>
+            `;
+        }
+
+        // 测试语言切换
+        function testLanguageSwitch(langCode, langName) {
+            console.log(`测试切换到: ${langName} (${langCode})`);
+            
+            // 模拟语言切换操作
+            localStorage.setItem('lang', langCode);
+            
+            document.getElementById('switch-result').innerHTML = `
+                <span class="success">✓ 已设置语言为: ${langName} (${langCode})</span>
+                <p>localStorage已更新，请刷新页面或跳转到主页查看效果</p>
+                <p><strong>设置时间:</strong> ${new Date().toLocaleString()}</p>
+            `;
+            
+            // 更新当前状态显示
+            checkCurrentLanguage();
+        }
+
+        // 清除语言设置
+        function clearLanguageSetting() {
+            localStorage.removeItem('lang');
+            document.getElementById('storage-result').innerHTML = 
+                '<span class="warning">⚠ 语言设置已清除</span>';
+            checkCurrentLanguage();
+        }
+
+        // 设置语言
+        function setLanguageSetting(langCode) {
+            localStorage.setItem('lang', langCode);
+            document.getElementById('storage-result').innerHTML = 
+                `<span class="success">✓ 语言已设置为: ${langCode}</span>`;
+            checkCurrentLanguage();
+        }
+
+        // 跳转到主页
+        function goToMainPage() {
+            window.open('/h5/', '_blank');
+        }
+
+        // 跳转到交易页面
+        function goToTradingPage() {
+            window.open('/h5/trading', '_blank');
+        }
+
+        // 显示调试信息
+        function showDebugInfo() {
+            const debugInfo = {
+                localStorage: {
+                    lang: localStorage.getItem('lang'),
+                    allKeys: Object.keys(localStorage)
+                },
+                navigator: {
+                    language: navigator.language,
+                    languages: navigator.languages,
+                    userAgent: navigator.userAgent
+                },
+                location: {
+                    href: window.location.href,
+                    origin: window.location.origin,
+                    pathname: window.location.pathname
+                }
+            };
+            
+            document.getElementById('debug-info').innerHTML = `
+                <h4>调试信息</h4>
+                <pre>${JSON.stringify(debugInfo, null, 2)}</pre>
+            `;
+        }
+
+        // 页面加载时自动检查
+        document.addEventListener('DOMContentLoaded', function() {
+            checkCurrentLanguage();
+        });
+
+        // 监听localStorage变化
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'lang') {
+                console.log('检测到语言设置变化:', e.oldValue, '->', e.newValue);
+                checkCurrentLanguage();
+            }
+        });
+    </script>
+</body>
+</html>

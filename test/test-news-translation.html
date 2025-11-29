@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试新闻翻译功能</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        .news-item {
+            margin: 15px 0;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            background: white;
+        }
+        .original {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .translated {
+            color: #007bff;
+            font-style: italic;
+        }
+        .language-selector {
+            margin: 20px 0;
+        }
+        select, button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+        }
+        .error {
+            background: #ffe7e7;
+            border-color: #ffb3b3;
+            color: #d00;
+        }
+        .success {
+            background: #e7ffe7;
+            border-color: #b3ffb3;
+            color: #0a0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>新闻翻译功能测试</h1>
+        
+        <div class="language-selector">
+            <label>选择目标语言:</label>
+            <select id="languageSelect">
+                <option value="en">英文 (English)</option>
+                <option value="ja">日文 (Japanese)</option>
+                <option value="zh-CN">中文 (Chinese)</option>
+            </select>
+            <button onclick="testTranslation()">测试翻译</button>
+            <button onclick="clearResults()">清除结果</button>
+        </div>
+
+        <div id="status" class="status" style="display: none;"></div>
+
+        <div class="test-section">
+            <h2>测试新闻数据</h2>
+            <div id="newsContainer">
+                <!-- 新闻项目将在这里显示 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟新闻数据 - 测试智能摘要生成功能
+        const mockNewsData = [
+            {
+                uuid: '1',
+                createdAt: '2025-09-23 04:05:28',
+                description: '道指期指收涨22日（周一）收盘上涨6.27点，涨幅0.14%，报46381.54点；标普500期指收涨22日（周一）收盘上涨29.39点，涨幅0.44%，报6693.75点；纳指期指收涨22日（周一）收盘上涨157.50点，涨幅0.70%，报22788.98点。'
+            },
+            {
+                uuid: '2',
+                createdAt: '2025-09-23 04:04:54',
+                description: '【美联储官员表示】9月23日讯，美联储官员在最新讲话中表示，当前通胀水平仍然是货币政策的主要考虑因素，央行将继续密切关注经济数据变化。'
+            },
+            {
+                uuid: '3',
+                createdAt: '2025-09-23 04:04:13',
+                description: '黄金价格今日创下新高，每盎司突破2000美元大关，主要受到避险需求推动和美元走弱影响。'
+            },
+            {
+                uuid: '4',
+                createdAt: '2025-09-23 04:03:43',
+                description: '欧洲主要股指均收涨，德国DAX指数上涨1.2%，法国CAC40指数上涨0.8%，英国富时100指数上涨0.6%。'
+            },
+            {
+                uuid: '5',
+                createdAt: '2025-09-23 04:02:53',
+                description: '据报道：美国总统特朗普将与国会领袖讨论政府预算问题，预计本周内将达成初步协议。'
+            },
+            {
+                uuid: '6',
+                createdAt: '2025-09-23 04:01:26',
+                description: '原油价格波动加剧，布伦特原油期货下跌2.1%，受到全球经济增长担忧和供应过剩预期影响。'
+            },
+            {
+                uuid: '7',
+                createdAt: '2025-09-23 03:55:05',
+                description: '比特币价格今日大幅上涨8.5%，突破45000美元关口，以太坊等主要加密货币也出现显著涨幅。'
+            },
+            {
+                uuid: '8',
+                createdAt: '2025-09-23 03:43:13',
+                description: '【联合国安理会】9月23日讯，联合国安理会就中东地区局势举行紧急会议，各国代表就地区稳定问题进行深入讨论。'
+            },
+            {
+                uuid: '9',
+                createdAt: '2025-09-23 03:40:30',
+                description: '美元兑主要货币汇率今日普遍下跌，美元指数跌至102.5，欧元兑美元上涨至1.0950。'
+            },
+            {
+                uuid: '10',
+                createdAt: '2025-09-23 03:38:15',
+                description: '中国发布最新CPI数据，9月份消费者价格指数同比上涨2.1%，符合市场预期，显示通胀压力温和。'
+            }
+        ];
+
+        // 简化的翻译服务类
+        class SimpleTranslationService {
+            constructor() {
+                this.cache = new Map();
+            }
+
+            needsTranslation(currentLang) {
+                return currentLang === 'en' || currentLang === 'ja';
+            }
+
+            mockTranslateToEnglish(text) {
+                const translations = {
+                    '【美联储官员表示】9月23日讯，北京时间今天（9月23日）凌晨，法国工业部长表示，此前联合国对中国152个国家和巴西新兴市场各国会议全面中断中国经济增长，预计明年经济增长。': 'Fed officials said on September 23, Beijing time early morning today (September 23), French Industry Minister said that the previous UN meeting on China\'s 152 countries and Brazil\'s emerging markets was completely interrupted China\'s economic growth, expecting economic growth next year.',
+                    '沙特外交大臣：两国方案是实现（巴勒斯坦和以色列）和平的唯一方式。': 'Saudi Foreign Minister: The two-state solution is the only way to achieve peace (between Palestine and Israel).',
+                    '【美元指数22日下跌】9月23日讯，美国美元对六种主要货币市场美元走势下跌0.31%，在上午指数市场下跌了330，至美元指数下跌，1%元兑美元上涨，高于一天一交易日的1.1740美元；1美元兑英镑1.3617美元，高于一天一交易日的1.3617美元，高于一天一交易日的147.96日元；1美元兑加元1.7925加元上涨，低于一天一交易日的0.7955加元上涨；1美元兑瑞士法郎1.3821加元，高于一天一交易日的1.3760加元；1美元兑澳元0.3552澳元兑美元，低于一天一交易日的0.4147澳元兑美元。': 'US Dollar Index fell on the 22nd. September 23 - The US dollar against six major currencies fell 0.31%, with the morning index market falling 330 points, the dollar index declined 1%, yuan against dollar rose, higher than the previous trading day\'s 1.1740 dollars; 1 dollar against pound 1.3617 dollars, higher than the previous trading day\'s 1.3617 dollars, higher than the previous trading day\'s 147.96 yen; 1 dollar against Canadian dollar 1.7925 Canadian dollars rose, lower than the previous trading day\'s 0.7955 Canadian dollars; 1 dollar against Swiss franc 1.3821 Canadian dollars, higher than the previous trading day\'s 1.3760 Canadian dollars; 1 dollar against Australian dollar 0.3552 Australian dollars, lower than the previous trading day\'s 0.4147 Australian dollars.',
+                    '进口石油(DIS N)V增幅开升，跌幅收至全1%。': 'Imported oil (DIS N)V gains opened higher, decline narrowed to 1%.',
+                    '进口石油(DIS N)：周二开盘新幅新高（吉米攻击外汇直播系）（冷走手）。': 'Imported oil (DIS N): Tuesday opening reached new highs (Jimmy forex live trading system) (cold hands).'
+                };
+
+                return translations[text] || this.keywordTranslate(text, 'en');
+            }
+
+            mockTranslateToJapanese(text) {
+                const translations = {
+                    '【美联储官员表示】9月23日讯，北京时间今天（9月23日）凌晨，法国工业部长表示，此前联合国对中国152个国家和巴西新兴市场各国会议全面中断中国经济增长，预计明年经济增长。': '【FRB当局者表明】9月23日、北京時間今日（9月23日）未明、フランス産業大臣は、これまでの国連による中国152カ国とブラジル新興市場各国会議が中国の経済成長を全面的に中断し、来年の経済成長を予想すると表明した。',
+                    '沙特外交大臣：两国方案是实现（巴勒斯坦和以色列）和平的唯一方式。': 'サウジ外務大臣：二国家解決案は（パレスチナとイスラエル）平和を実現する唯一の方法である。',
+                    '【美元指数22日下跌】9月23日讯，美国美元对六种主要货币市场美元走势下跌0.31%，在上午指数市场下跌了330，至美元指数下跌，1%元兑美元上涨，高于一天一交易日的1.1740美元；1美元兑英镑1.3617美元，高于一天一交易日的1.3617美元，高于一天一交易日的147.96日元；1美元兑加元1.7925加元上涨，低于一天一交易日的0.7955加元上涨；1美元兑瑞士法郎1.3821加元，高于一天一交易日的1.3760加元；1美元兑澳元0.3552澳元兑美元，低于一天一交易日的0.4147澳元兑美元。': '【米ドル指数22日下落】9月23日、米国ドルが主要6通貨に対して0.31%下落、午前の指数市場は330ポイント下落、ドル指数は1%下落、元対ドルは上昇し、前営業日の1.1740ドルを上回った；1ドル対ポンドは1.3617ドル、前営業日の1.3617ドル、前営業日の147.96円を上回った；1ドル対カナダドルは1.7925カナダドル上昇、前営業日の0.7955カナダドルを下回った；1ドル対スイスフランは1.3821カナダドル、前営業日の1.3760カナダドルを上回った；1ドル対豪ドルは0.3552豪ドル、前営業日の0.4147豪ドルを下回った。',
+                    '进口石油(DIS N)V增幅开升，跌幅收至全1%。': '輸入石油(DIS N)V上昇幅が拡大、下落幅は1%に縮小。',
+                    '进口石油(DIS N)：周二开盘新幅新高（吉米攻击外汇直播系）（冷走手）。': '輸入石油(DIS N)：火曜日の寄り付きで新高値（ジミー外国為替ライブシステム）（コールドハンド）。'
+                };
+
+                return translations[text] || this.keywordTranslate(text, 'ja');
+            }
+
+            keywordTranslate(text, targetLang) {
+                if (targetLang === 'en') {
+                    return text.replace(/美联储/g, 'Federal Reserve')
+                              .replace(/美元/g, 'US Dollar')
+                              .replace(/石油/g, 'Oil')
+                              .replace(/上涨/g, 'rise')
+                              .replace(/下跌/g, 'fall') || 'Financial news: Market updates and economic developments';
+                } else if (targetLang === 'ja') {
+                    return text.replace(/美联储/g, 'FRB')
+                              .replace(/美元/g, '米ドル')
+                              .replace(/石油/g, '石油')
+                              .replace(/上涨/g, '上昇')
+                              .replace(/下跌/g, '下落') || '金融ニュース：市場の最新情報と経済動向';
+                }
+                return text;
+            }
+
+            translateTextSync(text, targetLang) {
+                if (!this.needsTranslation(targetLang)) {
+                    return text;
+                }
+
+                const cacheKey = `${text}_${targetLang}`;
+                if (this.cache.has(cacheKey)) {
+                    return this.cache.get(cacheKey);
+                }
+
+                let result;
+                if (targetLang === 'en') {
+                    result = this.mockTranslateToEnglish(text);
+                } else if (targetLang === 'ja') {
+                    result = this.mockTranslateToJapanese(text);
+                } else {
+                    result = text;
+                }
+
+                this.cache.set(cacheKey, result);
+                return result;
+            }
+
+            translateNewsList(newsList, targetLang) {
+                if (!this.needsTranslation(targetLang) || !newsList || newsList.length === 0) {
+                    return newsList;
+                }
+
+                return newsList.map(item => ({
+                    ...item,
+                    description: this.translateTextSync(item.description, targetLang),
+                    originalDescription: item.description
+                }));
+            }
+        }
+
+        const translationService = new SimpleTranslationService();
+
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+        }
+
+        function testTranslation() {
+            const targetLang = document.getElementById('languageSelect').value;
+            const container = document.getElementById('newsContainer');
+
+            showStatus(`正在翻译到 ${targetLang}...`, 'info');
+
+            try {
+                const translatedNews = translationService.translateNewsList(mockNewsData, targetLang);
+
+                container.innerHTML = '';
+
+                // 验证翻译结果
+                let chineseCount = 0;
+                let totalCount = translatedNews.length;
+
+                translatedNews.forEach((item, index) => {
+                    const newsDiv = document.createElement('div');
+                    newsDiv.className = 'news-item';
+
+                    // 检查是否包含中文字符
+                    const hasChineseChars = /[\u4e00-\u9fa5]/.test(item.description);
+                    if (hasChineseChars && targetLang !== 'zh-CN') {
+                        chineseCount++;
+                        newsDiv.style.borderLeft = '4px solid #ff4444'; // 红色边框表示问题
+                    }
+
+                    newsDiv.innerHTML = `
+                        <div><strong>时间:</strong> ${item.createdAt}</div>
+                        <div class="original"><strong>原文:</strong> ${item.originalDescription || item.description}</div>
+                        ${targetLang !== 'zh-CN' ? `<div class="translated"><strong>翻译 (${targetLang}):</strong> ${item.description}</div>` : ''}
+                        ${hasChineseChars && targetLang !== 'zh-CN' ? '<div style="color: red; font-size: 12px;">⚠️ 包含中文字符</div>' : ''}
+                    `;
+
+                    container.appendChild(newsDiv);
+                });
+
+                // 显示验证结果
+                if (chineseCount > 0 && targetLang !== 'zh-CN') {
+                    showStatus(`翻译完成，但有 ${chineseCount}/${totalCount} 条新闻仍包含中文字符`, 'error');
+                } else {
+                    const langName = targetLang === 'en' ? '英文' : targetLang === 'ja' ? '日文' : '中文';
+                    showStatus(`翻译完成！共处理 ${translatedNews.length} 条新闻，全部翻译为${langName}`, 'success');
+                }
+
+                // 检查内容重复性
+                const descriptions = translatedNews.map(item => item.description);
+                const uniqueDescriptions = [...new Set(descriptions)];
+                if (uniqueDescriptions.length < descriptions.length) {
+                    const duplicateCount = descriptions.length - uniqueDescriptions.length;
+                    showStatus(`警告：发现 ${duplicateCount} 条重复内容`, 'warning');
+                } else {
+                    showStatus(`✅ 所有翻译内容都是唯一的，无重复`, 'success');
+                }
+            } catch (error) {
+                showStatus(`翻译失败: ${error.message}`, 'error');
+                console.error('Translation error:', error);
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('newsContainer').innerHTML = '';
+            document.getElementById('status').style.display = 'none';
+        }
+
+        // 页面加载时显示中文原文
+        window.onload = function() {
+            testTranslation();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>URL生成测试工具</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        .test-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background: #5568d3;
+        }
+        .result-box {
+            background: #282c34;
+            color: #61dafb;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Consolas', monospace;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .success {
+            background: #f0f9ff;
+            border-left: 4px solid #67C23A;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #fef0f0;
+            border-left: 4px solid #F56C6C;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .info {
+            background: #e1f3ff;
+            border-left: 4px solid #409EFF;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #667eea;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .check-icon {
+            font-size: 20px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 URL生成测试工具</h1>
+        
+        <div class="info">
+            <strong>📌 测试目的</strong><br>
+            验证URL生成函数是否正确处理hash路由和查询参数
+        </div>
+
+        <div class="test-section">
+            <h2>1️⃣ 基础URL生成测试</h2>
+            <button class="test-button" onclick="testBasicUrl()">测试基础URL</button>
+            <div id="basic-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2️⃣ 带语言参数的URL测试</h2>
+            <button class="test-button" onclick="testUrlWithLang('en')">English</button>
+            <button class="test-button" onclick="testUrlWithLang('Japanese')">日本語</button>
+            <button class="test-button" onclick="testUrlWithLang('Korean')">한국어</button>
+            <button class="test-button" onclick="testUrlWithLang('th')">ไทย</button>
+            <button class="test-button" onclick="testUrlWithLang('CN')">中文</button>
+            <div id="lang-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3️⃣ Hash位置验证</h2>
+            <button class="test-button" onclick="validateHashPosition()">验证Hash位置</button>
+            <div id="hash-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>4️⃣ 所有语言测试</h2>
+            <button class="test-button" onclick="testAllLanguages()">测试所有语言</button>
+            <div id="all-lang-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>5️⃣ URL格式对比</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>格式</th>
+                        <th>示例</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>✅ 正确格式</td>
+                        <td><code>https://jpmx.xyz/syn/?lang=Japanese#/my/index</code></td>
+                        <td style="color: green;">参数在hash之前</td>
+                    </tr>
+                    <tr>
+                        <td>❌ 错误格式</td>
+                        <td><code>https://jpmx.xyz/syn/#/my/index?lang=Japanese</code></td>
+                        <td style="color: red;">参数在hash之后</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 模拟generateUrl函数
+        function generateUrl(path = '', params = {}) {
+            const protocol = 'https';
+            const domain = 'jpmx.xyz';
+            
+            // 检查路径中是否包含hash (#)
+            let hashPart = '';
+            let pathPart = path;
+            if (path.includes('#')) {
+                const hashIndex = path.indexOf('#');
+                pathPart = path.substring(0, hashIndex);
+                hashPart = path.substring(hashIndex);
+            }
+            
+            let fullUrl = `${protocol}://${domain}${pathPart}`;
+            
+            // 添加查询参数（在hash之前）
+            if (Object.keys(params).length > 0) {
+                const searchParams = new URLSearchParams();
+                Object.entries(params).forEach(([key, value]) => {
+                    if (value !== null && value !== undefined) {
+                        searchParams.append(key, value);
+                    }
+                });
+                const queryString = searchParams.toString();
+                if (queryString) {
+                    fullUrl += (fullUrl.includes('?') ? '&' : '?') + queryString;
+                }
+            }
+            
+            // 添加hash部分
+            fullUrl += hashPart;
+            
+            return fullUrl;
+        }
+
+        function generateWapUrl(path = '', params = {}) {
+            return generateUrl(`/syn${path}`, params);
+        }
+
+        function testBasicUrl() {
+            const url = generateWapUrl('/#/my/index', {});
+            const result = document.getElementById('basic-result');
+            result.innerHTML = `
+                <div class="result-box">${url}</div>
+                <div class="success">
+                    <span class="check-icon">✅</span>
+                    基础URL生成成功！
+                </div>
+            `;
+        }
+
+        function testUrlWithLang(lang) {
+            const url = generateWapUrl('/#/my/index', { lang: lang });
+            const result = document.getElementById('lang-result');
+            
+            // 验证格式
+            const isCorrect = url.includes('?lang=') && url.indexOf('?') < url.indexOf('#');
+            
+            result.innerHTML = `
+                <div class="result-box">${url}</div>
+                ${isCorrect ? 
+                    '<div class="success"><span class="check-icon">✅</span>URL格式正确！参数在hash之前</div>' :
+                    '<div class="error"><span class="check-icon">❌</span>URL格式错误！参数应该在hash之前</div>'
+                }
+            `;
+        }
+
+        function validateHashPosition() {
+            const testCases = [
+                { lang: 'Japanese', expected: true },
+                { lang: 'Korean', expected: true },
+                { lang: 'en', expected: true },
+            ];
+
+            let html = '<table><thead><tr><th>语言</th><th>生成的URL</th><th>验证结果</th></tr></thead><tbody>';
+            
+            testCases.forEach(test => {
+                const url = generateWapUrl('/#/my/index', { lang: test.lang });
+                const hashIndex = url.indexOf('#');
+                const queryIndex = url.indexOf('?lang=');
+                const isCorrect = queryIndex < hashIndex && queryIndex !== -1;
+                
+                html += `
+                    <tr>
+                        <td>${test.lang}</td>
+                        <td style="font-size: 12px; word-break: break-all;">${url}</td>
+                        <td style="color: ${isCorrect ? 'green' : 'red'}">
+                            ${isCorrect ? '✅ 正确' : '❌ 错误'}
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            document.getElementById('hash-result').innerHTML = html;
+        }
+
+        function testAllLanguages() {
+            const languages = [
+                { code: 'en', name: 'English' },
+                { code: 'Japanese', name: '日本語' },
+                { code: 'Korean', name: '한국어' },
+                { code: 'th', name: 'ไทย' },
+                { code: 'vi', name: 'Tiếng Việt' },
+                { code: 'de', name: 'Deutsch' },
+                { code: 'es', name: 'Español' },
+                { code: 'fr', name: 'Français' },
+                { code: 'Italy', name: 'Italiano' },
+                { code: 'pt', name: 'Português' },
+                { code: 'gr', name: 'Ελληνικά' },
+                { code: 'CN', name: '中文' }
+            ];
+
+            let html = '<table><thead><tr><th>语言</th><th>代码</th><th>生成的URL</th><th>状态</th></tr></thead><tbody>';
+            let allCorrect = true;
+            
+            languages.forEach(lang => {
+                const url = generateWapUrl('/#/my/index', { lang: lang.code });
+                const hashIndex = url.indexOf('#');
+                const queryIndex = url.indexOf('?lang=');
+                const isCorrect = queryIndex < hashIndex && queryIndex !== -1;
+                
+                if (!isCorrect) allCorrect = false;
+                
+                html += `
+                    <tr>
+                        <td>${lang.name}</td>
+                        <td>${lang.code}</td>
+                        <td style="font-size: 11px; word-break: break-all;">${url}</td>
+                        <td style="color: ${isCorrect ? 'green' : 'red'}">
+                            ${isCorrect ? '✅' : '❌'}
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            
+            if (allCorrect) {
+                html += '<div class="success"><span class="check-icon">🎉</span>所有语言测试通过！</div>';
+            } else {
+                html += '<div class="error"><span class="check-icon">⚠️</span>存在错误的URL格式</div>';
+            }
+            
+            document.getElementById('all-lang-result').innerHTML = html;
+        }
+
+        // 页面加载时自动运行基础测试
+        window.onload = function() {
+            testBasicUrl();
+        };
+    </script>
+</body>
+</html>
+

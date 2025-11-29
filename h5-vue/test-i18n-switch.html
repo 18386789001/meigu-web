@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>i18n语言切换测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .warning { color: #ffc107; }
+        .info { color: #17a2b8; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .status {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .i18n-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .i18n-info div {
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+        }
+        .translation-test {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .translation-test div {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+        iframe {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>H5-Vue i18n语言切换功能测试</h1>
+        <p>此页面用于测试Vue i18n语言切换功能是否正常工作</p>
+
+        <div class="test-section">
+            <h3>当前i18n状态</h3>
+            <div class="i18n-info">
+                <div>
+                    <strong>localStorage语言:</strong>
+                    <span id="localStorage-lang">-</span>
+                </div>
+                <div>
+                    <strong>浏览器语言:</strong>
+                    <span id="browser-lang">-</span>
+                </div>
+                <div>
+                    <strong>当前时间:</strong>
+                    <span id="current-time">-</span>
+                </div>
+            </div>
+            <button onclick="checkI18nStatus()">检查i18n状态</button>
+            <div id="i18n-status" class="status"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>语言切换测试</h3>
+            <p>点击下面的按钮设置不同语言，然后刷新页面查看效果</p>
+            <button onclick="setLanguageAndRefresh('zh-CN')">设置中文并刷新</button>
+            <button onclick="setLanguageAndRefresh('ja-JP')">设置日语并刷新</button>
+            <button onclick="setLanguageAndRefresh('en-US')">设置英语并刷新</button>
+            <button onclick="setLanguageAndRefresh('ko-KR')">设置韩语并刷新</button>
+            <div id="language-result" class="status"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>翻译内容测试</h3>
+            <p>测试不同语言的翻译内容</p>
+            <div class="translation-test">
+                <div>
+                    <h4>中文翻译 (zh-CN)</h4>
+                    <ul>
+                        <li>home.heroTitle: "与Demo交易，无处不在的可能性"</li>
+                        <li>home.startTrading: "开始交易"</li>
+                        <li>nav.home: "首页"</li>
+                        <li>nav.trading: "交易"</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>英文翻译 (en-US)</h4>
+                    <ul>
+                        <li>home.heroTitle: "Trade Possibilities Everywhere with Demo"</li>
+                        <li>home.startTrading: "Start Trading"</li>
+                        <li>nav.home: "Home"</li>
+                        <li>nav.trading: "Trading"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>实时页面预览</h3>
+            <p>下面的iframe显示实际的h5页面，可以直接测试语言切换</p>
+            <button onclick="refreshIframe()">刷新预览</button>
+            <button onclick="openInNewTab()">在新标签页打开</button>
+            <iframe id="preview-iframe" src="/h5/"></iframe>
+        </div>
+
+        <div class="test-section">
+            <h3>调试工具</h3>
+            <button onclick="showDetailedDebugInfo()">显示详细调试信息</button>
+            <button onclick="clearAllLanguageData()">清除所有语言数据</button>
+            <button onclick="testAllLanguages()">测试所有语言</button>
+            <div id="debug-info" class="status"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>测试步骤</h3>
+            <div class="info">
+                <h4>完整测试流程：</h4>
+                <ol>
+                    <li><strong>检查初始状态</strong>：点击"检查i18n状态"查看当前语言设置</li>
+                    <li><strong>设置中文</strong>：点击"设置中文并刷新"</li>
+                    <li><strong>验证翻译</strong>：页面刷新后，检查页面内容是否为中文</li>
+                    <li><strong>检查选择器</strong>：语言选择器是否显示"简体中文"</li>
+                    <li><strong>测试其他语言</strong>：重复测试日语、英语等</li>
+                    <li><strong>跨页面测试</strong>：导航到不同页面，确认语言设置保持一致</li>
+                </ol>
+                
+                <h4>预期结果：</h4>
+                <ul>
+                    <li>✅ 语言选择器显示与页面内容语言一致</li>
+                    <li>✅ 页面刷新后语言设置保持不变</li>
+                    <li>✅ 所有页面元素都正确翻译</li>
+                    <li>✅ 跨页面导航时语言保持一致</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 检查i18n状态
+        function checkI18nStatus() {
+            const localStorageLang = localStorage.getItem('lang') || '未设置';
+            const browserLang = navigator.language || navigator.userLanguage || '未知';
+            const currentTime = new Date().toLocaleString();
+            
+            document.getElementById('localStorage-lang').textContent = localStorageLang;
+            document.getElementById('browser-lang').textContent = browserLang;
+            document.getElementById('current-time').textContent = currentTime;
+            
+            document.getElementById('i18n-status').innerHTML = `
+                <h4>i18n状态检查</h4>
+                <p><strong>localStorage语言:</strong> ${localStorageLang}</p>
+                <p><strong>浏览器语言:</strong> ${browserLang}</p>
+                <p><strong>检查时间:</strong> ${currentTime}</p>
+                <p><strong>页面URL:</strong> ${window.location.href}</p>
+            `;
+        }
+
+        // 设置语言并刷新
+        function setLanguageAndRefresh(langCode) {
+            const langNames = {
+                'zh-CN': '简体中文',
+                'ja-JP': '日本語', 
+                'en-US': 'English',
+                'ko-KR': '한국어'
+            };
+            
+            localStorage.setItem('lang', langCode);
+            
+            document.getElementById('language-result').innerHTML = `
+                <span class="success">✓ 已设置语言为: ${langNames[langCode]} (${langCode})</span>
+                <p>页面将在2秒后自动刷新...</p>
+            `;
+            
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        }
+
+        // 刷新iframe
+        function refreshIframe() {
+            document.getElementById('preview-iframe').src = document.getElementById('preview-iframe').src;
+        }
+
+        // 在新标签页打开
+        function openInNewTab() {
+            window.open('/h5/', '_blank');
+        }
+
+        // 显示详细调试信息
+        function showDetailedDebugInfo() {
+            const debugInfo = {
+                localStorage: {
+                    lang: localStorage.getItem('lang'),
+                    allKeys: Object.keys(localStorage),
+                    length: localStorage.length
+                },
+                navigator: {
+                    language: navigator.language,
+                    languages: navigator.languages,
+                    userAgent: navigator.userAgent.substring(0, 100) + '...'
+                },
+                location: {
+                    href: window.location.href,
+                    origin: window.location.origin,
+                    pathname: window.location.pathname,
+                    search: window.location.search
+                },
+                document: {
+                    title: document.title,
+                    lang: document.documentElement.lang,
+                    charset: document.characterSet
+                }
+            };
+            
+            document.getElementById('debug-info').innerHTML = `
+                <h4>详细调试信息</h4>
+                <pre style="background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto;">${JSON.stringify(debugInfo, null, 2)}</pre>
+            `;
+        }
+
+        // 清除所有语言数据
+        function clearAllLanguageData() {
+            localStorage.removeItem('lang');
+            document.getElementById('debug-info').innerHTML = 
+                '<span class="warning">⚠ 所有语言数据已清除，页面将刷新</span>';
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        }
+
+        // 测试所有语言
+        function testAllLanguages() {
+            const languages = ['zh-CN', 'ja-JP', 'en-US', 'ko-KR', 'de-DE'];
+            let currentIndex = 0;
+            
+            const testNext = () => {
+                if (currentIndex < languages.length) {
+                    const lang = languages[currentIndex];
+                    localStorage.setItem('lang', lang);
+                    
+                    document.getElementById('debug-info').innerHTML = `
+                        <p>正在测试语言: ${lang} (${currentIndex + 1}/${languages.length})</p>
+                        <p>请观察iframe中的页面内容变化...</p>
+                    `;
+                    
+                    refreshIframe();
+                    currentIndex++;
+                    
+                    setTimeout(testNext, 3000);
+                } else {
+                    document.getElementById('debug-info').innerHTML = 
+                        '<span class="success">✓ 所有语言测试完成</span>';
+                }
+            };
+            
+            testNext();
+        }
+
+        // 页面加载时自动检查
+        document.addEventListener('DOMContentLoaded', function() {
+            checkI18nStatus();
+            
+            // 每5秒自动更新时间
+            setInterval(() => {
+                document.getElementById('current-time').textContent = new Date().toLocaleString();
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

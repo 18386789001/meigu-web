@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home页面i18n测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .key {
+            font-weight: bold;
+            color: #333;
+        }
+        .value {
+            color: #666;
+            margin-left: 10px;
+        }
+        .error {
+            color: red;
+            background-color: #fff0f0;
+        }
+        .success {
+            color: green;
+            background-color: #f0fff0;
+        }
+        .language-selector {
+            margin-bottom: 20px;
+        }
+        select {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Home页面i18n测试</h1>
+        
+        <div class="language-selector">
+            <label for="lang-select">选择语言:</label>
+            <select id="lang-select">
+                <option value="zh-CN">简体中文</option>
+                <option value="zh">中文</option>
+                <option value="en-US">English</option>
+                <option value="ja-JP">日本語</option>
+                <option value="ko-KR">한국어</option>
+                <option value="zh-TW">繁體中文</option>
+            </select>
+        </div>
+        
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        // 模拟i18n消息对象
+        const messages = {
+            'zh-CN': {
+                home: {
+                    tradeNow: '立即交易',
+                    advantages: '我们的优势',
+                    advantagesDetails: {
+                        professionalPlatform: '专业平台',
+                        mt5Platform: 'MT5Professional trading platform',
+                        security: '资金安全',
+                        fundSecurity: '银行级资金安全保障',
+                        lowSpreads: '超低点差',
+                        ultraLowSpreads: '极具竞争力的超低点差',
+                        support247: '24/7客服',
+                        allDaySupport: '全天候客户服务支持'
+                    },
+                    register: {
+                        title: '开始您的交易之旅',
+                        subtitle: '立即注册，享受专业交易服务',
+                        realAccount: '真实账户',
+                        demoAccount: '模拟账户'
+                    }
+                }
+            },
+            'zh': {
+                home: {
+                    tradeNow: '立即交易',
+                    advantages: '我们的优势',
+                    advantagesDetails: {
+                        professionalPlatform: '专业平台',
+                        mt5Platform: 'MT5Professional trading platform',
+                        security: '资金安全',
+                        fundSecurity: '银行级资金安全保障',
+                        lowSpreads: '超低点差',
+                        ultraLowSpreads: '极具竞争力的超低点差',
+                        support247: '24/7客服',
+                        allDaySupport: '全天候客户服务支持'
+                    },
+                    register: {
+                        title: '开始您的交易之旅',
+                        subtitle: '立即注册，享受专业交易服务',
+                        realAccount: '真实账户',
+                        demoAccount: '模拟账户'
+                    }
+                }
+            },
+            'en-US': {
+                home: {
+                    tradeNow: 'Trade Now',
+                    advantages: 'Our Advantages',
+                    advantagesDetails: {
+                        professionalPlatform: 'Professional Platform',
+                        mt5Platform: 'MT5 Professional Trading Platform',
+                        security: 'Security Guarantee',
+                        fundSecurity: 'Fund Security, Regulatory Compliance',
+                        lowSpreads: 'Low Spreads',
+                        ultraLowSpreads: 'Ultra-low Spreads, Reduce Costs',
+                        support247: '24/7 Support',
+                        allDaySupport: 'All-day Customer Service'
+                    },
+                    register: {
+                        title: 'Start Your Trading Journey Now',
+                        subtitle: 'Join millions of traders worldwide',
+                        realAccount: 'Open Real Account',
+                        demoAccount: 'Try Demo Account'
+                    }
+                }
+            },
+            'ja-JP': {
+                home: {
+                    tradeNow: '今すぐ取引',
+                    advantages: '私たちの利点',
+                    advantagesDetails: {
+                        professionalPlatform: 'プロフェッショナルプラットフォーム',
+                        mt5Platform: 'MT5プロフェッショナル取引プラットフォーム',
+                        security: 'セキュリティ保証',
+                        fundSecurity: '資金セキュリティ、規制遵守',
+                        lowSpreads: '低スプレッド',
+                        ultraLowSpreads: '超低スプレッド、コスト削減',
+                        support247: '24/7サポート',
+                        allDaySupport: '24時間カスタマーサービス'
+                    },
+                    register: {
+                        title: '今すぐ取引の旅を始めましょう',
+                        subtitle: '世界中の何百万人ものトレーダーに参加',
+                        realAccount: 'リアルアカウント開設',
+                        demoAccount: 'デモアカウント試用'
+                    }
+                }
+            },
+            'ko-KR': {
+                home: {
+                    tradeNow: '지금 거래',
+                    advantages: '우리의 장점',
+                    advantagesDetails: {
+                        professionalPlatform: '전문 플랫폼',
+                        mt5Platform: 'MT5 전문 거래 플랫폼',
+                        security: '보안 보장',
+                        fundSecurity: '자금 보안, 규제 준수',
+                        lowSpreads: '낮은 스프레드',
+                        ultraLowSpreads: '초저 스프레드, 비용 절감',
+                        support247: '24/7 지원',
+                        allDaySupport: '24시간 고객 서비스'
+                    },
+                    register: {
+                        title: '지금 거래 여정을 시작하세요',
+                        subtitle: '전 세계 수백만 트레이더에 참여',
+                        realAccount: '실제 계좌 개설',
+                        demoAccount: '데모 계좌 체험'
+                    }
+                }
+            },
+            'zh-TW': {
+                home: {
+                    tradeNow: '立即交易',
+                    advantages: '平台優勢',
+                    advantagesDetails: {
+                        professionalPlatform: '專業平台',
+                        mt5Platform: 'MT5專業交易平台',
+                        security: '安全保障',
+                        fundSecurity: '資金安全，監管合規',
+                        lowSpreads: '低點差',
+                        ultraLowSpreads: '超低點差，降低成本',
+                        support247: '24/7支持',
+                        allDaySupport: '全天候客戶服務'
+                    },
+                    register: {
+                        title: '立即開始您的交易之旅',
+                        subtitle: '加入全球數百萬交易者的行列',
+                        realAccount: '開立真實賬戶',
+                        demoAccount: '體驗模擬賬戶'
+                    }
+                }
+            }
+        };
+
+        // 复制zh-CN到zh
+        messages['zh'] = { ...messages['zh-CN'] };
+
+        // 翻译函数
+        function t(key, locale = 'zh-CN') {
+            const keys = key.split('.');
+            let translation = messages[locale];
+            
+            for (const k of keys) {
+                if (translation && typeof translation === 'object' && translation[k]) {
+                    translation = translation[k];
+                } else {
+                    return key; // 返回key本身作为fallback
+                }
+            }
+            
+            return typeof translation === 'string' ? translation : key;
+        }
+
+        // 测试键值
+        const testKeys = [
+            'home.tradeNow',
+            'home.advantages',
+            'home.advantagesDetails.professionalPlatform',
+            'home.advantagesDetails.mt5Platform',
+            'home.advantagesDetails.security',
+            'home.advantagesDetails.fundSecurity',
+            'home.advantagesDetails.lowSpreads',
+            'home.advantagesDetails.ultraLowSpreads',
+            'home.advantagesDetails.support247',
+            'home.advantagesDetails.allDaySupport',
+            'home.register.title',
+            'home.register.subtitle',
+            'home.register.realAccount',
+            'home.register.demoAccount'
+        ];
+
+        function runTests(locale) {
+            const resultsContainer = document.getElementById('test-results');
+            resultsContainer.innerHTML = `<h2>测试结果 - ${locale}</h2>`;
+            
+            testKeys.forEach(key => {
+                const value = t(key, locale);
+                const isTranslated = value !== key;
+                
+                const testItem = document.createElement('div');
+                testItem.className = 'test-item';
+                testItem.innerHTML = `
+                    <span class="key">${key}:</span>
+                    <span class="value ${isTranslated ? 'success' : 'error'}">${value}</span>
+                `;
+                
+                resultsContainer.appendChild(testItem);
+            });
+        }
+
+        // 语言选择器事件
+        document.getElementById('lang-select').addEventListener('change', (e) => {
+            runTests(e.target.value);
+        });
+
+        // 初始测试
+        runTests('zh-CN');
+    </script>
+</body>
+</html>

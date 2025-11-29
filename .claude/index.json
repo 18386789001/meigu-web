@@ -1,0 +1,143 @@
+{
+  "project": "MSX",
+  "timestamp": "2025-11-29T15:36:42.000Z",
+  "modules": [
+    {
+      "path": "admin-vue",
+      "name": "admin-vue",
+      "type": "management",
+      "description": "管理后台系统，用于平台管理、用户管理、内容管理、系统配置等功能",
+      "framework": "Vue 2",
+      "ui": "Element UI + Avue",
+      "build": "Vue CLI",
+      "entry": "src/main.js",
+      "apis": [
+        "src/api/auth.js",
+        "src/api/user.js",
+        "src/api/article.js",
+        "src/api/chat.js",
+        "src/api/contacts.js",
+        "src/api/group.js",
+        "src/api/emoticon.js",
+        "src/api/upload.js"
+      ],
+      "stateManagement": "Vuex",
+      "testing": {
+        "framework": "Jest",
+        "config": "jest.config.js"
+      },
+      "config": {
+        "env": [".env.development", ".env.production"],
+        "babel": "babel.config.js"
+      }
+    },
+    {
+      "path": "web-vue",
+      "name": "web-vue",
+      "type": "trading",
+      "description": "PC端交易界面，支持综合盘和交易所功能，包括股票、加密货币、ETF等交易",
+      "framework": "Vue 3",
+      "ui": "Element Plus",
+      "build": "Vite",
+      "entry": "src/main.js",
+      "apis": [
+        "src/api/login.js",
+        "src/api/crypto.js",
+        "src/api/marketQuotes.js",
+        "src/api/kline.js",
+        "src/api/order.js",
+        "src/api/wallet.js",
+        "src/api/newApi/marketConfig.js",
+        "src/api/newApi/marketQuotes.js",
+        "src/api/newApi/stockDetail.js",
+        "src/api/newApi/rwa.js"
+      ],
+      "stateManagement": "Pinia",
+      "testing": {
+        "framework": "ESLint"
+      },
+      "config": {
+        "env": [".env", ".env.development", ".env.production"],
+        "vite": "vite.config.js",
+        "tailwind": "tailwind.config.js"
+      }
+    },
+    {
+      "path": "wap-vue",
+      "name": "wap-vue",
+      "type": "mobile-trading",
+      "description": "移动端WAP交易界面，为移动设备优化的完整交易功能",
+      "framework": "Vue 3",
+      "ui": "Vant",
+      "build": "Vite",
+      "entry": "src/main.js",
+      "apis": [
+        "src/service/login.api.js",
+        "src/service/cryptos.api.js",
+        "src/service/home.api.js",
+        "src/service/quotes.api.js",
+        "src/service/trade.api.js",
+        "src/service/user.api.js",
+        "src/service/newApi/marketConfig.js",
+        "src/service/newApi/marketQuotes.js",
+        "src/service/newApi/stockDetail.js"
+      ],
+      "stateManagement": "Pinia + Vuex",
+      "testing": {
+        "framework": "ESLint + Prettier"
+      },
+      "config": {
+        "env": [".env", ".env.development", ".env.production"],
+        "vite": "vite.config.js",
+        "postcss": "postcss.config.js"
+      }
+    },
+    {
+      "path": "h5-vue",
+      "name": "h5-vue",
+      "type": "mobile-light",
+      "description": "移动端H5轻量级交易应用，专注于核心交易功能",
+      "framework": "Vue 3",
+      "ui": "Element Plus",
+      "build": "Vite",
+      "entry": "src/main.js",
+      "apis": [
+        "src/utils/http.js"
+      ],
+      "stateManagement": "Pinia",
+      "testing": {
+        "framework": "ESLint"
+      },
+      "config": {
+        "env": [".env", ".env.development", ".env.production"],
+        "vite": "vite.config.js"
+      }
+    }
+  ],
+  "coverage": {
+    "totalFiles": 421,
+    "scannedFiles": 87,
+    "coveragePercentage": 20.7,
+    "ignoredPatterns": [
+      "node_modules/**",
+      "dist/**",
+      "build/**",
+      "public/**",
+      "*.lock",
+      "*.log",
+      "*.mp3",
+      "*.jpg",
+      "*.png",
+      "*.gif"
+    ],
+    "scanDepth": "medium"
+  },
+  "missingItems": [
+    "后端API文档",
+    "数据库模式文档",
+    "部署脚本",
+    "CI/CD配置"
+  ],
+  "truncated": false,
+  "lastScanDate": "2025-11-29T15:36:42.000Z"
+}

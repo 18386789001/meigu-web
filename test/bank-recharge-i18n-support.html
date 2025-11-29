@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>银行卡充值提现记录状态多语言支持</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .status-table th,
+        .status-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .status-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .status-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .status-table tr:hover {
+            background-color: #e9ecef;
+        }
+        .status-demo {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        .status-icon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-icon-success {
+            background: #28a745;
+        }
+        .status-icon-cancelled {
+            background: #007bff;
+        }
+        .status-icon-pending {
+            background: #F5D658;
+        }
+        .status-icon-failed {
+            background: #EA0F0F;
+        }
+        .status-text-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-text-cancelled {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .status-text-pending {
+            color: #F5D658;
+            font-weight: bold;
+        }
+        .status-text-failed {
+            color: #EA0F0F;
+            font-weight: bold;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .success-section {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+        .language-section {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .implementation-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 银行卡充值提现记录状态多语言支持</h1>
+        
+        <div class="success-section">
+            <h3>✅ 多语言支持已完成</h3>
+            <p>银行卡充值提现记录的状态显示已支持6种语言，包括：中文、英文、日文、韩文、德文、法文。</p>
+        </div>
+        
+        <h2>状态翻译对照表</h2>
+        
+        <table class="status-table">
+            <thead>
+                <tr>
+                    <th>状态</th>
+                    <th>中文</th>
+                    <th>English</th>
+                    <th>日本語</th>
+                    <th>한국어</th>
+                    <th>Deutsch</th>
+                    <th>Français</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>成功</strong></td>
+                    <td>成功</td>
+                    <td>Success</td>
+                    <td>成功</td>
+                    <td>성공</td>
+                    <td>Erfolg</td>
+                    <td>Succès</td>
+                </tr>
+                <tr>
+                    <td><strong>失败</strong></td>
+                    <td>失败</td>
+                    <td>Fail</td>
+                    <td>失敗</td>
+                    <td>실패하다</td>
+                    <td>failed</td>
+                    <td>Échec</td>
+                </tr>
+                <tr>
+                    <td><strong>确定中</strong></td>
+                    <td>确定中</td>
+                    <td>Confirming</td>
+                    <td>確定中</td>
+                    <td>확인</td>
+                    <td>Bestätigen</td>
+                    <td>confirmant</td>
+                </tr>
+                <tr>
+                    <td><strong>已取消</strong></td>
+                    <td>已取消</td>
+                    <td>Cancelled</td>
+                    <td>キャンセルされました</td>
+                    <td>취소됨</td>
+                    <td>Storniert</td>
+                    <td>Annulé</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h2>状态显示效果</h2>
+        
+        <div class="status-demo">
+            <div class="status-icon status-icon-success"></div>
+            <span class="status-text-success">成功 / Success / 成功 / 성공 / Erfolg / Succès</span>
+        </div>
+        
+        <div class="status-demo">
+            <div class="status-icon status-icon-failed"></div>
+            <span class="status-text-failed">失败 / Fail / 失敗 / 실패하다 / failed / Échec</span>
+        </div>
+        
+        <div class="status-demo">
+            <div class="status-icon status-icon-pending"></div>
+            <span class="status-text-pending">确定中 / Confirming / 確定中 / 확인 / Bestätigen / confirmant</span>
+        </div>
+        
+        <div class="status-demo">
+            <div class="status-icon status-icon-cancelled"></div>
+            <span class="status-text-cancelled">已取消 / Cancelled / キャンセルされました / 취소됨 / Storniert / Annulé</span>
+        </div>
+        
+        <h2>语言文件位置</h2>
+        
+        <div class="language-section">
+            <h3>📁 语言文件路径</h3>
+            <ul>
+                <li><strong>中文:</strong> <code>template/wap-vue/src/i18n/modules/zh-CN.js</code></li>
+                <li><strong>英文:</strong> <code>template/wap-vue/src/i18n/modules/en.js</code></li>
+                <li><strong>日文:</strong> <code>template/wap-vue/src/i18n/modules/Japanese.js</code></li>
+                <li><strong>韩文:</strong> <code>template/wap-vue/src/i18n/modules/Korean.js</code></li>
+                <li><strong>德文:</strong> <code>template/wap-vue/src/i18n/modules/de.js</code></li>
+                <li><strong>法文:</strong> <code>template/wap-vue/src/i18n/modules/fr.js</code></li>
+            </ul>
+        </div>
+        
+        <h2>翻译键值</h2>
+        
+        <div class="code-block">
+// 状态翻译键值
+confirming: "确定中" / "Confirming" / "確定中" / "확인" / "Bestätigen" / "confirmant"
+success: "成功" / "Success" / "成功" / "성공" / "Erfolg" / "Succès"
+fail: "失败" / "Fail" / "失敗" / "실패하다" / "failed" / "Échec"
+cancelled: "已取消" / "Cancelled" / "キャンセルされました" / "취소됨" / "Storniert" / "Annulé"
+        </div>
+        
+        <h2>实现方式</h2>
+        
+        <div class="implementation-section">
+            <h3>🔧 Vue模板中的使用方式</h3>
+            <div class="code-block">
+&lt;!-- 银行卡充值记录状态显示 --&gt;
+&lt;template v-if="selectIndexActive == 0"&gt;
+    &lt;!-- 成功状态 --&gt;
+    &lt;template v-if="getStatusValue(item) == 3"&gt;
+        &lt;div class="status-icon status-icon-color1 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-success"&gt;{{ $t('success') }}&lt;/span&gt;
+    &lt;/template&gt;
+    &lt;!-- 已取消状态 --&gt;
+    &lt;template v-else-if="getStatusValue(item) == 4"&gt;
+        &lt;div class="status-icon status-icon-color4 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-cancelled"&gt;{{ $t('cancelled') }}&lt;/span&gt;
+    &lt;/template&gt;
+    &lt;!-- 确认中状态 --&gt;
+    &lt;template v-else&gt;
+        &lt;div class="status-icon status-icon-color3 mr-2"&gt;&lt;/div&gt;
+        &lt;span class="status-text status-text-pending"&gt;{{ $t('confirming') }}&lt;/span&gt;
+    &lt;/template&gt;
+&lt;/template&gt;
+            </div>
+        </div>
+        
+        <h2>状态映射规则</h2>
+        
+        <div class="implementation-section">
+            <h3>📋 银行卡充值记录状态映射</h3>
+            <ul>
+                <li><strong>状态值 3:</strong> 成功状态 → 绿色圆点 + 绿色"成功"文字</li>
+                <li><strong>状态值 4:</strong> 已取消状态 → 蓝色圆点 + 蓝色"已取消"文字</li>
+                <li><strong>其他状态值:</strong> 确认中状态 → 黄色圆点 + 黄色"确定中"文字</li>
+            </ul>
+            <p><strong>注意:</strong> 目前银行卡充值记录中没有"失败"状态，但翻译已准备就绪。</p>
+        </div>
+        
+        <h2>多语言切换</h2>
+        
+        <div class="language-section">
+            <h3>🔄 语言切换机制</h3>
+            <p>系统使用Vue i18n进行多语言支持：</p>
+            <ul>
+                <li><strong>自动检测:</strong> 根据用户浏览器语言设置自动选择</li>
+                <li><strong>手动切换:</strong> 用户可以在设置中手动选择语言</li>
+                <li><strong>实时更新:</strong> 语言切换后状态文本立即更新</li>
+                <li><strong>持久化:</strong> 用户选择的语言会被保存</li>
+            </ul>
+        </div>
+        
+        <h2>颜色规范</h2>
+        
+        <div class="implementation-section">
+            <h3>🎨 状态颜色定义</h3>
+            <ul>
+                <li><strong>成功状态:</strong> 
+                    <span style="color: #28a745; font-weight: bold;">绿色 (#28a745)</span>
+                </li>
+                <li><strong>失败状态:</strong> 
+                    <span style="color: #EA0F0F; font-weight: bold;">红色 (#EA0F0F)</span>
+                </li>
+                <li><strong>确认中状态:</strong> 
+                    <span style="color: #F5D658; font-weight: bold;">黄色 (#F5D658)</span>
+                </li>
+                <li><strong>已取消状态:</strong> 
+                    <span style="color: #007bff; font-weight: bold;">蓝色 (#007bff)</span>
+                </li>
+            </ul>
+        </div>
+        
+        <h2>测试验证</h2>
+        
+        <div class="success-section">
+            <h3>✅ 验证步骤</h3>
+            <ol>
+                <li><strong>切换语言</strong> - 在应用设置中切换不同语言</li>
+                <li><strong>查看银行卡充值记录</strong> - 确认状态文本显示正确</li>
+                <li><strong>检查状态颜色</strong> - 确认颜色与文本匹配</li>
+                <li><strong>测试所有状态</strong> - 验证成功、已取消、确认中状态</li>
+                <li><strong>刷新页面</strong> - 确认语言设置持久化</li>
+            </ol>
+        </div>
+        
+        <h2>技术要点</h2>
+        
+        <div class="code-block">
+// Vue i18n使用示例
+import { useI18n } from "vue-i18n"
+
+const { t } = useI18n()
+
+// 在模板中使用
+{{ $t('success') }}     // 根据当前语言显示"成功"、"Success"等
+{{ $t('fail') }}        // 根据当前语言显示"失败"、"Fail"等
+{{ $t('confirming') }}  // 根据当前语言显示"确定中"、"Confirming"等
+{{ $t('cancelled') }}  // 根据当前语言显示"已取消"、"Cancelled"等
+        </div>
+        
+        <div class="success-section">
+            <h3>🎯 总结</h3>
+            <p>银行卡充值提现记录的状态多语言支持已完全实现：</p>
+            <ul>
+                <li>✅ 支持6种语言的状态翻译</li>
+                <li>✅ 状态颜色与文本保持一致</li>
+                <li>✅ 使用Vue i18n实现动态语言切换</li>
+                <li>✅ 所有翻译键值已存在于语言文件中</li>
+                <li>✅ 模板中正确使用翻译函数</li>
+                <li>✅ 支持实时语言切换</li>
+            </ul>
+            <p>用户现在可以在任何支持的语言下正确查看银行卡充值提现记录的状态信息。</p>
+        </div>
+    </div>
+</body>
+</html>

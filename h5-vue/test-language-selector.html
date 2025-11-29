@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>h5-vue语言选择器测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .feature-desc {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 5px 0;
+            color: #555;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .feature-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .demo-section {
+            background: #0a0a0a;
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .demo-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            border: 1px solid #333;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-menu-item:hover {
+            background: #222;
+            transform: translateX(4px);
+        }
+        
+        .demo-menu-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            flex-shrink: 0;
+            font-size: 20px;
+        }
+        
+        .demo-menu-content {
+            flex: 1;
+        }
+        
+        .demo-menu-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: white;
+        }
+        
+        .demo-menu-content p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+        }
+        
+        .demo-arrow {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .demo-menu-item:hover .demo-arrow {
+            color: #ffd700;
+            transform: translateX(4px);
+        }
+        
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .instructions h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ol {
+            color: #856404;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 5px;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 h5-vue语言选择器测试</h1>
+        <p class="subtitle">验证更多功能页面的语言切换功能</p>
+        
+        <div class="test-section">
+            <h2>📋 功能概览</h2>
+            <div class="status success">✅ 语言选择器组件已创建并集成到更多功能页面</div>
+            <div class="status info">ℹ️ 支持13种语言，包括中文、英文、日文、韩文等</div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🚀 实现的功能</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-title">语言选择器组件</div>
+                    <div class="feature-desc">创建了专业的语言选择器弹窗组件</div>
+                    <ul class="feature-list">
+                        <li>支持13种语言</li>
+                        <li>国旗图标显示</li>
+                        <li>本地化语言名称</li>
+                        <li>当前语言高亮</li>
+                        <li>响应式设计</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-title">更多功能页面集成</div>
+                    <div class="feature-desc">将语言选择器集成到更多功能页面</div>
+                    <ul class="feature-list">
+                        <li>语言设置菜单项</li>
+                        <li>点击打开选择器</li>
+                        <li>选择后立即生效</li>
+                        <li>页面内容跟随变动</li>
+                        <li>设置持久化保存</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-title">国际化支持</div>
+                    <div class="feature-desc">完整的多语言国际化支持</div>
+                    <ul class="feature-list">
+                        <li>Vue I18n集成</li>
+                        <li>localStorage持久化</li>
+                        <li>实时语言切换</li>
+                        <li>翻译键完整性检查</li>
+                        <li>回退机制</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-title">用户体验优化</div>
+                    <div class="feature-desc">优秀的用户交互体验</div>
+                    <ul class="feature-list">
+                        <li>流畅的动画效果</li>
+                        <li>直观的视觉反馈</li>
+                        <li>移动端适配</li>
+                        <li>键盘导航支持</li>
+                        <li>无障碍访问</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🎯 支持的语言</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-title">亚洲语言</div>
+                    <ul class="feature-list">
+                        <li>🇨🇳 简体中文 (zh-CN)</li>
+                        <li>🇹🇼 繁體中文 (zh-TW)</li>
+                        <li>🇯🇵 日本語 (ja-JP)</li>
+                        <li>🇰🇷 한국어 (ko-KR)</li>
+                        <li>🇹🇭 ไทย (th-TH)</li>
+                        <li>🇻🇳 Tiếng Việt (vi-VN)</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-title">欧洲语言</div>
+                    <ul class="feature-list">
+                        <li>🇺🇸 English (en-US)</li>
+                        <li>🇩🇪 Deutsch (de-DE)</li>
+                        <li>🇪🇸 Español (es-ES)</li>
+                        <li>🇫🇷 Français (fr-FR)</li>
+                        <li>🇮🇹 Italiano (it-IT)</li>
+                        <li>🇵🇹 Português (pt-PT)</li>
+                        <li>🇬🇷 Ελληνικά (el-GR)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🎨 界面预览</h2>
+            <div class="demo-section">
+                <h3 style="color: #ffd700; margin-bottom: 20px;">更多功能页面 - 设置部分</h3>
+                <div class="demo-menu-item">
+                    <div class="demo-menu-icon">🌐</div>
+                    <div class="demo-menu-content">
+                        <h4>语言设置</h4>
+                        <p>切换界面语言</p>
+                    </div>
+                    <div class="demo-arrow">→</div>
+                </div>
+                <div class="demo-menu-item">
+                    <div class="demo-menu-icon">ℹ️</div>
+                    <div class="demo-menu-content">
+                        <h4>关于我们</h4>
+                        <p>了解Demo平台</p>
+                    </div>
+                    <div class="demo-arrow">→</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>📝 测试步骤</h3>
+            <ol>
+                <li>访问h5-vue项目的更多功能页面 (http://localhost:5173/#/more)</li>
+                <li>滚动到页面底部的"设置"部分</li>
+                <li>点击"语言设置"菜单项</li>
+                <li>在弹出的语言选择器中选择想要的语言</li>
+                <li>点击"确认"按钮</li>
+                <li>观察页面内容是否立即切换到选择的语言</li>
+                <li>刷新页面验证语言设置是否持久化保存</li>
+            </ol>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 技术实现</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-title">组件架构</div>
+                    <div class="feature-desc">
+                        <strong>LanguageSelector.vue</strong><br>
+                        - 独立的语言选择器组件<br>
+                        - 支持props和emits通信<br>
+                        - 响应式设计和动画效果
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-title">状态管理</div>
+                    <div class="feature-desc">
+                        <strong>Vue Composition API</strong><br>
+                        - ref响应式状态管理<br>
+                        - computed计算属性<br>
+                        - watch监听器
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-title">国际化集成</div>
+                    <div class="feature-desc">
+                        <strong>Vue I18n</strong><br>
+                        - useI18n组合式API<br>
+                        - locale动态切换<br>
+                        - localStorage持久化
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-title">样式设计</div>
+                    <div class="feature-desc">
+                        <strong>现代CSS</strong><br>
+                        - CSS Grid和Flexbox<br>
+                        - CSS变量和渐变<br>
+                        - 响应式媒体查询
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="summary">
+            <h3>🎉 语言选择器功能完成！</h3>
+            <p>
+                h5-vue项目的更多功能页面现在支持完整的语言切换功能。<br>
+                用户可以通过点击"语言设置"打开语言选择器，选择想要的语言后立即生效，<br>
+                页面内容会跟随语言变动，设置会持久化保存到本地存储。
+            </p>
+        </div>
+    </div>
+</body>
+</html>

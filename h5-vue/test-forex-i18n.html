@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>外汇交易页面i18n测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        .key-display {
+            background: #333;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .current-locale {
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>外汇交易页面i18n测试</h1>
+    
+    <div class="current-locale">
+        <strong>当前语言设置:</strong> <span id="current-locale">加载中...</span>
+    </div>
+    
+    <div class="test-section">
+        <h2>关键翻译键值测试</h2>
+        <div class="key-display">
+            <strong>trading.forex.title:</strong> <span id="forex-title">测试中...</span>
+        </div>
+        <div class="key-display">
+            <strong>trading.forex.description:</strong> <span id="forex-description">测试中...</span>
+        </div>
+        <div class="key-display">
+            <strong>trading.forex.chart:</strong> <span id="forex-chart">测试中...</span>
+        </div>
+        <div class="key-display">
+            <strong>trading.forex.trade:</strong> <span id="forex-trade">测试中...</span>
+        </div>
+        <div class="key-display">
+            <strong>trading.forex.high:</strong> <span id="forex-high">测试中...</span>
+        </div>
+        <div class="key-display">
+            <strong>trading.forex.low:</strong> <span id="forex-low">测试中...</span>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>语言切换测试</h2>
+        <button onclick="switchToZhCN()">切换到简体中文</button>
+        <button onclick="switchToEnUS()">切换到English</button>
+        <button onclick="switchToJaJP()">切换到日本語</button>
+        <button onclick="reloadPage()">刷新页面</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>LocalStorage检查</h2>
+        <div class="key-display">
+            <strong>localStorage.lang:</strong> <span id="localStorage-lang">检查中...</span>
+        </div>
+        <button onclick="clearLocalStorage()">清除LocalStorage</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>调试信息</h2>
+        <div id="debug-info">
+            加载中...
+        </div>
+    </div>
+
+    <script>
+        // 模拟Vue i18n的翻译功能
+        const translations = {
+            'zh-CN': {
+                trading: {
+                    forex: {
+                        title: '外汇交易',
+                        description: '全球主要货币对交易',
+                        chart: '图表',
+                        trade: '交易',
+                        high: '最高',
+                        low: '最低'
+                    }
+                }
+            },
+            'en-US': {
+                trading: {
+                    forex: {
+                        title: 'Forex Trading',
+                        description: 'Global major currency pair trading',
+                        chart: 'Chart',
+                        trade: 'Trade',
+                        high: 'High',
+                        low: 'Low'
+                    }
+                }
+            },
+            'ja-JP': {
+                trading: {
+                    forex: {
+                        title: '外国為替取引',
+                        description: 'グローバル主要通貨ペア取引',
+                        chart: 'チャート',
+                        trade: '取引',
+                        high: '高値',
+                        low: '安値'
+                    }
+                }
+            }
+        };
+        
+        function getTranslation(key, locale = 'zh-CN') {
+            const keys = key.split('.');
+            let translation = translations[locale];
+            
+            for (const k of keys) {
+                if (translation && typeof translation === 'object' && translation[k]) {
+                    translation = translation[k];
+                } else {
+                    return key; // 返回key本身
+                }
+            }
+            
+            return typeof translation === 'string' ? translation : key;
+        }
+        
+        function updateDisplay() {
+            const currentLang = localStorage.getItem('lang') || 'zh-CN';
+            document.getElementById('current-locale').textContent = currentLang;
+            document.getElementById('localStorage-lang').textContent = currentLang;
+            
+            // 更新翻译显示
+            document.getElementById('forex-title').textContent = getTranslation('trading.forex.title', currentLang);
+            document.getElementById('forex-description').textContent = getTranslation('trading.forex.description', currentLang);
+            document.getElementById('forex-chart').textContent = getTranslation('trading.forex.chart', currentLang);
+            document.getElementById('forex-trade').textContent = getTranslation('trading.forex.trade', currentLang);
+            document.getElementById('forex-high').textContent = getTranslation('trading.forex.high', currentLang);
+            document.getElementById('forex-low').textContent = getTranslation('trading.forex.low', currentLang);
+            
+            // 调试信息
+            const debugInfo = `
+                <strong>浏览器语言:</strong> ${navigator.language}<br>
+                <strong>用户代理:</strong> ${navigator.userAgent}<br>
+                <strong>当前时间:</strong> ${new Date().toLocaleString()}<br>
+                <strong>支持的语言:</strong> ${Object.keys(translations).join(', ')}<br>
+                <strong>翻译测试:</strong> ${getTranslation('trading.forex.title', currentLang)}
+            `;
+            document.getElementById('debug-info').innerHTML = debugInfo;
+        }
+        
+        function switchToZhCN() {
+            localStorage.setItem('lang', 'zh-CN');
+            updateDisplay();
+        }
+        
+        function switchToEnUS() {
+            localStorage.setItem('lang', 'en-US');
+            updateDisplay();
+        }
+        
+        function switchToJaJP() {
+            localStorage.setItem('lang', 'ja-JP');
+            updateDisplay();
+        }
+        
+        function clearLocalStorage() {
+            localStorage.removeItem('lang');
+            updateDisplay();
+        }
+        
+        function reloadPage() {
+            window.location.reload();
+        }
+        
+        // 页面加载时更新显示
+        window.onload = function() {
+            updateDisplay();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>移动端检测调试工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .info-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .mobile-detected {
+            background: #e8f5e8;
+            border-color: #4caf50;
+        }
+        .desktop-detected {
+            background: #fff3e0;
+            border-color: #ff9800;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>移动端检测调试工具</h1>
+    
+    <div id="deviceInfo" class="info-box">
+        <h3>设备信息检测中...</h3>
+    </div>
+    
+    <div class="test-section">
+        <h3>手动测试</h3>
+        <button onclick="testMobileDetection()">重新检测设备</button>
+        <button onclick="simulateMobile()">模拟移动端跳转</button>
+        <button onclick="checkH5Endpoint()">检查H5端点</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>URL测试</h3>
+        <div id="urlInfo"></div>
+        <button onclick="testUrlGeneration()">测试URL生成</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>UserAgent测试</h3>
+        <div id="userAgentInfo"></div>
+    </div>
+
+    <script>
+        // 复制设备检测逻辑
+        const MOBILE_KEYWORDS = [
+            'mobile', 'phone', 'pad', 'pod', 'tablet',
+            'iphone', 'ipod', 'ios', 'ipad',
+            'android', 'androidphone', 'androidtablet',
+            'blackberry', 'iemobile', 'mobile safari',
+            'mqqbrowser', 'juc', 'micromessenger', 'wechat',
+            'qqbrowser', 'baiduboxapp', 'baidubrowser',
+            '360browser', '360phonebrowser', 'qhbrowser',
+            'ucbrowser', 'ucweb', 'opera mini', 'opera mobi',
+            'fennec', 'wosbrowser', 'browserng', 'webos',
+            'symbian', 'windows phone', 'windows mobile',
+            'kindle', 'silk', 'playbook', 'nook',
+            'smartphone', 'smarttv', 'smartwatch',
+            'samsung', 'huawei', 'xiaomi', 'oppo', 'vivo',
+            'oneplus', 'meizu', 'zte', 'lenovo', 'motorola',
+            'lg', 'sony', 'htc', 'nokia'
+        ];
+
+        const MOBILE_BROWSER_KEYWORDS = [
+            'mobile safari', 'chrome mobile', 'firefox mobile',
+            'edge mobile', 'opera mobile', 'samsung browser',
+            'huawei browser', 'miui browser', 'oppo browser',
+            'vivo browser', 'uc browser', 'qq browser',
+            'baidu browser', '360 browser', 'sogou browser',
+            'maxthon mobile', 'liebao mobile'
+        ];
+
+        const SCREEN_THRESHOLDS = {
+            MOBILE_MAX_WIDTH: 768,
+            MOBILE_MAX_HEIGHT: 1024,
+            TABLET_MAX_WIDTH: 1024,
+            TABLET_MAX_HEIGHT: 1366
+        };
+
+        function isMobileByUserAgent() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            
+            const hasMobileKeyword = MOBILE_KEYWORDS.some(keyword => 
+                userAgent.includes(keyword.toLowerCase())
+            );
+            
+            const hasMobileBrowser = MOBILE_BROWSER_KEYWORDS.some(keyword => 
+                userAgent.includes(keyword.toLowerCase())
+            );
+            
+            return hasMobileKeyword || hasMobileBrowser;
+        }
+
+        function isMobileByScreenSize() {
+            const { innerWidth, innerHeight } = window;
+            
+            const isSmallScreen = innerWidth <= SCREEN_THRESHOLDS.MOBILE_MAX_WIDTH || 
+                                 innerHeight <= SCREEN_THRESHOLDS.MOBILE_MAX_HEIGHT;
+            
+            const aspectRatio = innerWidth / innerHeight;
+            const isMobileRatio = aspectRatio < 0.75 || aspectRatio > 1.33;
+            
+            return isSmallScreen || isMobileRatio;
+        }
+
+        function isTouchDevice() {
+            return (
+                'ontouchstart' in window ||
+                navigator.maxTouchPoints > 0 ||
+                navigator.msMaxTouchPoints > 0
+            );
+        }
+
+        function detectBrowser() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            
+            if (userAgent.includes('chrome') && !userAgent.includes('edge')) {
+                return 'chrome';
+            } else if (userAgent.includes('firefox')) {
+                return 'firefox';
+            } else if (userAgent.includes('safari') && !userAgent.includes('chrome')) {
+                return 'safari';
+            } else if (userAgent.includes('edge')) {
+                return 'edge';
+            } else if (userAgent.includes('opera') || userAgent.includes('opr')) {
+                return 'opera';
+            } else if (userAgent.includes('360browser') || userAgent.includes('360phonebrowser')) {
+                return '360';
+            } else if (userAgent.includes('qqbrowser') || userAgent.includes('mqqbrowser')) {
+                return 'qq';
+            } else if (userAgent.includes('ucbrowser') || userAgent.includes('ucweb')) {
+                return 'uc';
+            } else if (userAgent.includes('baiduboxapp') || userAgent.includes('baidubrowser')) {
+                return 'baidu';
+            } else if (userAgent.includes('micromessenger')) {
+                return 'wechat';
+            }
+            
+            return 'unknown';
+        }
+
+        function detectOS() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const platform = navigator.platform?.toLowerCase() || '';
+            
+            if (userAgent.includes('android')) {
+                return 'android';
+            } else if (userAgent.includes('iphone') || userAgent.includes('ipad') || userAgent.includes('ipod')) {
+                return 'ios';
+            } else if (userAgent.includes('windows')) {
+                return 'windows';
+            } else if (userAgent.includes('mac')) {
+                return 'macos';
+            } else if (userAgent.includes('linux')) {
+                return 'linux';
+            }
+            
+            return 'unknown';
+        }
+
+        function isMobileDevice() {
+            const userAgentMobile = isMobileByUserAgent();
+            const screenMobile = isMobileByScreenSize();
+            const isTouch = isTouchDevice();
+            
+            return userAgentMobile || screenMobile || isTouch;
+        }
+
+        function getDeviceInfo() {
+            return {
+                isMobile: isMobileDevice(),
+                isTouch: isTouchDevice(),
+                browser: detectBrowser(),
+                os: detectOS(),
+                userAgent: navigator.userAgent,
+                screenSize: {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                },
+                userAgentMobile: isMobileByUserAgent(),
+                screenMobile: isMobileByScreenSize()
+            };
+        }
+
+        function testMobileDetection() {
+            const deviceInfo = getDeviceInfo();
+            const deviceInfoDiv = document.getElementById('deviceInfo');
+            
+            let className = deviceInfo.isMobile ? 'mobile-detected' : 'desktop-detected';
+            let status = deviceInfo.isMobile ? '移动端' : '桌面端';
+            
+            deviceInfoDiv.className = `info-box ${className}`;
+            deviceInfoDiv.innerHTML = `
+                <h3>设备检测结果: ${status}</h3>
+                <p><strong>浏览器:</strong> ${deviceInfo.browser}</p>
+                <p><strong>操作系统:</strong> ${deviceInfo.os}</p>
+                <p><strong>屏幕尺寸:</strong> ${deviceInfo.screenSize.width} x ${deviceInfo.screenSize.height}</p>
+                <p><strong>触摸设备:</strong> ${deviceInfo.isTouch ? '是' : '否'}</p>
+                <p><strong>UserAgent检测:</strong> ${deviceInfo.userAgentMobile ? '移动端' : '桌面端'}</p>
+                <p><strong>屏幕尺寸检测:</strong> ${deviceInfo.screenMobile ? '移动端' : '桌面端'}</p>
+            `;
+        }
+
+        function simulateMobile() {
+            const currentProtocol = window.location.protocol;
+            let h5Url;
+            
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                h5Url = `${currentProtocol}//localhost:3333/h5/`;
+            } else {
+                const currentHost = window.location.host;
+                h5Url = `${currentProtocol}//${currentHost}/h5/`;
+            }
+            
+            console.log('模拟跳转到H5端:', h5Url);
+            alert(`将跳转到: ${h5Url}\n\n点击确定继续，或取消取消跳转`);
+            
+            // 实际跳转
+            window.location.href = h5Url;
+        }
+
+        function checkH5Endpoint() {
+            const currentProtocol = window.location.protocol;
+            let h5Url;
+            
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                h5Url = `${currentProtocol}//localhost:3333/h5/`;
+            } else {
+                const currentHost = window.location.host;
+                h5Url = `${currentProtocol}//${currentHost}/h5/`;
+            }
+            
+            // 测试H5端点是否可访问
+            fetch(h5Url)
+                .then(response => {
+                    if (response.ok) {
+                        alert(`H5端点可访问: ${h5Url}\n状态: ${response.status}`);
+                    } else {
+                        alert(`H5端点不可访问: ${h5Url}\n状态: ${response.status}`);
+                    }
+                })
+                .catch(error => {
+                    alert(`H5端点连接失败: ${h5Url}\n错误: ${error.message}`);
+                });
+        }
+
+        function testUrlGeneration() {
+            const currentProtocol = window.location.protocol;
+            let h5Url;
+            
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                h5Url = `${currentProtocol}//localhost:3333/h5/`;
+            } else {
+                const currentHost = window.location.host;
+                h5Url = `${currentProtocol}//${currentHost}/h5/`;
+            }
+            
+            document.getElementById('urlInfo').innerHTML = `
+                <p><strong>当前URL:</strong> ${window.location.href}</p>
+                <p><strong>生成H5 URL:</strong> ${h5Url}</p>
+                <p><strong>环境判断:</strong> ${window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '开发环境' : '生产环境'}</p>
+            `;
+        }
+
+        function showUserAgent() {
+            document.getElementById('userAgentInfo').innerHTML = `
+                <p><strong>UserAgent:</strong> ${navigator.userAgent}</p>
+                <p><strong>Platform:</strong> ${navigator.platform}</p>
+                <p><strong>MaxTouchPoints:</strong> ${navigator.maxTouchPoints || '不支持'}</p>
+            `;
+        }
+
+        // 页面加载时执行检测
+        window.onload = function() {
+            testMobileDetection();
+            testUrlGeneration();
+            showUserAgent();
+        };
+
+        // 监听窗口大小变化
+        window.addEventListener('resize', function() {
+            setTimeout(testMobileDetection, 100);
+        });
+    </script>
+</body>
+</html>

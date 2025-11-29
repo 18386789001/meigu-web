@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股票和商品页面i18n修复测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-title {
+            color: #007bff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .language-buttons {
+            margin-bottom: 20px;
+        }
+        .lang-btn {
+            padding: 8px 16px;
+            margin: 5px;
+            border: 1px solid #007bff;
+            background: white;
+            color: #007bff;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        .lang-btn:hover, .lang-btn.active {
+            background: #007bff;
+            color: white;
+        }
+        .test-result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .key-test {
+            margin: 5px 0;
+            padding: 5px;
+            background: #f8f9fa;
+            border-left: 3px solid #007bff;
+        }
+        .instructions {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 股票和商品页面i18n修复测试</h1>
+            <p>测试StocksTrading.vue和CommoditiesTrading.vue页面的i18n键值修复</p>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 测试说明</h3>
+            <p><strong>问题描述：</strong>在StocksTrading.vue和CommoditiesTrading.vue页面中，选择简体中文或韩语时，页面显示i18n键值而不是翻译后的内容。</p>
+            <p><strong>修复内容：</strong></p>
+            <ul>
+                <li>修复了zh-CN.js中trading.stocks和trading.commodities的翻译键</li>
+                <li>修复了ko-KR.js中trading.stocks和trading.commodities的翻译键</li>
+                <li>删除了重复的stocks和commodities定义</li>
+                <li>添加了完整的categories和items子对象翻译</li>
+            </ul>
+        </div>
+
+        <div class="language-buttons">
+            <button class="lang-btn active" onclick="testLanguage('zh-CN')">🇨🇳 简体中文</button>
+            <button class="lang-btn" onclick="testLanguage('ko-KR')">🇰🇷 한국어</button>
+            <button class="lang-btn" onclick="testLanguage('en-US')">🇺🇸 English</button>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">📊 股票交易页面关键翻译测试</div>
+            <div id="stocks-test-results"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">🏭 商品交易页面关键翻译测试</div>
+            <div id="commodities-test-results"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">🔍 详细翻译键检查</div>
+            <div id="detailed-test-results"></div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟i18n翻译数据
+        const translations = {
+            'zh-CN': {
+                trading: {
+                    stocks: {
+                        title: '股票交易',
+                        description: '全球主要股票市场投资',
+                        companies: '公司',
+                        trading: '交易时间',
+                        commission: '佣金',
+                        hotStocks: '热门股票',
+                        marketOpen: '市场开盘',
+                        high: '最高',
+                        low: '最低',
+                        volume: '成交量',
+                        chart: '图表',
+                        trade: '交易',
+                        advantages: '交易优势',
+                        globalMarket: '全球市场',
+                        globalMarketDesc: '覆盖全球主要股票市场',
+                        analysis: '专业分析',
+                        analysisDesc: '专业市场分析工具',
+                        fastExecution: '快速执行',
+                        fastExecutionDesc: '毫秒级订单执行',
+                        lowCost: '低成本',
+                        lowCostDesc: '超低佣金费率',
+                        realTime: '实时数据',
+                        realTimeDesc: '实时市场行情',
+                        professional: '专业服务',
+                        professionalDesc: '专业投资顾问'
+                    },
+                    commodities: {
+                        title: '商品期货交易',
+                        description: '全球商品投资交易',
+                        commodities: '商品',
+                        trading: '交易时间',
+                        leverage: '杠杆',
+                        categories: '分类',
+                        items: '商品',
+                        hotCommodities: '热门商品',
+                        marketOpen: '市场开盘',
+                        high: '最高',
+                        low: '最低',
+                        spread: '点差',
+                        chart: '图表',
+                        trade: '交易',
+                        advantages: '交易优势',
+                        diversified: '多元化投资',
+                        diversifiedDesc: '覆盖贵金属、能源、农产品',
+                        highLeverage: '高杠杆',
+                        leverageDesc: '最高1:100杠杆交易',
+                        hedging: '对冲保护',
+                        hedgingDesc: '有效对冲通胀风险',
+                        categories: {
+                            preciousMetals: '贵金属',
+                            energy: '能源',
+                            agricultural: '农产品',
+                            industrialMetals: '工业金属'
+                        },
+                        items: {
+                            gold: '黄金',
+                            goldDesc: '现货黄金',
+                            silver: '白银',
+                            silverDesc: '现货白银',
+                            oil: '原油',
+                            oilDesc: '美国原油',
+                            naturalGas: '天然气',
+                            naturalGasDesc: '天然气期货',
+                            copper: '铜',
+                            copperDesc: '铜期货',
+                            wheat: '小麦',
+                            wheatDesc: '小麦期货'
+                        }
+                    }
+                }
+            },
+            'ko-KR': {
+                trading: {
+                    stocks: {
+                        title: '주식 거래',
+                        description: '글로벌 주요 주식 시장 투자',
+                        companies: '회사',
+                        trading: '거래 시간',
+                        commission: '수수료',
+                        hotStocks: '인기 주식',
+                        marketOpen: '시장 개장',
+                        high: '최고',
+                        low: '최저',
+                        volume: '거래량',
+                        chart: '차트',
+                        trade: '거래',
+                        advantages: '거래 장점',
+                        globalMarket: '글로벌 시장',
+                        globalMarketDesc: '주요 글로벌 주식 시장 접근',
+                        analysis: '전문 분석',
+                        analysisDesc: '전문 분석가 팀',
+                        fastExecution: '빠른 실행',
+                        fastExecutionDesc: '밀리초 단위 주문 실행',
+                        lowCost: '저비용',
+                        lowCostDesc: '초저 수수료율',
+                        realTime: '실시간 데이터',
+                        realTimeDesc: '실시간 시장 시세',
+                        professional: '전문 서비스',
+                        professionalDesc: '전문 투자 고문'
+                    },
+                    commodities: {
+                        title: '상품 선물 거래',
+                        description: '글로벌 상품 투자 거래',
+                        commodities: '상품',
+                        trading: '거래 시간',
+                        leverage: '레버리지',
+                        categories: '카테고리',
+                        items: '상품',
+                        hotCommodities: '인기 상품',
+                        marketOpen: '시장 개장',
+                        high: '최고',
+                        low: '최저',
+                        spread: '스프레드',
+                        chart: '차트',
+                        trade: '거래',
+                        advantages: '거래 장점',
+                        diversified: '다양화 투자',
+                        diversifiedDesc: '귀금속, 에너지, 농산물 커버',
+                        highLeverage: '높은 레버리지',
+                        leverageDesc: '최대 1:100 레버리지 거래',
+                        hedging: '헤징 보호',
+                        hedgingDesc: '인플레이션 위험에 대한 효과적인 헤지',
+                        categories: {
+                            preciousMetals: '귀금속',
+                            energy: '에너지',
+                            agricultural: '농산물',
+                            industrialMetals: '산업 금속'
+                        },
+                        items: {
+                            gold: '금',
+                            goldDesc: '현물 금',
+                            silver: '은',
+                            silverDesc: '현물 은',
+                            oil: '원유',
+                            oilDesc: '미국 원유',
+                            naturalGas: '천연가스',
+                            naturalGasDesc: '천연가스 선물',
+                            copper: '구리',
+                            copperDesc: '구리 선물',
+                            wheat: '밀',
+                            wheatDesc: '밀 선물'
+                        }
+                    }
+                }
+            },
+            'en-US': {
+                trading: {
+                    stocks: {
+                        title: 'Stock Trading',
+                        description: 'Global major stock market investment',
+                        companies: 'Companies',
+                        trading: 'Trading Hours',
+                        commission: 'Commission',
+                        hotStocks: 'Hot Stocks',
+                        marketOpen: 'Market Open',
+                        high: 'High',
+                        low: 'Low',
+                        volume: 'Volume',
+                        chart: 'Chart',
+                        trade: 'Trade',
+                        advantages: 'Trading Advantages',
+                        globalMarket: 'Global Market',
+                        globalMarketDesc: 'Covering major global stock markets',
+                        analysis: 'Professional Analysis',
+                        analysisDesc: 'Professional market analysis tools',
+                        fastExecution: 'Fast Execution',
+                        fastExecutionDesc: 'Millisecond order execution'
+                    },
+                    commodities: {
+                        title: 'Commodity Futures Trading',
+                        description: 'Global commodity investment trading',
+                        commodities: 'Commodities',
+                        trading: 'Trading Hours',
+                        leverage: 'Leverage',
+                        categories: 'Categories',
+                        items: 'Items',
+                        hotCommodities: 'Hot Commodities',
+                        marketOpen: 'Market Open',
+                        high: 'High',
+                        low: 'Low',
+                        spread: 'Spread',
+                        chart: 'Chart',
+                        trade: 'Trade',
+                        advantages: 'Trading Advantages',
+                        categories: {
+                            preciousMetals: 'Precious Metals',
+                            energy: 'Energy',
+                            agricultural: 'Agricultural',
+                            industrialMetals: 'Industrial Metals'
+                        },
+                        items: {
+                            gold: 'Gold',
+                            goldDesc: 'Spot Gold',
+                            silver: 'Silver',
+                            silverDesc: 'Spot Silver',
+                            oil: 'Oil',
+                            oilDesc: 'US Oil',
+                            naturalGas: 'Natural Gas',
+                            naturalGasDesc: 'Natural Gas Futures',
+                            copper: 'Copper',
+                            copperDesc: 'Copper Futures',
+                            wheat: 'Wheat',
+                            wheatDesc: 'Wheat Futures'
+                        }
+                    }
+                }
+            }
+        };
+
+        let currentLang = 'zh-CN';
+
+        function testLanguage(lang) {
+            currentLang = lang;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // 运行测试
+            testStocksTranslations();
+            testCommoditiesTranslations();
+            testDetailedKeys();
+        }
+
+        function getTranslation(key) {
+            const keys = key.split('.');
+            let value = translations[currentLang];
+            
+            for (const k of keys) {
+                if (value && typeof value === 'object' && k in value) {
+                    value = value[k];
+                } else {
+                    return key; // 返回原键名表示未找到翻译
+                }
+            }
+            
+            return value;
+        }
+
+        function testStocksTranslations() {
+            const stocksKeys = [
+                'trading.stocks.title',
+                'trading.stocks.companies',
+                'trading.stocks.hotStocks',
+                'trading.stocks.marketOpen',
+                'trading.stocks.high',
+                'trading.stocks.low',
+                'trading.stocks.volume',
+                'trading.stocks.chart',
+                'trading.stocks.trade',
+                'trading.stocks.advantages',
+                'trading.stocks.globalMarket',
+                'trading.stocks.analysis',
+                'trading.stocks.fastExecution',
+                'trading.stocks.lowCost',
+                'trading.stocks.realTime',
+                'trading.stocks.professional'
+            ];
+
+            let results = '';
+            let successCount = 0;
+            
+            stocksKeys.forEach(key => {
+                const translation = getTranslation(key);
+                const isSuccess = translation !== key;
+                
+                if (isSuccess) successCount++;
+                
+                results += `<div class="key-test">
+                    <strong>${key}:</strong> 
+                    <span style="color: ${isSuccess ? 'green' : 'red'}">${translation}</span>
+                </div>`;
+            });
+
+            const resultClass = successCount === stocksKeys.length ? 'success' : 
+                               successCount > stocksKeys.length * 0.7 ? 'warning' : 'error';
+            
+            document.getElementById('stocks-test-results').innerHTML = `
+                <div class="test-result ${resultClass}">
+                    <strong>测试结果:</strong> ${successCount}/${stocksKeys.length} 个翻译键成功
+                    <br><strong>成功率:</strong> ${Math.round(successCount/stocksKeys.length*100)}%
+                </div>
+                ${results}
+            `;
+        }
+
+        function testCommoditiesTranslations() {
+            const commoditiesKeys = [
+                'trading.commodities.title',
+                'trading.commodities.commodities',
+                'trading.commodities.categories',
+                'trading.commodities.items',
+                'trading.commodities.hotCommodities',
+                'trading.commodities.marketOpen',
+                'trading.commodities.high',
+                'trading.commodities.low',
+                'trading.commodities.spread',
+                'trading.commodities.chart',
+                'trading.commodities.trade',
+                'trading.commodities.advantages',
+                'trading.commodities.diversified',
+                'trading.commodities.highLeverage',
+                'trading.commodities.hedging',
+                'trading.commodities.categories.preciousMetals',
+                'trading.commodities.categories.energy',
+                'trading.commodities.categories.agricultural',
+                'trading.commodities.categories.industrialMetals',
+                'trading.commodities.items.gold',
+                'trading.commodities.items.silver',
+                'trading.commodities.items.oil',
+                'trading.commodities.items.naturalGas',
+                'trading.commodities.items.copper',
+                'trading.commodities.items.wheat'
+            ];
+
+            let results = '';
+            let successCount = 0;
+            
+            commoditiesKeys.forEach(key => {
+                const translation = getTranslation(key);
+                const isSuccess = translation !== key;
+                
+                if (isSuccess) successCount++;
+                
+                results += `<div class="key-test">
+                    <strong>${key}:</strong> 
+                    <span style="color: ${isSuccess ? 'green' : 'red'}">${translation}</span>
+                </div>`;
+            });
+
+            const resultClass = successCount === commoditiesKeys.length ? 'success' : 
+                               successCount > commoditiesKeys.length * 0.7 ? 'warning' : 'error';
+            
+            document.getElementById('commodities-test-results').innerHTML = `
+                <div class="test-result ${resultClass}">
+                    <strong>测试结果:</strong> ${successCount}/${commoditiesKeys.length} 个翻译键成功
+                    <br><strong>成功率:</strong> ${Math.round(successCount/commoditiesKeys.length*100)}%
+                </div>
+                ${results}
+            `;
+        }
+
+        function testDetailedKeys() {
+            const allKeys = Object.keys(translations[currentLang].trading.stocks).length + 
+                           Object.keys(translations[currentLang].trading.commodities).length +
+                           Object.keys(translations[currentLang].trading.commodities.categories || {}).length +
+                           Object.keys(translations[currentLang].trading.commodities.items || {}).length;
+
+            document.getElementById('detailed-test-results').innerHTML = `
+                <div class="test-result success">
+                    <strong>当前语言 (${currentLang}) 翻译统计:</strong>
+                    <br>• 股票交易翻译键: ${Object.keys(translations[currentLang].trading.stocks).length} 个
+                    <br>• 商品交易翻译键: ${Object.keys(translations[currentLang].trading.commodities).length} 个
+                    <br>• 商品分类翻译键: ${Object.keys(translations[currentLang].trading.commodities.categories || {}).length} 个
+                    <br>• 商品项目翻译键: ${Object.keys(translations[currentLang].trading.commodities.items || {}).length} 个
+                    <br><strong>总计: ${allKeys} 个翻译键</strong>
+                </div>
+            `;
+        }
+
+        // 初始化测试
+        window.onload = function() {
+            testLanguage('zh-CN');
+        };
+    </script>
+</body>
+</html>

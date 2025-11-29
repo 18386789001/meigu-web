@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading页面i18n测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .key {
+            font-weight: bold;
+            color: #333;
+        }
+        .value {
+            color: #666;
+            margin-left: 10px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+        .language-selector {
+            margin-bottom: 20px;
+        }
+        select {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Trading页面i18n测试</h1>
+        
+        <div class="language-selector">
+            <label for="lang-select">选择语言:</label>
+            <select id="lang-select">
+                <option value="zh-CN">简体中文</option>
+                <option value="zh">中文</option>
+                <option value="en-US">English</option>
+                <option value="ja-JP">日本語</option>
+                <option value="ko-KR">한국어</option>
+            </select>
+        </div>
+        
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        // 模拟i18n消息对象
+        const messages = {
+            'zh-CN': {
+                trading: {
+                    title: '交易中心',
+                    subtitle: '专业的全球金融交易平台',
+                    realAccount: '真实账户',
+                    demoAccount: '模拟账户',
+                    leverage: '杠杆',
+                    spread: '点差',
+                    minVolume: '最小手数',
+                    stats: {
+                        activeUsers: '活跃用户',
+                        totalVolume: '交易总量',
+                        globalMarkets: '全球市场',
+                        executionSpeed: '执行速度'
+                    },
+                    products: {
+                        title: '交易产品'
+                    },
+                    forex: {
+                        title: '外汇交易',
+                        description: '全球主要货币对交易'
+                    },
+                    crypto: {
+                        title: '数字货币交易',
+                        description: '比特币、以太坊等主流币种'
+                    },
+                    stocks: {
+                        title: '股票交易',
+                        description: '全球主要股票市场'
+                    },
+                    commodities: {
+                        title: '商品期货',
+                        description: '黄金、原油等商品交易'
+                    },
+                    advantages: {
+                        title: '交易优势',
+                        fast: '快速执行',
+                        fastDesc: '毫秒级订单执行',
+                        secure: '安全可靠',
+                        secureDesc: '银行级安全保障',
+                        mobile: '移动交易',
+                        mobileDesc: '随时随地交易',
+                        global: '全球市场',
+                        globalDesc: '24小时不间断交易'
+                    },
+                    hours: {
+                        title: '交易时间',
+                        forex: '外汇市场',
+                        forexTime: '周一至周五 24小时',
+                        crypto: '数字货币',
+                        cryptoTime: '7×24小时全天候',
+                        stocks: '股票市场',
+                        stocksTime: '周一至周五 9:30-16:00',
+                        commodities: '商品期货',
+                        commoditiesTime: '周一至周五 24小时'
+                    }
+                }
+            },
+            'zh': {
+                trading: {
+                    title: '交易中心',
+                    subtitle: '专业的全球金融交易平台',
+                    realAccount: '真实账户',
+                    demoAccount: '模拟账户',
+                    leverage: '杠杆',
+                    spread: '点差',
+                    minVolume: '最小手数',
+                    stats: {
+                        activeUsers: '活跃用户',
+                        totalVolume: '交易总量',
+                        globalMarkets: '全球市场',
+                        executionSpeed: '执行速度'
+                    },
+                    products: {
+                        title: '交易产品'
+                    },
+                    forex: {
+                        title: '外汇交易',
+                        description: '全球主要货币对交易'
+                    },
+                    crypto: {
+                        title: '数字货币交易',
+                        description: '比特币、以太坊等主流币种'
+                    },
+                    stocks: {
+                        title: '股票交易',
+                        description: '全球主要股票市场'
+                    },
+                    commodities: {
+                        title: '商品期货',
+                        description: '黄金、原油等商品交易'
+                    },
+                    advantages: {
+                        title: '交易优势',
+                        fast: '快速执行',
+                        fastDesc: '毫秒级订单执行',
+                        secure: '安全可靠',
+                        secureDesc: '银行级安全保障',
+                        mobile: '移动交易',
+                        mobileDesc: '随时随地交易',
+                        global: '全球市场',
+                        globalDesc: '24小时不间断交易'
+                    },
+                    hours: {
+                        title: '交易时间',
+                        forex: '外汇市场',
+                        forexTime: '周一至周五 24小时',
+                        crypto: '数字货币',
+                        cryptoTime: '7×24小时全天候',
+                        stocks: '股票市场',
+                        stocksTime: '周一至周五 9:30-16:00',
+                        commodities: '商品期货',
+                        commoditiesTime: '周一至周五 24小时'
+                    }
+                }
+            },
+            'en-US': {
+                trading: {
+                    title: 'Trading Center',
+                    subtitle: 'Professional Global Financial Trading Platform',
+                    realAccount: 'Real Account',
+                    demoAccount: 'Demo Account',
+                    leverage: 'Leverage',
+                    spread: 'Spread',
+                    minVolume: 'Min Volume',
+                    stats: {
+                        activeUsers: 'Active Users',
+                        totalVolume: 'Total Volume',
+                        globalMarkets: 'Global Markets',
+                        executionSpeed: 'Execution Speed'
+                    },
+                    products: {
+                        title: 'Trading Products'
+                    },
+                    forex: {
+                        title: 'Forex Trading',
+                        description: 'Global Major Currency Pairs Trading'
+                    },
+                    crypto: {
+                        title: 'Cryptocurrency Trading',
+                        description: 'Bitcoin, Ethereum and other mainstream cryptocurrencies'
+                    },
+                    stocks: {
+                        title: 'Stock Trading',
+                        description: 'Global Major Stock Markets'
+                    },
+                    commodities: {
+                        title: 'Commodity Futures',
+                        description: 'Gold, oil and other commodity trading'
+                    },
+                    advantages: {
+                        title: 'Trading Advantages',
+                        fast: 'Fast Execution',
+                        fastDesc: 'Millisecond Order Execution',
+                        secure: 'Secure and Reliable',
+                        secureDesc: 'Bank-level Security',
+                        mobile: 'Mobile Trading',
+                        mobileDesc: 'Trade Anytime, Anywhere',
+                        global: 'Global Markets',
+                        globalDesc: '24/7 Continuous Trading'
+                    },
+                    hours: {
+                        title: 'Trading Hours',
+                        forex: 'Forex Market',
+                        forexTime: 'Monday to Friday 24 Hours',
+                        crypto: 'Cryptocurrency',
+                        cryptoTime: '7×24 Hours All Day',
+                        stocks: 'Stock Market',
+                        stocksTime: 'Monday to Friday 9:30-16:00',
+                        commodities: 'Commodity Futures',
+                        commoditiesTime: 'Monday to Friday 24 Hours'
+                    }
+                }
+            }
+        };
+
+        // 复制zh-CN到zh
+        messages['zh'] = { ...messages['zh-CN'] };
+
+        // 翻译函数
+        function t(key, locale = 'zh-CN') {
+            const keys = key.split('.');
+            let translation = messages[locale];
+            
+            for (const k of keys) {
+                if (translation && typeof translation === 'object' && translation[k]) {
+                    translation = translation[k];
+                } else {
+                    return key; // 返回key本身作为fallback
+                }
+            }
+            
+            return typeof translation === 'string' ? translation : key;
+        }
+
+        // 测试键值
+        const testKeys = [
+            'trading.title',
+            'trading.subtitle',
+            'trading.realAccount',
+            'trading.demoAccount',
+            'trading.leverage',
+            'trading.spread',
+            'trading.minVolume',
+            'trading.stats.activeUsers',
+            'trading.stats.totalVolume',
+            'trading.stats.globalMarkets',
+            'trading.stats.executionSpeed',
+            'trading.products.title',
+            'trading.forex.title',
+            'trading.forex.description',
+            'trading.crypto.title',
+            'trading.crypto.description',
+            'trading.stocks.title',
+            'trading.stocks.description',
+            'trading.commodities.title',
+            'trading.commodities.description',
+            'trading.advantages.title',
+            'trading.advantages.fast',
+            'trading.advantages.fastDesc',
+            'trading.advantages.secure',
+            'trading.advantages.secureDesc',
+            'trading.advantages.mobile',
+            'trading.advantages.mobileDesc',
+            'trading.advantages.global',
+            'trading.advantages.globalDesc',
+            'trading.hours.title',
+            'trading.hours.forex',
+            'trading.hours.forexTime',
+            'trading.hours.crypto',
+            'trading.hours.cryptoTime',
+            'trading.hours.stocks',
+            'trading.hours.stocksTime',
+            'trading.hours.commodities',
+            'trading.hours.commoditiesTime'
+        ];
+
+        function runTests(locale) {
+            const resultsContainer = document.getElementById('test-results');
+            resultsContainer.innerHTML = `<h2>测试结果 - ${locale}</h2>`;
+            
+            testKeys.forEach(key => {
+                const value = t(key, locale);
+                const isTranslated = value !== key;
+                
+                const testItem = document.createElement('div');
+                testItem.className = 'test-item';
+                testItem.innerHTML = `
+                    <span class="key">${key}:</span>
+                    <span class="value ${isTranslated ? 'success' : 'error'}">${value}</span>
+                `;
+                
+                resultsContainer.appendChild(testItem);
+            });
+        }
+
+        // 语言选择器事件
+        document.getElementById('lang-select').addEventListener('change', (e) => {
+            runTests(e.target.value);
+        });
+
+        // 初始测试
+        runTests('zh-CN');
+    </script>
+</body>
+</html>

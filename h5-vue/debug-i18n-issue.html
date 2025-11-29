@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug i18n Issue - Stocks Trading</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .debug-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .debug-title {
+            color: #007bff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .debug-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 5px 0;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .translation-test {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .key-column {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .value-column {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 i18n调试工具 - 股票交易页面</h1>
+        
+        <div class="debug-section">
+            <div class="debug-title">📊 当前状态检查</div>
+            <button class="test-button" onclick="checkCurrentStatus()">检查当前状态</button>
+            <div id="current-status"></div>
+        </div>
+
+        <div class="debug-section">
+            <div class="debug-title">🔧 语言设置测试</div>
+            <button class="test-button" onclick="testLanguageSettings()">测试语言设置</button>
+            <button class="test-button" onclick="setLanguageToEn()">设置语言为 'en'</button>
+            <button class="test-button" onclick="setLanguageToEnUS()">设置语言为 'en-US'</button>
+            <div id="language-test-results"></div>
+        </div>
+
+        <div class="debug-section">
+            <div class="debug-title">📝 翻译键测试</div>
+            <button class="test-button" onclick="testStocksTranslations()">测试股票翻译键</button>
+            <div id="translation-test-results"></div>
+        </div>
+
+        <div class="debug-section">
+            <div class="debug-title">🌐 浏览器信息</div>
+            <div id="browser-info"></div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟英文翻译数据
+        const mockEnglishTranslations = {
+            trading: {
+                stocks: {
+                    title: 'Stock Trading',
+                    description: 'Global major stock market investment',
+                    companies: 'Companies',
+                    trading: 'Trading Hours',
+                    commission: 'Commission',
+                    hotStocks: 'Hot Stocks',
+                    marketOpen: 'Market Open',
+                    high: 'High',
+                    low: 'Low',
+                    volume: 'Volume',
+                    chart: 'Chart',
+                    trade: 'Trade',
+                    advantages: 'Trading Advantages',
+                    globalMarket: 'Global Market',
+                    globalMarketDesc: 'Covering major global stock markets',
+                    analysis: 'Professional Analysis',
+                    analysisDesc: 'Professional market analysis tools',
+                    fastExecution: 'Fast Execution',
+                    fastExecutionDesc: 'Millisecond order execution',
+                    lowCost: 'Low Cost',
+                    lowCostDesc: 'Ultra-low commission rates',
+                    realTime: 'Real-time Data',
+                    realTimeDesc: 'Real-time market quotes',
+                    professional: 'Professional Service',
+                    professionalDesc: 'Professional investment advisors'
+                }
+            }
+        };
+
+        function checkCurrentStatus() {
+            const results = [];
+            
+            // 检查localStorage
+            const storedLang = localStorage.getItem('lang');
+            results.push(`localStorage['lang']: ${storedLang || 'null'}`);
+            
+            // 检查浏览器语言
+            const browserLang = navigator.language || navigator.userLanguage;
+            results.push(`浏览器语言: ${browserLang}`);
+            
+            // 检查URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlLang = urlParams.get('lang');
+            results.push(`URL语言参数: ${urlLang || 'null'}`);
+            
+            // 检查当前页面语言设置
+            const htmlLang = document.documentElement.lang;
+            results.push(`HTML lang属性: ${htmlLang || 'null'}`);
+            
+            document.getElementById('current-status').innerHTML = 
+                results.map(r => `<div class="debug-info">${r}</div>`).join('');
+        }
+
+        function testLanguageSettings() {
+            const results = [];
+            
+            // 测试不同语言代码的设置
+            const testCodes = ['en', 'en-US', 'zh', 'zh-CN'];
+            
+            testCodes.forEach(code => {
+                localStorage.setItem('lang', code);
+                const retrieved = localStorage.getItem('lang');
+                const status = retrieved === code ? 'success' : 'error';
+                results.push(`<div class="debug-info ${status}">设置 '${code}' -> 获取 '${retrieved}'</div>`);
+            });
+            
+            document.getElementById('language-test-results').innerHTML = results.join('');
+        }
+
+        function setLanguageToEn() {
+            localStorage.setItem('lang', 'en');
+            alert('语言已设置为 "en"，请刷新页面查看效果');
+        }
+
+        function setLanguageToEnUS() {
+            localStorage.setItem('lang', 'en-US');
+            alert('语言已设置为 "en-US"，请刷新页面查看效果');
+        }
+
+        function testStocksTranslations() {
+            const stocksKeys = [
+                'trading.stocks.title',
+                'trading.stocks.description',
+                'trading.stocks.companies',
+                'trading.stocks.trading',
+                'trading.stocks.commission',
+                'trading.stocks.lowCost',
+                'trading.stocks.realTime',
+                'trading.stocks.professional'
+            ];
+
+            let results = '<div class="translation-test">';
+            results += '<div class="key-column"><strong>翻译键</strong></div>';
+            results += '<div class="value-column"><strong>期望值</strong></div>';
+            
+            stocksKeys.forEach(key => {
+                const expectedValue = getNestedValue(mockEnglishTranslations, key);
+                const status = expectedValue ? 'success' : 'error';
+                
+                results += `<div class="key-column">${key}</div>`;
+                results += `<div class="value-column ${status}">${expectedValue || '未找到'}</div>`;
+            });
+            
+            results += '</div>';
+            
+            document.getElementById('translation-test-results').innerHTML = results;
+        }
+
+        function getNestedValue(obj, path) {
+            return path.split('.').reduce((current, key) => {
+                return current && current[key] !== undefined ? current[key] : null;
+            }, obj);
+        }
+
+        function displayBrowserInfo() {
+            const info = [
+                `用户代理: ${navigator.userAgent}`,
+                `语言: ${navigator.language}`,
+                `语言列表: ${navigator.languages ? navigator.languages.join(', ') : '不支持'}`,
+                `时区: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`,
+                `当前URL: ${window.location.href}`,
+                `Referrer: ${document.referrer || '无'}`,
+                `Cookie启用: ${navigator.cookieEnabled}`,
+                `在线状态: ${navigator.onLine}`
+            ];
+            
+            document.getElementById('browser-info').innerHTML = 
+                info.map(i => `<div class="debug-info">${i}</div>`).join('');
+        }
+
+        // 页面加载时自动执行
+        window.onload = function() {
+            checkCurrentStatus();
+            displayBrowserInfo();
+            
+            // 添加语言变更监听
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'lang') {
+                    console.log('语言设置已变更:', e.oldValue, '->', e.newValue);
+                    checkCurrentStatus();
+                }
+            });
+        };
+    </script>
+</body>
+</html>

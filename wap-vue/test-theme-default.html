@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAP-Vue默认主题测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+            transition: all 0.3s ease;
+        }
+        
+        body[theme="dark"] {
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        body[theme="dark"] .test-container {
+            background-color: #161b22;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+        }
+        
+        .test-item {
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        body[theme="dark"] .test-item {
+            border-color: #30363d;
+            background-color: #21262d;
+        }
+        
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .button:hover {
+            background-color: #0056b3;
+        }
+        
+        .button.dark {
+            background-color: #58a6ff;
+        }
+        
+        body[theme="dark"] .button.dark {
+            background-color: #1f6feb;
+        }
+        
+        .error {
+            color: red;
+            background-color: #fff0f0;
+        }
+        
+        body[theme="dark"] .error {
+            background-color: #490202;
+        }
+        
+        .success {
+            color: green;
+            background-color: #f0fff0;
+        }
+        
+        body[theme="dark"] .success {
+            background-color: #0d2818;
+        }
+        
+        .info {
+            color: blue;
+            background-color: #f0f8ff;
+        }
+        
+        body[theme="dark"] .info {
+            background-color: #0d1117;
+        }
+        
+        .warning {
+            color: orange;
+            background-color: #fff8e1;
+        }
+        
+        body[theme="dark"] .warning {
+            background-color: #3d2c00;
+        }
+        
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background-color: #f8f9fa;
+        }
+        
+        body[theme="dark"] .step {
+            background-color: #161b22;
+            border-left-color: #58a6ff;
+        }
+        
+        .code {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        
+        body[theme="dark"] .code {
+            background-color: #21262d;
+            color: #c9d1d9;
+        }
+        
+        .theme-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-indicator.light {
+            background-color: #ffffff;
+            color: #000000;
+            border: 2px solid #000000;
+        }
+        
+        .theme-indicator.dark {
+            background-color: #0d1117;
+            color: #58a6ff;
+            border: 2px solid #58a6ff;
+        }
+    </style>
+</head>
+<body theme="dark">
+    <div class="theme-indicator dark" id="theme-indicator">
+        🌙 暗黑模式
+    </div>
+    
+    <div class="test-container">
+        <h1>WAP-Vue默认主题测试</h1>
+        
+        <div class="test-item info">
+            <h3>🎯 测试目标</h3>
+            <p>验证WAP-Vue应用在首次访问时默认使用暗黑模式</p>
+        </div>
+        
+        <div class="test-item">
+            <h3>🔧 修复内容</h3>
+            <div class="step">
+                <strong>修复前:</strong> 应用启动时强制设置为白色主题
+            </div>
+            <div class="code">
+thStore[SET_THEME]("white", false); // 强制白色主题
+            </div>
+            
+            <div class="step">
+                <strong>修复后:</strong> 首次访问默认使用暗黑模式
+            </div>
+            <div class="code">
+//设置主题 - 默认使用暗黑模式
+if (!getStorage("theme")) {
+  // 首次访问，设置默认主题为暗黑模式
+  thStore[SET_THEME]("dark", false);
+} else {
+  // 使用存储的主题设置
+  thStore[SET_THEME](thStore.theme, false);
+}
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>🧪 主题测试</h3>
+            <button class="button dark" onclick="setTheme('dark')">切换到暗黑模式</button>
+            <button class="button" onclick="setTheme('white')">切换到亮色模式</button>
+            <button class="button" onclick="clearThemeStorage()">清除主题存储（模拟首次访问）</button>
+            <button class="button" onclick="simulateAppLoad()">模拟应用加载</button>
+        </div>
+        
+        <div class="test-item">
+            <h3>📊 当前状态</h3>
+            <p><strong>当前主题:</strong> <span id="current-theme">dark</span></p>
+            <p><strong>localStorage中的主题:</strong> <span id="stored-theme">dark</span></p>
+            <p><strong>document.documentElement.getAttribute('theme'):</strong> <span id="document-theme">dark</span></p>
+            <p><strong>是否为首次访问:</strong> <span id="is-first-visit">否</span></p>
+        </div>
+        
+        <div id="test-results"></div>
+        
+        <div class="test-item warning">
+            <h3>⚠️ 注意事项</h3>
+            <ul>
+                <li>首次访问应用时应该默认显示暗黑模式</li>
+                <li>用户手动切换主题后，应该记住用户的选择</li>
+                <li>主题切换应该有平滑的过渡动画</li>
+            </ul>
+        </div>
+        
+        <div class="test-item success">
+            <h3>✅ 预期结果</h3>
+            <ul>
+                <li>打开 <code>http://localhost:333/syn/</code> 默认显示暗黑模式</li>
+                <li>主题存储中默认值为 "dark"</li>
+                <li>页面样式正确应用暗黑主题</li>
+                <li>主题切换功能正常工作</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 模拟localStorage
+        let mockStorage = {
+            theme: localStorage.getItem('theme')
+        };
+        
+        // 设置主题
+        function setTheme(theme) {
+            document.documentElement.setAttribute('theme', theme);
+            localStorage.setItem('theme', theme);
+            mockStorage.theme = theme;
+            
+            // 更新主题指示器
+            const indicator = document.getElementById('theme-indicator');
+            if (theme === 'dark') {
+                indicator.className = 'theme-indicator dark';
+                indicator.innerHTML = '🌙 暗黑模式';
+            } else {
+                indicator.className = 'theme-indicator light';
+                indicator.innerHTML = '☀️ 亮色模式';
+            }
+            
+            updateStatus();
+            addTestResult(`主题已切换到: ${theme}`, 'success');
+        }
+        
+        // 清除主题存储
+        function clearThemeStorage() {
+            localStorage.removeItem('theme');
+            mockStorage.theme = null;
+            updateStatus();
+            addTestResult('已清除主题存储，模拟首次访问', 'info');
+        }
+        
+        // 模拟应用加载
+        function simulateAppLoad() {
+            addTestResult('模拟应用加载...', 'info');
+            
+            // 模拟App.vue中的主题设置逻辑
+            if (!mockStorage.theme) {
+                addTestResult('检测到首次访问，设置默认主题为暗黑模式', 'success');
+                setTheme('dark');
+            } else {
+                addTestResult(`使用存储的主题设置: ${mockStorage.theme}`, 'info');
+                setTheme(mockStorage.theme);
+            }
+        }
+        
+        // 更新状态显示
+        function updateStatus() {
+            const currentTheme = document.documentElement.getAttribute('theme') || 'dark';
+            const storedTheme = localStorage.getItem('theme') || 'null';
+            const isFirstVisit = !localStorage.getItem('theme');
+            
+            document.getElementById('current-theme').textContent = currentTheme;
+            document.getElementById('stored-theme').textContent = storedTheme;
+            document.getElementById('document-theme').textContent = currentTheme;
+            document.getElementById('is-first-visit').textContent = isFirstVisit ? '是' : '否';
+        }
+        
+        // 添加测试结果
+        function addTestResult(message, type = 'info') {
+            const resultsContainer = document.getElementById('test-results');
+            const testItem = document.createElement('div');
+            testItem.className = `test-item ${type}`;
+            testItem.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            resultsContainer.appendChild(testItem);
+            resultsContainer.scrollTop = resultsContainer.scrollHeight;
+        }
+        
+        // 初始化
+        updateStatus();
+        addTestResult('测试页面已加载，当前使用暗黑模式作为默认主题', 'success');
+        
+        // 检查是否是首次访问
+        if (!localStorage.getItem('theme')) {
+            addTestResult('检测到首次访问，应用默认暗黑主题', 'success');
+        } else {
+            addTestResult(`检测到已保存的主题: ${localStorage.getItem('theme')}`, 'info');
+        }
+    </script>
+</body>
+</html>

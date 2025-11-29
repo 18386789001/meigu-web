@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETH转换状态测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .status-failed {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .status-converted {
+            color: #17a2b8;
+            font-weight: bold;
+        }
+        .description {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ETH转换状态显示测试</h1>
+        
+        <h2>测试场景说明</h2>
+        <p>当API返回的 <code>failure_msg</code> 为 "当前币种为eth直接完成订单" 时，前端应该将充值订单状态显示为成功，并显示 "ETH已兑换为USDT" 的提示信息。</p>
+        
+        <h2>测试用例</h2>
+        
+        <div class="test-item">
+            <h3>测试用例1: 正常成功状态</h3>
+            <div class="status-success">✓ 成功</div>
+            <div class="description">
+                <strong>API返回:</strong> status = 1, failure_msg = null<br>
+                <strong>预期显示:</strong> 绿色圆点 + "成功"
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>测试用例2: ETH转换成功状态</h3>
+            <div class="status-converted">✓ ETH已兑换为USDT</div>
+            <div class="status-success">✓ 成功</div>
+            <div class="description">
+                <strong>API返回:</strong> status = 0, failure_msg = "当前币种为eth直接完成订单"<br>
+                <strong>预期显示:</strong> 绿色圆点 + "ETH已兑换为USDT" + "成功"
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>测试用例3: 正常确认中状态</h3>
+            <div class="status-pending">⏳ 确定中</div>
+            <div class="description">
+                <strong>API返回:</strong> status = 0, failure_msg = null 或其他值<br>
+                <strong>预期显示:</strong> 黄色圆点 + "确定中"
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>测试用例4: 正常失败状态</h3>
+            <div class="status-failed">✗ 失败</div>
+            <div class="description">
+                <strong>API返回:</strong> status = 2, failure_msg = "其他错误信息"<br>
+                <strong>预期显示:</strong> 红色圆点 + "失败"
+            </div>
+        </div>
+        
+        <div class="test-item">
+            <h3>测试用例5: ETH转换失败状态（不应出现）</h3>
+            <div class="status-failed">✗ 失败</div>
+            <div class="description">
+                <strong>API返回:</strong> status = 2, failure_msg = "当前币种为eth直接完成订单"<br>
+                <strong>预期显示:</strong> 红色圆点 + "失败"（这种情况理论上不应该出现）
+            </div>
+        </div>
+        
+        <h2>多语言支持测试</h2>
+        <div class="test-item">
+            <h3>语言切换测试</h3>
+            <div class="description">
+                <strong>中文:</strong> ETH已兑换为USDT<br>
+                <strong>English:</strong> ETH converted to USDT<br>
+                <strong>日本語:</strong> ETHがUSDTに変換されました<br>
+                <strong>한국어:</strong> ETH가 USDT로 변환됨<br>
+                <strong>Deutsch:</strong> ETH zu USDT konvertiert<br>
+                <strong>Français:</strong> ETH converti en USDT
+            </div>
+        </div>
+        
+        <h2>API接口测试</h2>
+        <div class="test-item">
+            <h3>接口调用</h3>
+            <div class="description">
+                <strong>接口地址:</strong> https://jpmx.xyz/api/rechargeBlockchain/list<br>
+                <strong>请求方法:</strong> GET<br>
+                <strong>请求参数:</strong> page_no=1&language=zh-CN<br>
+                <strong>预期返回:</strong> 包含 failure_msg 字段的充值记录列表
+            </div>
+        </div>
+        
+        <h2>实现要点</h2>
+        <ul>
+            <li>✅ 修改了充值历史组件的状态显示逻辑</li>
+            <li>✅ 添加了对特定 failure_msg 的检测</li>
+            <li>✅ 当 failure_msg 为 "当前币种为eth直接完成订单" 时显示成功状态</li>
+            <li>✅ 添加了多语言支持（中文、英文、日文、韩文、德文、法文）</li>
+            <li>✅ 更新了API调用，添加了language参数</li>
+            <li>✅ 保持了原有的其他状态显示逻辑不变</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实名认证页面跳过按钮隐藏</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .change-section {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-section {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+        .before-after {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+        }
+        .before, .after {
+            flex: 1;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .before {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        .after {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .test-steps {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 实名认证页面跳过按钮隐藏</h1>
+        
+        <div class="change-section">
+            <h3>📝 用户需求</h3>
+            <p>用户要求隐藏实名认证页面右上角的"跳过"按钮：</p>
+            <ul>
+                <li><strong>页面位置:</strong> <code>wap-vue/src/views/register/identity.vue</code></li>
+                <li><strong>按钮位置:</strong> 页面右上角</li>
+                <li><strong>按钮功能:</strong> 点击后跳转到完成页面</li>
+                <li><strong>修改目的:</strong> 强制用户完成实名认证流程</li>
+            </ul>
+        </div>
+        
+        <h2>修改内容</h2>
+        
+        <div class="before-after">
+            <div class="before">
+                <h4>❌ 修改前（显示跳过按钮）</h4>
+                <div class="code-block">
+&lt;div class="header"&gt;
+    &lt;div class="flex items-center" @click="$router.go(-1)"&gt;
+        &lt;img src="../../assets/image/assets-center/left-arrow.png" alt="" class="leftReturn" /&gt;
+    &lt;/div&gt;
+    &lt;div class="textColor" @click="$router.push('/finish')"&gt;{{ $t('skip') }}&lt;/div&gt;
+&lt;/div&gt;
+                </div>
+                <p><strong>问题：</strong> 用户可以通过"跳过"按钮绕过实名认证</p>
+            </div>
+            
+            <div class="after">
+                <h4>✅ 修改后（隐藏跳过按钮）</h4>
+                <div class="code-block">
+&lt;div class="header"&gt;
+    &lt;div class="flex items-center" @click="$router.go(-1)"&gt;
+        &lt;img src="../../assets/image/assets-center/left-arrow.png" alt="" class="leftReturn" /&gt;
+    &lt;/div&gt;
+    &lt;!-- &lt;div class="textColor" @click="$router.push('/finish')"&gt;{{ $t('skip') }}&lt;/div&gt; --&gt;
+&lt;/div&gt;
+                </div>
+                <p><strong>解决：</strong> 通过注释隐藏"跳过"按钮</p>
+            </div>
+        </div>
+        
+        <h2>修改的具体内容</h2>
+        
+        <div class="code-block">
+// 文件: template/wap-vue/src/views/register/identity.vue
+// 修改位置: 第7行
+
+// 修改前
+&lt;div class="textColor" @click="$router.push('/finish')"&gt;{{ $t('skip') }}&lt;/div&gt;
+
+// 修改后
+&lt;!-- &lt;div class="textColor" @click="$router.push('/finish')"&gt;{{ $t('skip') }}&lt;/div&gt; --&gt;
+        </div>
+        
+        <h2>页面结构分析</h2>
+        
+        <div class="change-section">
+            <h3>📋 实名认证页面结构</h3>
+            <ul>
+                <li><strong>顶部导航栏:</strong> 包含返回按钮和跳过按钮</li>
+                <li><strong>进度指示器:</strong> 显示注册流程的三个步骤</li>
+                <li><strong>页面标题:</strong> "实名认证"</li>
+                <li><strong>表单字段:</strong> 国籍、真实姓名、证件号码</li>
+                <li><strong>文件上传:</strong> 证件正面和反面照片</li>
+                <li><strong>拍摄示例:</strong> 证件照片示例</li>
+                <li><strong>下一步按钮:</strong> 提交认证信息</li>
+            </ul>
+        </div>
+        
+        <h2>修改效果</h2>
+        
+        <div class="success-section">
+            <h3>🎯 修改后的行为</h3>
+            <ol>
+                <li><strong>跳过按钮隐藏</strong> - 右上角不再显示"跳过"按钮</li>
+                <li><strong>强制完成认证</strong> - 用户必须完成实名认证才能继续</li>
+                <li><strong>返回按钮保留</strong> - 左上角的返回按钮仍然可用</li>
+                <li><strong>流程完整性</strong> - 确保用户完成完整的注册流程</li>
+                <li><strong>合规性提升</strong> - 符合实名制要求</li>
+            </ol>
+        </div>
+        
+        <h2>用户体验影响</h2>
+        
+        <div class="change-section">
+            <h3>👤 用户体验变化</h3>
+            <ul>
+                <li><strong>正面影响:</strong>
+                    <ul>
+                        <li>确保用户完成实名认证</li>
+                        <li>提高平台合规性</li>
+                        <li>减少未认证用户</li>
+                    </ul>
+                </li>
+                <li><strong>需要注意:</strong>
+                    <ul>
+                        <li>用户无法快速跳过认证</li>
+                        <li>可能增加用户流失率</li>
+                        <li>需要确保认证流程流畅</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        
+        <h2>技术实现</h2>
+        
+        <div class="change-section">
+            <h3>🔧 实现方式</h3>
+            <ul>
+                <li><strong>方法:</strong> 使用HTML注释隐藏元素</li>
+                <li><strong>优势:</strong> 简单直接，易于恢复</li>
+                <li><strong>可逆性:</strong> 需要时可以轻松恢复</li>
+                <li><strong>性能:</strong> 不影响页面加载性能</li>
+            </ul>
+        </div>
+        
+        <h2>测试验证</h2>
+        
+        <div class="test-steps">
+            <h3>🔍 验证步骤</h3>
+            <ol>
+                <li><strong>打开注册流程</strong> - 进入注册第二步实名认证页面</li>
+                <li><strong>检查右上角</strong> - 确认"跳过"按钮已隐藏</li>
+                <li><strong>检查左上角</strong> - 确认返回按钮仍然可用</li>
+                <li><strong>测试返回功能</strong> - 点击返回按钮应该能正常返回</li>
+                <li><strong>测试认证流程</strong> - 填写信息后点击"下一步"应该正常提交</li>
+                <li><strong>测试不同设备</strong> - 在手机和电脑上测试</li>
+            </ol>
+        </div>
+        
+        <h2>影响范围</h2>
+        
+        <div class="change-section">
+            <h3>📋 修改影响</h3>
+            <ul>
+                <li><strong>文件:</strong> <code>template/wap-vue/src/views/register/identity.vue</code></li>
+                <li><strong>修改内容:</strong> 注释掉跳过按钮的HTML代码</li>
+                <li><strong>影响范围:</strong> 实名认证页面的用户界面</li>
+                <li><strong>兼容性:</strong> 不影响其他功能</li>
+                <li><strong>可逆性:</strong> 可以轻松恢复</li>
+            </ul>
+        </div>
+        
+        <h2>替代方案</h2>
+        
+        <div class="change-section">
+            <h3>🔄 其他实现方式</h3>
+            <ul>
+                <li><strong>CSS隐藏:</strong> <code>style="display: none;"</code></li>
+                <li><strong>条件渲染:</strong> <code>v-if="false"</code></li>
+                <li><strong>动态控制:</strong> 通过变量控制显示/隐藏</li>
+                <li><strong>权限控制:</strong> 根据用户权限决定是否显示</li>
+            </ul>
+        </div>
+        
+        <h2>技术细节</h2>
+        
+        <div class="code-block">
+// 完整的header部分代码
+&lt;div class="header"&gt;
+    &lt;!-- 返回按钮 - 保留 --&gt;
+    &lt;div class="flex items-center" @click="$router.go(-1)"&gt;
+        &lt;img src="../../assets/image/assets-center/left-arrow.png" alt="" class="leftReturn" /&gt;
+    &lt;/div&gt;
+    
+    &lt;!-- 跳过按钮 - 已隐藏 --&gt;
+    &lt;!-- &lt;div class="textColor" @click="$router.push('/finish')"&gt;{{ $t('skip') }}&lt;/div&gt; --&gt;
+&lt;/div&gt;
+        </div>
+        
+        <div class="success-section">
+            <h3>✅ 修改完成</h3>
+            <p>实名认证页面跳过按钮已隐藏：</p>
+            <ul>
+                <li>✅ 右上角"跳过"按钮已隐藏</li>
+                <li>✅ 左上角返回按钮仍然可用</li>
+                <li>✅ 用户必须完成实名认证才能继续</li>
+                <li>✅ 提高平台合规性</li>
+                <li>✅ 修改简单，易于恢复</li>
+                <li>✅ 不影响其他功能</li>
+            </ul>
+            <p>现在用户在实名认证页面无法跳过认证流程，必须完成实名认证才能继续注册。</p>
+        </div>
+    </div>
+</body>
+</html>

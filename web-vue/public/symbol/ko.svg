@@ -1,0 +1,18 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad-ko" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#cedb9c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a8b576;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow-ko">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="8" fill="url(#grad-ko)" filter="url(#shadow-ko)"/>
+  <rect x="6" y="6" width="52" height="52" rx="6" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.8"/>
+  <text x="50%" y="50%" text-anchor="middle" dy="0.35em" font-family="Arial, sans-serif" 
+        font-size="14" font-weight="bold" fill="#FFFFFF">
+    KO
+  </text>
+  <circle cx="50" cy="14" r="3" fill="#FFFFFF" opacity="0.6"/>
+</svg>

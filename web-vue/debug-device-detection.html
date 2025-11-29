@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设备检测调试工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .info-item {
+            margin: 5px 0;
+            padding: 5px;
+            background: #f9f9f9;
+            border-radius: 3px;
+        }
+        .mobile { color: #e74c3c; font-weight: bold; }
+        .desktop { color: #27ae60; font-weight: bold; }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .result.mobile {
+            background: #fdf2f2;
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+        }
+        .result.desktop {
+            background: #f0f9f0;
+            border: 1px solid #27ae60;
+            color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>设备检测调试工具</h1>
+        
+        <div class="section">
+            <h3>当前设备信息</h3>
+            <div id="deviceInfo"></div>
+        </div>
+        
+        <div class="section">
+            <h3>UserAgent 分析</h3>
+            <div id="userAgentInfo"></div>
+        </div>
+        
+        <div class="section">
+            <h3>屏幕信息</h3>
+            <div id="screenInfo"></div>
+        </div>
+        
+        <div class="section">
+            <h3>检测结果</h3>
+            <div id="detectionResult"></div>
+            <button class="test-button" onclick="testDetection()">重新检测</button>
+            <button class="test-button" onclick="simulateMobile()">模拟移动端</button>
+            <button class="test-button" onclick="simulateDesktop()">模拟桌面端</button>
+        </div>
+        
+        <div class="section">
+            <h3>跳转测试</h3>
+            <button class="test-button" onclick="testRedirect()">测试跳转逻辑</button>
+            <div id="redirectResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // 移动设备UserAgent关键词
+        const MOBILE_KEYWORDS = [
+            'mobile', 'phone', 'pad', 'pod', 'tablet',
+            'iphone', 'ipod', 'ios', 'ipad',
+            'android', 'androidphone', 'androidtablet',
+            'blackberry', 'iemobile', 'mobile safari',
+            'mqqbrowser', 'juc', 'micromessenger', 'wechat',
+            'qqbrowser', 'baiduboxapp', 'baidubrowser',
+            '360browser', '360phonebrowser', 'qhbrowser',
+            'ucbrowser', 'ucweb', 'opera mini', 'opera mobi',
+            'fennec', 'wosbrowser', 'browserng', 'webos',
+            'symbian', 'windows phone', 'windows mobile',
+            'kindle', 'silk', 'playbook', 'nook',
+            'smartphone', 'smarttv', 'smartwatch',
+            'samsung', 'huawei', 'xiaomi', 'oppo', 'vivo',
+            'oneplus', 'meizu', 'zte', 'lenovo', 'motorola',
+            'lg', 'sony', 'htc', 'nokia'
+        ];
+
+        const MOBILE_BROWSER_KEYWORDS = [
+            'mobile safari', 'chrome mobile', 'firefox mobile',
+            'edge mobile', 'opera mobile', 'samsung browser',
+            'huawei browser', 'miui browser', 'oppo browser',
+            'vivo browser', 'uc browser', 'qq browser',
+            'baidu browser', '360 browser', 'sogou browser',
+            'maxthon mobile', 'liebao mobile'
+        ];
+
+        function isMobileByUserAgent() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            
+            // 首先检查是否为桌面浏览器（排除移动端）
+            const isDesktopBrowser = userAgent.includes('windows nt') || 
+                                    userAgent.includes('macintosh') || 
+                                    userAgent.includes('linux') ||
+                                    userAgent.includes('x11');
+            
+            // 如果是桌面浏览器且没有明确的移动设备标识，则不是移动端
+            if (isDesktopBrowser && !userAgent.includes('mobile') && !userAgent.includes('android')) {
+                return false;
+            }
+            
+            // 检查明确的移动设备关键词
+            const hasMobileKeyword = MOBILE_KEYWORDS.some(keyword => 
+                userAgent.includes(keyword.toLowerCase())
+            );
+            
+            // 检查移动浏览器关键词
+            const hasMobileBrowser = MOBILE_BROWSER_KEYWORDS.some(keyword => 
+                userAgent.includes(keyword.toLowerCase())
+            );
+            
+            return hasMobileKeyword || hasMobileBrowser;
+        }
+
+        function isMobileByScreenSize() {
+            const { innerWidth, innerHeight } = window;
+            
+            // 检查屏幕宽度和高度 - 更严格的判断
+            const isSmallScreen = innerWidth <= 768 && innerHeight <= 1024;
+            
+            // 检查屏幕比例（移动设备通常宽高比不同）- 更严格的比例判断
+            const aspectRatio = innerWidth / innerHeight;
+            const isMobileRatio = aspectRatio < 0.5 || aspectRatio > 2.0;
+            
+            // 同时满足小屏幕和移动设备比例才认为是移动端
+            return isSmallScreen && isMobileRatio;
+        }
+
+        function isTouchDevice() {
+            return (
+                'ontouchstart' in window ||
+                navigator.maxTouchPoints > 0 ||
+                navigator.msMaxTouchPoints > 0
+            );
+        }
+
+        function isTablet() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const { innerWidth, innerHeight } = window;
+            
+            // 检查平板关键词
+            const hasTabletKeyword = userAgent.includes('ipad') || 
+                                    userAgent.includes('tablet') ||
+                                    userAgent.includes('kindle') ||
+                                    userAgent.includes('playbook');
+            
+            // 检查平板屏幕尺寸
+            const isTabletScreen = innerWidth > 768 && 
+                                  innerWidth <= 1024 &&
+                                  innerHeight <= 1366;
+            
+            return hasTabletKeyword || isTabletScreen;
+        }
+
+        function isMobileDevice() {
+            // 1. 基于UserAgent检测（主要判断依据）
+            const userAgentMobile = isMobileByUserAgent();
+            
+            // 2. 基于屏幕尺寸检测（辅助判断）
+            const screenMobile = isMobileByScreenSize();
+            
+            // 3. 检测触摸设备
+            const isTouch = isTouchDevice();
+            
+            // 4. 检测平板（平板也视为移动端）
+            const isTabletDevice = isTablet();
+            
+            // 优先使用UserAgent检测，只有在UserAgent明确指示移动设备时才跳转
+            // 避免PC端浏览器被误判为移动端
+            if (userAgentMobile) {
+                return true;
+            }
+            
+            // 如果UserAgent没有明确指示移动设备，但屏幕很小且是触摸设备，也认为是移动端
+            if (screenMobile && isTouch) {
+                return true;
+            }
+            
+            // 平板设备也认为是移动端
+            if (isTabletDevice) {
+                return true;
+            }
+            
+            return false;
+        }
+
+        function getDeviceInfo() {
+            return {
+                isMobile: isMobileDevice(),
+                isTablet: isTablet(),
+                isTouch: isTouchDevice(),
+                userAgent: navigator.userAgent,
+                screenSize: {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                },
+                userAgentMobile: isMobileByUserAgent(),
+                screenMobile: isMobileByScreenSize()
+            };
+        }
+
+        function updateDisplay() {
+            const deviceInfo = getDeviceInfo();
+            
+            // 显示设备信息
+            document.getElementById('deviceInfo').innerHTML = `
+                <div class="info-item"><strong>是否为移动端:</strong> <span class="${deviceInfo.isMobile ? 'mobile' : 'desktop'}">${deviceInfo.isMobile ? '是' : '否'}</span></div>
+                <div class="info-item"><strong>是否为平板:</strong> ${deviceInfo.isTablet ? '是' : '否'}</div>
+                <div class="info-item"><strong>是否支持触摸:</strong> ${deviceInfo.isTouch ? '是' : '否'}</div>
+                <div class="info-item"><strong>UserAgent检测:</strong> <span class="${deviceInfo.userAgentMobile ? 'mobile' : 'desktop'}">${deviceInfo.userAgentMobile ? '移动端' : '桌面端'}</span></div>
+                <div class="info-item"><strong>屏幕尺寸检测:</strong> <span class="${deviceInfo.screenMobile ? 'mobile' : 'desktop'}">${deviceInfo.screenMobile ? '移动端' : '桌面端'}</span></div>
+            `;
+            
+            // 显示UserAgent信息
+            document.getElementById('userAgentInfo').innerHTML = `
+                <div class="info-item"><strong>UserAgent:</strong> ${deviceInfo.userAgent}</div>
+                <div class="info-item"><strong>检测到的关键词:</strong> ${getDetectedKeywords()}</div>
+            `;
+            
+            // 显示屏幕信息
+            document.getElementById('screenInfo').innerHTML = `
+                <div class="info-item"><strong>屏幕尺寸:</strong> ${deviceInfo.screenSize.width} x ${deviceInfo.screenSize.height}</div>
+                <div class="info-item"><strong>宽高比:</strong> ${(deviceInfo.screenSize.width / deviceInfo.screenSize.height).toFixed(2)}</div>
+                <div class="info-item"><strong>最大触摸点数:</strong> ${navigator.maxTouchPoints || 0}</div>
+            `;
+            
+            // 显示检测结果
+            const resultDiv = document.getElementById('detectionResult');
+            resultDiv.className = `result ${deviceInfo.isMobile ? 'mobile' : 'desktop'}`;
+            resultDiv.innerHTML = `
+                最终检测结果: ${deviceInfo.isMobile ? '移动端设备' : '桌面设备'}
+                <br>
+                建议操作: ${deviceInfo.isMobile ? '应该跳转到H5端' : '应该使用PC端界面'}
+            `;
+        }
+
+        function getDetectedKeywords() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const detectedKeywords = [];
+            
+            MOBILE_KEYWORDS.forEach(keyword => {
+                if (userAgent.includes(keyword.toLowerCase())) {
+                    detectedKeywords.push(keyword);
+                }
+            });
+            
+            MOBILE_BROWSER_KEYWORDS.forEach(keyword => {
+                if (userAgent.includes(keyword.toLowerCase())) {
+                    detectedKeywords.push(keyword);
+                }
+            });
+            
+            return detectedKeywords.length > 0 ? detectedKeywords.join(', ') : '无';
+        }
+
+        function testDetection() {
+            console.log('=== 重新检测设备 ===');
+            updateDisplay();
+        }
+
+        function simulateMobile() {
+            // 临时修改UserAgent进行测试
+            const originalUserAgent = navigator.userAgent;
+            Object.defineProperty(navigator, 'userAgent', {
+                value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
+                configurable: true
+            });
+            
+            setTimeout(() => {
+                updateDisplay();
+                Object.defineProperty(navigator, 'userAgent', {
+                    value: originalUserAgent,
+                    configurable: true
+                });
+            }, 100);
+        }
+
+        function simulateDesktop() {
+            updateDisplay();
+        }
+
+        function testRedirect() {
+            const deviceInfo = getDeviceInfo();
+            const resultDiv = document.getElementById('redirectResult');
+            
+            if (deviceInfo.isMobile) {
+                resultDiv.innerHTML = `
+                    <div class="result mobile">
+                        🚀 检测到移动端设备，应该跳转到H5端<br>
+                        <strong>跳转URL:</strong> http://localhost:3333/h5/
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="result desktop">
+                        🖥️ 检测到桌面设备，继续使用PC端界面<br>
+                        <strong>当前URL:</strong> http://localhost:5173/
+                    </div>
+                `;
+            }
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('load', () => {
+            updateDisplay();
+        });
+
+        // 监听窗口大小变化
+        window.addEventListener('resize', () => {
+            setTimeout(updateDisplay, 100);
+        });
+    </script>
+</body>
+</html>

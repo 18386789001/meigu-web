@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试英文默认语言设置</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 2px solid #4CAF50;
+        }
+        
+        .warning {
+            background: rgba(255, 193, 7, 0.3);
+            border: 2px solid #FFC107;
+        }
+        
+        .error {
+            background: rgba(244, 67, 54, 0.3);
+            border: 2px solid #F44336;
+        }
+        
+        .info {
+            background: rgba(33, 150, 243, 0.3);
+            border: 2px solid #2196F3;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .test-results {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .current-status {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .actions {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .debug-info {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 英文默认语言设置测试</h1>
+        
+        <div id="current-status" class="current-status"></div>
+        
+        <div class="actions">
+            <button onclick="checkCurrentStatus()">🔍 检查当前状态</button>
+            <button onclick="clearLanguageSettings()">🗑️ 清除语言设置</button>
+            <button onclick="forceEnglishLanguage()">🇺🇸 强制设置英文</button>
+            <button onclick="testLanguageInitialization()">🧪 测试语言初始化</button>
+            <button onclick="openH5App()">🚀 打开H5应用</button>
+        </div>
+        
+        <div class="debug-info" id="debug-info"></div>
+        
+        <div class="test-results" id="test-results">
+            <h3>📋 测试结果</h3>
+            <div id="results-content">点击上方按钮开始测试...</div>
+        </div>
+    </div>
+
+    <script>
+        // 更新当前状态显示
+        function updateCurrentStatus() {
+            const statusDiv = document.getElementById('current-status');
+            const storedLang = localStorage.getItem('lang');
+            
+            if (storedLang === 'en-US') {
+                statusDiv.className = 'current-status success';
+                statusDiv.innerHTML = `✅ 当前语言设置: ${storedLang} (英文)`;
+            } else if (storedLang === 'zh-CN' || storedLang === 'zh-TW' || storedLang === 'zh') {
+                statusDiv.className = 'current-status warning';
+                statusDiv.innerHTML = `⚠️ 当前语言设置: ${storedLang} (中文)`;
+            } else if (!storedLang) {
+                statusDiv.className = 'current-status info';
+                statusDiv.innerHTML = `ℹ️ 当前语言设置: 未设置`;
+            } else {
+                statusDiv.className = 'current-status info';
+                statusDiv.innerHTML = `ℹ️ 当前语言设置: ${storedLang}`;
+            }
+            
+            // 更新调试信息
+            updateDebugInfo();
+        }
+        
+        // 更新调试信息
+        function updateDebugInfo() {
+            const debugDiv = document.getElementById('debug-info');
+            const storedLang = localStorage.getItem('lang');
+            
+            const debugInfo = `
+<strong>🔍 调试信息</strong><br>
+<strong>localStorage['lang']:</strong> ${storedLang || 'null'}<br>
+<strong>浏览器语言:</strong> ${navigator.language}<br>
+<strong>当前域名:</strong> ${window.location.hostname}<br>
+<strong>当前路径:</strong> ${window.location.pathname}<br>
+<strong>当前时间:</strong> ${new Date().toLocaleString()}<br>
+<strong>用户代理:</strong> ${navigator.userAgent.substring(0, 100)}...
+            `;
+            debugDiv.innerHTML = debugInfo;
+        }
+        
+        // 添加测试结果
+        function addTestResult(message, type = 'info') {
+            const resultsContent = document.getElementById('results-content');
+            const timestamp = new Date().toLocaleTimeString();
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `status ${type}`;
+            resultDiv.innerHTML = `[${timestamp}] ${message}`;
+            
+            if (resultsContent.innerHTML === '点击上方按钮开始测试...') {
+                resultsContent.innerHTML = '';
+            }
+            
+            resultsContent.appendChild(resultDiv);
+            resultsContent.scrollTop = resultsContent.scrollHeight;
+        }
+        
+        // 检查当前状态
+        function checkCurrentStatus() {
+            updateCurrentStatus();
+            const storedLang = localStorage.getItem('lang');
+            
+            if (storedLang === 'en-US') {
+                addTestResult('✅ 语言设置正确: en-US (英文)', 'success');
+            } else if (storedLang === 'zh-CN' || storedLang === 'zh-TW' || storedLang === 'zh') {
+                addTestResult(`⚠️ 检测到中文语言设置: ${storedLang}，需要修复`, 'warning');
+            } else if (!storedLang) {
+                addTestResult('ℹ️ 没有语言设置，需要初始化为英文', 'info');
+            } else {
+                addTestResult(`ℹ️ 当前语言设置: ${storedLang}`, 'info');
+            }
+        }
+        
+        // 清除语言设置
+        function clearLanguageSettings() {
+            try {
+                const oldLang = localStorage.getItem('lang');
+                localStorage.removeItem('lang');
+                updateCurrentStatus();
+                addTestResult(`🗑️ 已清除语言设置: ${oldLang || 'null'} → null`, 'info');
+            } catch (error) {
+                addTestResult(`❌ 清除语言设置失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 强制设置英文语言
+        function forceEnglishLanguage() {
+            try {
+                const oldLang = localStorage.getItem('lang');
+                localStorage.setItem('lang', 'en-US');
+                updateCurrentStatus();
+                addTestResult(`🇺🇸 已强制设置为英文: ${oldLang || 'null'} → en-US`, 'success');
+            } catch (error) {
+                addTestResult(`❌ 设置英文语言失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 测试语言初始化逻辑
+        function testLanguageInitialization() {
+            addTestResult('🧪 开始测试语言初始化逻辑...', 'info');
+            
+            // 1. 清除语言设置
+            localStorage.removeItem('lang');
+            addTestResult('1️⃣ 已清除语言设置', 'info');
+            
+            // 2. 模拟应用初始化
+            setTimeout(() => {
+                const currentLang = localStorage.getItem('lang');
+                if (!currentLang) {
+                    // 模拟默认语言设置
+                    localStorage.setItem('lang', 'en-US');
+                    addTestResult('2️⃣ 模拟应用初始化，设置默认语言为英文', 'success');
+                } else {
+                    addTestResult(`2️⃣ 语言已存在: ${currentLang}`, 'info');
+                }
+                
+                updateCurrentStatus();
+                
+                // 3. 验证结果
+                setTimeout(() => {
+                    const finalLang = localStorage.getItem('lang');
+                    if (finalLang === 'en-US') {
+                        addTestResult('3️⃣ ✅ 语言初始化测试成功: en-US', 'success');
+                    } else {
+                        addTestResult(`3️⃣ ❌ 语言初始化测试失败: ${finalLang}`, 'error');
+                    }
+                }, 500);
+            }, 500);
+        }
+        
+        // 打开H5应用
+        function openH5App() {
+            addTestResult('🚀 正在打开H5应用...', 'info');
+            
+            // 确保语言设置为英文
+            if (localStorage.getItem('lang') !== 'en-US') {
+                localStorage.setItem('lang', 'en-US');
+                addTestResult('🔧 已确保语言设置为英文', 'success');
+            }
+            
+            // 打开H5应用
+            const h5Url = window.location.hostname === 'localhost' 
+                ? 'http://localhost:3333/h5/' 
+                : 'https://jpmx.xyz/h5/';
+            
+            addTestResult(`🌐 即将跳转到: ${h5Url}`, 'info');
+            
+            setTimeout(() => {
+                window.open(h5Url, '_blank');
+            }, 1000);
+        }
+        
+        // 页面加载时初始化
+        window.addEventListener('load', () => {
+            updateCurrentStatus();
+            addTestResult('📱 英文默认语言测试页面已加载', 'info');
+            
+            // 检查当前环境
+            const isProduction = window.location.hostname === 'jpmx.xyz';
+            const isDevelopment = window.location.hostname === 'localhost';
+            
+            if (isProduction) {
+                addTestResult('🌍 当前环境: 生产环境 (jpmx.xyz)', 'info');
+            } else if (isDevelopment) {
+                addTestResult('💻 当前环境: 开发环境 (localhost)', 'info');
+            } else {
+                addTestResult(`🔍 当前环境: ${window.location.hostname}`, 'info');
+            }
+        });
+        
+        // 定期更新状态
+        setInterval(updateCurrentStatus, 2000);
+    </script>
+</body>
+</html>

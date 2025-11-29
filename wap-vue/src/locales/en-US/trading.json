@@ -1,0 +1,17 @@
+{
+  "最新交易": "Latest Trades",
+  "深度图": "Depth Chart",
+  "时间": "Time",
+  "方向": "Direction",
+  "价格(USD)": "Price(USD)",
+  "数量": "Quantity",
+  "买入": "Buy",
+  "卖出": "Sell",
+  "买盘": "Buy Orders",
+  "卖盘": "Sell Orders",
+  "正在加载深度图数据...": "Loading depth chart data...",
+  "当前标签": "Current Tab",
+  "买盘数据长度": "Buy Orders Count",
+  "卖盘数据长度": "Sell Orders Count",
+  "手动生成数据": "Generate Data Manually"
+}

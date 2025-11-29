@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>出金报表页面测试指南</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #F56C6C;
+            border-bottom: 3px solid #F56C6C;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #333;
+            margin-top: 30px;
+        }
+        .success {
+            background: #f0f9ff;
+            border-left: 4px solid #67C23A;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .warning {
+            background: #fffbf0;
+            border-left: 4px solid #E6A23C;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .danger {
+            background: #fef0f0;
+            border-left: 4px solid #F56C6C;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .info {
+            background: #f4f4f5;
+            border-left: 4px solid #909399;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        code {
+            background: #f4f4f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+        }
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+        }
+        .step {
+            background: #fef0f0;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #F56C6C;
+        }
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #F56C6C;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #F56C6C;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+        }
+        .card h3 {
+            margin-top: 0;
+        }
+        .card.deposit {
+            border-color: #409EFF;
+        }
+        .card.withdraw {
+            border-color: #F56C6C;
+        }
+        .card.deposit h3 {
+            color: #409EFF;
+        }
+        .card.withdraw h3 {
+            color: #F56C6C;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ 出金报表页面 - 创建成功</h1>
+        
+        <div class="success">
+            <strong>🎉 页面已创建完成！</strong><br>
+            文件位置：<code>src/views/modules/order/chujin.vue</code>
+        </div>
+
+        <h2>📋 功能说明</h2>
+        <p>该页面整合了银行卡提现和数字货币提现两个接口的数据，统一显示在一个报表中。</p>
+        
+        <table>
+            <tr>
+                <th>功能</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>🔍 搜索功能</td>
+                <td>支持按订单号、用户名、用户UID搜索</td>
+            </tr>
+            <tr>
+                <td>🎯 筛选功能</td>
+                <td>可按出金方式（银行卡/数字货币）筛选</td>
+            </tr>
+            <tr>
+                <td>📊 数据整合</td>
+                <td>自动合并两个接口的数据</td>
+            </tr>
+            <tr>
+                <td>📄 分页功能</td>
+                <td>每页显示10条记录，可自定义</td>
+            </tr>
+            <tr>
+                <td>🔄 刷新功能</td>
+                <td>支持手动刷新最新数据</td>
+            </tr>
+        </table>
+
+        <h2>🔄 入金 vs 出金报表对比</h2>
+        <div class="comparison">
+            <div class="card deposit">
+                <h3>📈 入金报表</h3>
+                <ul>
+                    <li><strong>路由：</strong>order/order-rujin</li>
+                    <li><strong>操作：</strong>充值入账</li>
+                    <li><strong>银行卡：</strong>direction = "recharge"</li>
+                    <li><strong>数字货币：</strong>/rechargeOrder/list</li>
+                    <li><strong>状态：</strong>已完成 (state=3, status=1)</li>
+                </ul>
+            </div>
+            <div class="card withdraw">
+                <h3>📉 出金报表</h3>
+                <ul>
+                    <li><strong>路由：</strong>order/order-chujin</li>
+                    <li><strong>操作：</strong>提现出账</li>
+                    <li><strong>银行卡：</strong>direction = "withdraw"</li>
+                    <li><strong>数字货币：</strong>/withdraw/list</li>
+                    <li><strong>状态：</strong>已完成 (state=3, status=1)</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>🚀 快速开始</h2>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>启动开发服务器</strong><br>
+            打开新的PowerShell窗口，执行：
+            <div class="code-block">
+cd D:\Awww\mt5new\template\admin-vue
+yarn dev
+            </div>
+        </div>
+
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>访问页面</strong><br>
+            在浏览器中打开：
+            <div class="code-block">
+http://localhost:9528/#/order/order-chujin
+            </div>
+            <div class="warning">
+                ⚠️ 注意：首次访问需要先登录系统
+            </div>
+        </div>
+
+        <div class="step">
+            <span class="step-number">3</span>
+            <strong>添加到菜单</strong><br>
+            在后台管理系统的菜单管理中添加新菜单项：
+            <ul>
+                <li>菜单名称：<code>出金报表</code></li>
+                <li>路由地址：<code>order/order-chujin</code></li>
+                <li>权限标识：<code>order:chujin:page</code></li>
+            </ul>
+        </div>
+
+        <h2>📊 数据字段说明</h2>
+        
+        <h3>银行卡提现</h3>
+        <table>
+            <tr>
+                <th>字段</th>
+                <th>来源</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>订单号</td>
+                <td>order_no</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>用户名</td>
+                <td>username</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>UID</td>
+                <td>usercode</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>实名姓名</td>
+                <td>realname</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>出金方式</td>
+                <td>-</td>
+                <td>固定显示"银行卡提现"</td>
+            </tr>
+            <tr>
+                <td>支付币种</td>
+                <td>currency</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>到账币种</td>
+                <td>symbol</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>提现数量</td>
+                <td>coin_amount</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>手续费</td>
+                <td>coin_amount_fee</td>
+                <td></td>
+            </tr>
+        </table>
+
+        <h3>数字货币提现</h3>
+        <table>
+            <tr>
+                <th>字段</th>
+                <th>来源</th>
+                <th>说明</th>
+            </tr>
+            <tr>
+                <td>订单号</td>
+                <td>orderNo</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>用户名</td>
+                <td>userName</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>UID</td>
+                <td>userCode</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>实名姓名</td>
+                <td>realName / fullName</td>
+                <td>支持多个字段</td>
+            </tr>
+            <tr>
+                <td>出金方式</td>
+                <td>-</td>
+                <td>固定显示"数字货币提现"</td>
+            </tr>
+            <tr>
+                <td>提现币链</td>
+                <td>blockchainName / blockchain</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>提现数量</td>
+                <td>amount / withdrawAmount</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>到账数量</td>
+                <td>receiveAmount / actualAmount</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>币链地址</td>
+                <td>address / withdrawAddress</td>
+                <td></td>
+            </tr>
+        </table>
+
+        <h2>🔌 API接口</h2>
+        
+        <h3>银行卡提现接口</h3>
+        <div class="info">
+            <strong>URL:</strong> <code>https://jpmx.xyz/apis/bankCardOrder/list</code><br>
+            <strong>方法:</strong> POST<br>
+            <strong>筛选:</strong> direction === "withdraw" && state === "3" (已完成)
+        </div>
+
+        <h3>数字货币提现接口</h3>
+        <div class="danger">
+            <strong>URL:</strong> <code>https://jpmx.xyz/apis/withdraw/list</code><br>
+            <strong>方法:</strong> POST<br>
+            <strong>筛选:</strong> status === 1 (已处理)
+        </div>
+
+        <h2>⚠️ 注意事项</h2>
+        <div class="warning">
+            <ul>
+                <li>页面需要登录后才能访问，否则API会返回403错误</li>
+                <li>当前使用前端分页，数据量较大时可能需要优化</li>
+                <li>两个接口数据会合并显示，某些字段可能为空是正常的</li>
+                <li>确保开发服务器正在运行（yarn dev）</li>
+                <li><strong>特别注意：</strong>数字货币提现接口的字段名可能需要根据实际返回调整</li>
+            </ul>
+        </div>
+
+        <h2>🔧 字段映射灵活性</h2>
+        <div class="info">
+            <p>代码中对数字货币提现接口的字段使用了多个可能的映射：</p>
+            <ul>
+                <li>实名姓名：<code>realName || fullName</code></li>
+                <li>支付币种：<code>coin || blockchainName</code></li>
+                <li>提现数量：<code>amount || withdrawAmount</code></li>
+                <li>到账数量：<code>receiveAmount || actualAmount</code></li>
+                <li>提现币链：<code>blockchainName || blockchain</code></li>
+                <li>币链地址：<code>address || withdrawAddress</code></li>
+                <li>备注：<code>description || remark</code></li>
+                <li>审核时间：<code>reviewTime || auditTime</code></li>
+            </ul>
+            <p>如果实际接口返回的字段名不同，请修改 <code>mergeAndFormatData</code> 方法中的字段映射。</p>
+        </div>
+
+        <h2>🧪 测试检查清单</h2>
+        <table>
+            <tr>
+                <th>项目</th>
+                <th>检查内容</th>
+            </tr>
+            <tr>
+                <td>✅ 页面加载</td>
+                <td>页面能正常打开，无错误提示</td>
+            </tr>
+            <tr>
+                <td>✅ 数据显示</td>
+                <td>银行卡和数字货币提现数据都能正常显示</td>
+            </tr>
+            <tr>
+                <td>✅ 搜索功能</td>
+                <td>按订单号、用户名、UID搜索都能正常工作</td>
+            </tr>
+            <tr>
+                <td>✅ 筛选功能</td>
+                <td>按出金方式筛选能正确区分两种类型</td>
+            </tr>
+            <tr>
+                <td>✅ 分页功能</td>
+                <td>翻页正常，数据正确显示</td>
+            </tr>
+            <tr>
+                <td>✅ 刷新功能</td>
+                <td>点击刷新按钮能重新加载数据</td>
+            </tr>
+            <tr>
+                <td>✅ 字段完整性</td>
+                <td>所有字段都能正确显示，无undefined</td>
+            </tr>
+        </table>
+
+        <h2>🔧 故障排查</h2>
+        <ol>
+            <li><strong>页面无法访问？</strong> 检查路由是否正确，确保服务器已启动</li>
+            <li><strong>403错误？</strong> 需要先登录系统</li>
+            <li><strong>数据不显示？</strong> 打开浏览器开发者工具查看Network标签中的API请求</li>
+            <li><strong>字段显示为空？</strong> 检查API返回的字段名是否与代码中的映射一致</li>
+            <li><strong>只显示一种类型？</strong> 检查另一个接口是否返回403或其他错误</li>
+        </ol>
+
+        <h2>📚 相关文档</h2>
+        <ul>
+            <li>详细配置：<code>出金报表页面配置说明.md</code></li>
+            <li>入金报表：<code>入金报表页面配置说明.md</code></li>
+        </ul>
+
+        <div class="success" style="margin-top: 30px;">
+            <strong>✨ 开发完成！</strong><br>
+            现在您有了完整的入金和出金报表系统。<br>
+            📈 入金报表：<code>http://localhost:9528/#/order/order-rujin</code><br>
+            📉 出金报表：<code>http://localhost:9528/#/order/order-chujin</code>
+        </div>
+    </div>
+</body>
+</html>
+

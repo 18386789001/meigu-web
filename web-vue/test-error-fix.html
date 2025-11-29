@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>错误修复测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .test-section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .console-output {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+        .error-log {
+            color: #ff6b6b;
+        }
+        .warning-log {
+            color: #feca57;
+        }
+        .info-log {
+            color: #48dbfb;
+        }
+        .success-log {
+            color: #1dd1a1;
+        }
+        .icon-test {
+            display: inline-block;
+            margin: 5px;
+            text-align: center;
+        }
+        .icon-test img {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+        }
+        .icon-test .label {
+            font-size: 10px;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 web-vue 错误修复测试页面</h1>
+        
+        <div class="test-section">
+            <h2>📊 修复状态检查</h2>
+            <div id="fixStatus" class="status info">正在检查修复状态...</div>
+            <button class="btn" onclick="checkFixStatus()">重新检查</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🖼️ 图标加载测试</h2>
+            <p>测试一些可能缺失的图标，观察是否还有404错误：</p>
+            <div id="iconTests"></div>
+            <button class="btn" onclick="testIcons()">测试图标加载</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>📝 控制台错误监控</h2>
+            <div id="consoleStatus" class="status">监控中...</div>
+            <div class="console-output" id="consoleOutput"></div>
+            <button class="btn" onclick="clearConsoleOutput()">清除日志</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🧪 模拟错误测试</h2>
+            <p>测试错误处理器是否正常工作：</p>
+            <button class="btn" onclick="simulateResourceError()">模拟资源加载错误</button>
+            <button class="btn" onclick="simulateJSError()">模拟JavaScript错误</button>
+            <button class="btn" onclick="simulateNetworkError()">模拟网络错误</button>
+        </div>
+    </div>
+
+    <script>
+        let errorCount = 0;
+        let resourceErrorCount = 0;
+        let jsErrorCount = 0;
+        
+        // 设置控制台监控
+        function setupConsoleMonitoring() {
+            const originalError = console.error;
+            const originalWarn = console.warn;
+            const originalLog = console.log;
+            
+            console.error = function(...args) {
+                logToConsoleOutput('error', args.join(' '));
+                errorCount++;
+                updateConsoleStatus();
+                originalError.apply(console, args);
+            };
+            
+            console.warn = function(...args) {
+                logToConsoleOutput('warning', args.join(' '));
+                updateConsoleStatus();
+                originalWarn.apply(console, args);
+            };
+            
+            console.log = function(...args) {
+                const message = args.join(' ');
+                if (message.includes('错误') || message.includes('Error') || message.includes('error')) {
+                    logToConsoleOutput('info', message);
+                }
+                originalLog.apply(console, args);
+            };
+        }
+        
+        // 记录到控制台输出
+        function logToConsoleOutput(type, message) {
+            const output = document.getElementById('consoleOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error-log' : 
+                            type === 'warning' ? 'warning-log' : 
+                            type === 'info' ? 'info-log' : 'success-log';
+            
+            output.innerHTML += `<div class="${className}">[${timestamp}] ${type.toUpperCase()}: ${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        // 更新控制台状态
+        function updateConsoleStatus() {
+            const status = document.getElementById('consoleStatus');
+            if (errorCount === 0 && resourceErrorCount === 0) {
+                status.className = 'status success';
+                status.textContent = '✅ 控制台清洁，无错误日志';
+            } else {
+                status.className = 'status error';
+                status.textContent = `❌ 发现 ${errorCount} 个错误，${resourceErrorCount} 个资源错误`;
+            }
+        }
+        
+        // 检查修复状态
+        function checkFixStatus() {
+            const status = document.getElementById('fixStatus');
+            status.className = 'status info';
+            status.textContent = '正在检查...';
+            
+            setTimeout(() => {
+                // 检查是否有errorHandler
+                if (window.errorHandler || (window.Vue && window.Vue.config)) {
+                    status.className = 'status success';
+                    status.textContent = '✅ 错误处理器已加载，修复生效';
+                } else {
+                    status.className = 'status error';
+                    status.textContent = '❌ 错误处理器未找到';
+                }
+            }, 1000);
+        }
+        
+        // 测试图标加载
+        function testIcons() {
+            const testSymbols = ['audeur', 'audchf', 'audgbp', 'aapl', 'msft', 'orcl', 'ma', 'cost'];
+            const container = document.getElementById('iconTests');
+            container.innerHTML = '';
+            
+            testSymbols.forEach(symbol => {
+                const iconDiv = document.createElement('div');
+                iconDiv.className = 'icon-test';
+                
+                const img = document.createElement('img');
+                img.src = `/symbol/${symbol}.png`;
+                img.alt = symbol;
+                
+                img.onerror = function() {
+                    resourceErrorCount++;
+                    updateConsoleStatus();
+                    logToConsoleOutput('warning', `图标加载失败: ${symbol}.png`);
+                    img.style.backgroundColor = '#ff6b6b';
+                    img.style.color = 'white';
+                    img.alt = '❌';
+                };
+                
+                img.onload = function() {
+                    logToConsoleOutput('success', `图标加载成功: ${symbol}.png`);
+                };
+                
+                const label = document.createElement('div');
+                label.className = 'label';
+                label.textContent = symbol.toUpperCase();
+                
+                iconDiv.appendChild(img);
+                iconDiv.appendChild(label);
+                container.appendChild(iconDiv);
+            });
+        }
+        
+        // 模拟资源加载错误
+        function simulateResourceError() {
+            const img = document.createElement('img');
+            img.src = '/symbol/nonexistent-icon.png';
+            img.style.display = 'none';
+            document.body.appendChild(img);
+            
+            logToConsoleOutput('info', '已触发资源加载错误测试');
+        }
+        
+        // 模拟JavaScript错误
+        function simulateJSError() {
+            try {
+                // 故意触发一个错误
+                nonExistentFunction();
+            } catch (error) {
+                logToConsoleOutput('info', '已触发JavaScript错误测试: ' + error.message);
+            }
+        }
+        
+        // 模拟网络错误
+        function simulateNetworkError() {
+            fetch('/api/nonexistent-endpoint')
+                .catch(error => {
+                    logToConsoleOutput('info', '已触发网络错误测试: ' + error.message);
+                });
+        }
+        
+        // 清除控制台输出
+        function clearConsoleOutput() {
+            document.getElementById('consoleOutput').innerHTML = '';
+            errorCount = 0;
+            resourceErrorCount = 0;
+            updateConsoleStatus();
+        }
+        
+        // 页面加载时初始化
+        window.onload = function() {
+            setupConsoleMonitoring();
+            checkFixStatus();
+            updateConsoleStatus();
+            
+            logToConsoleOutput('success', '错误修复测试页面已加载');
+            logToConsoleOutput('info', '开始监控控制台错误...');
+        };
+    </script>
+</body>
+</html>

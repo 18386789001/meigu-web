@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAP-Vue主题设置i18n测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .key {
+            font-weight: bold;
+            color: #333;
+        }
+        .value {
+            color: #666;
+            margin-left: 10px;
+        }
+        .error {
+            color: red;
+            background-color: #fff0f0;
+        }
+        .success {
+            color: green;
+            background-color: #f0fff0;
+        }
+        .language-selector {
+            margin-bottom: 20px;
+        }
+        select {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .theme-demo {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .theme-switch {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .theme-toggle {
+            width: 50px;
+            height: 25px;
+            background-color: #ccc;
+            border-radius: 25px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .theme-toggle.active {
+            background-color: #007bff;
+        }
+        .theme-toggle::after {
+            content: '';
+            width: 21px;
+            height: 21px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+        .theme-toggle.active::after {
+            transform: translateX(25px);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>WAP-Vue主题设置i18n测试</h1>
+        
+        <div class="language-selector">
+            <label for="lang-select">选择语言:</label>
+            <select id="lang-select">
+                <option value="zh-CN">简体中文</option>
+                <option value="CN">繁體中文</option>
+                <option value="en">English</option>
+                <option value="Japanese">日本語</option>
+                <option value="Korean">한국어</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="pt">Português</option>
+                <option value="Italy">Italiano</option>
+                <option value="th">ไทย</option>
+                <option value="vi">Tiếng Việt</option>
+                <option value="gr">Ελληνικά</option>
+                <option value="ro">Română</option>
+                <option value="tur">Türkçe</option>
+            </select>
+        </div>
+        
+        <div id="test-results"></div>
+        
+        <div class="theme-demo">
+            <h3>主题设置演示</h3>
+            <div class="theme-switch">
+                <span id="theme-label">亮色模式</span>
+                <div class="theme-toggle" id="theme-toggle"></div>
+            </div>
+            <p id="theme-status">当前主题: 亮色模式</p>
+        </div>
+    </div>
+
+    <script>
+        // 模拟i18n消息对象
+        const messages = {
+            'zh-CN': {
+                universal: "通用",
+                themeSettings: "主题设置",
+                lightMode: "亮色模式",
+                darkMode: "暗黑模式"
+            },
+            'CN': {
+                universal: "通用",
+                themeSettings: "主題設置",
+                lightMode: "亮色模式",
+                darkMode: "暗黑模式"
+            },
+            'en': {
+                universal: "General",
+                themeSettings: "Theme Settings",
+                lightMode: "Light Mode",
+                darkMode: "Dark Mode"
+            },
+            'Japanese': {
+                universal: "汎用",
+                themeSettings: "テーマ設定",
+                lightMode: "ライトモード",
+                darkMode: "ダークモード"
+            },
+            'Korean': {
+                universal: "만능인",
+                themeSettings: "테마 설정",
+                lightMode: "라이트 모드",
+                darkMode: "다크 모드"
+            },
+            'es': {
+                universal: "General",
+                themeSettings: "Configuración del tema",
+                lightMode: "Modo claro",
+                darkMode: "Modo oscuro"
+            },
+            'fr': {
+                universal: "General",
+                themeSettings: "Paramètres du thème",
+                lightMode: "Mode clair",
+                darkMode: "Mode sombre"
+            },
+            'de': {
+                universal: "universal",
+                themeSettings: "Theme-Einstellungen",
+                lightMode: "Heller Modus",
+                darkMode: "Dunkler Modus"
+            },
+            'pt': {
+                universal: "Universal",
+                themeSettings: "Configurações do tema",
+                lightMode: "Modo claro",
+                darkMode: "Modo escuro"
+            },
+            'Italy': {
+                universal: "universale",
+                themeSettings: "Impostazioni tema",
+                lightMode: "Modalità chiara",
+                darkMode: "Modalità scura"
+            },
+            'th': {
+                universal: "สากล",
+                themeSettings: "การตั้งค่าธีม",
+                lightMode: "โหมดสว่าง",
+                darkMode: "โหมดมืด"
+            },
+            'vi': {
+                universal: "phổ quát",
+                themeSettings: "Cài đặt chủ đề",
+                lightMode: "Chế độ sáng",
+                darkMode: "Chế độ tối"
+            },
+            'gr': {
+                universal: "Κοινός",
+                themeSettings: "Ρυθμίσεις θέματος",
+                lightMode: "Φωτεινή λειτουργία",
+                darkMode: "Σκοτεινή λειτουργία"
+            },
+            'ro': {
+                universal: "通用",
+                themeSettings: "Setări temă",
+                lightMode: "Mod luminos",
+                darkMode: "Mod întunecat"
+            },
+            'tur': {
+                universal: "通用",
+                themeSettings: "Tema ayarları",
+                lightMode: "Açık mod",
+                darkMode: "Koyu mod"
+            }
+        };
+
+        // 翻译函数
+        function t(key, locale = 'zh-CN') {
+            const keys = key.split('.');
+            let translation = messages[locale];
+            
+            for (const k of keys) {
+                if (translation && typeof translation === 'object' && translation[k]) {
+                    translation = translation[k];
+                } else {
+                    return key; // 返回key本身作为fallback
+                }
+            }
+            
+            return typeof translation === 'string' ? translation : key;
+        }
+
+        // 测试键值
+        const testKeys = [
+            'universal',
+            'themeSettings',
+            'lightMode',
+            'darkMode'
+        ];
+
+        function runTests(locale) {
+            const resultsContainer = document.getElementById('test-results');
+            resultsContainer.innerHTML = `<h2>测试结果 - ${locale}</h2>`;
+            
+            testKeys.forEach(key => {
+                const value = t(key, locale);
+                const isTranslated = value !== key;
+                
+                const testItem = document.createElement('div');
+                testItem.className = 'test-item';
+                testItem.innerHTML = `
+                    <span class="key">${key}:</span>
+                    <span class="value ${isTranslated ? 'success' : 'error'}">${value}</span>
+                `;
+                
+                resultsContainer.appendChild(testItem);
+            });
+            
+            // 更新主题演示
+            updateThemeDemo(locale);
+        }
+
+        function updateThemeDemo(locale) {
+            const themeLabel = document.getElementById('theme-label');
+            const themeStatus = document.getElementById('theme-status');
+            
+            const currentTheme = document.getElementById('theme-toggle').classList.contains('active') ? 'dark' : 'light';
+            const themeText = currentTheme === 'dark' ? t('darkMode', locale) : t('lightMode', locale);
+            
+            themeLabel.textContent = themeText;
+            themeStatus.textContent = `当前主题: ${themeText}`;
+        }
+
+        // 主题切换
+        let isDark = false;
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            isDark = !isDark;
+            this.classList.toggle('active', isDark);
+            updateThemeDemo(document.getElementById('lang-select').value);
+        });
+
+        // 语言选择器事件
+        document.getElementById('lang-select').addEventListener('change', (e) => {
+            runTests(e.target.value);
+        });
+
+        // 初始测试
+        runTests('zh-CN');
+    </script>
+</body>
+</html>

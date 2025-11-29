@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>国际化测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .language-selector {
+            margin: 10px 0;
+        }
+        .language-selector select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .translation-test {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .key {
+            font-weight: bold;
+            color: #666;
+        }
+        .value {
+            color: #333;
+            margin-left: 10px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        .debug-info {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>国际化测试页面</h1>
+        
+        <div class="test-section">
+            <h3>语言选择器</h3>
+            <div class="language-selector">
+                <label for="languageSelect">选择语言：</label>
+                <select id="languageSelect" onchange="changeLanguage(this.value)">
+                    <option value="zh-CN">简体中文</option>
+                    <option value="en-US">English</option>
+                    <option value="ja-JP">日本語</option>
+                    <option value="ko-KR">한국어</option>
+                    <option value="zh-TW">繁體中文</option>
+                    <option value="th-TH">ไทย</option>
+                </select>
+            </div>
+            <button onclick="testCurrentLanguage()">测试当前语言</button>
+            <button onclick="reloadPage()">刷新页面</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>翻译测试</h3>
+            <div id="translationResults"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>调试信息</h3>
+            <div id="debugInfo" class="debug-info"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>LocalStorage检查</h3>
+            <div id="localStorageInfo"></div>
+            <button onclick="clearLocalStorage()">清除LocalStorage</button>
+            <button onclick="setTestLanguage()">设置测试语言</button>
+        </div>
+    </div>
+
+    <script>
+        // 模拟i18n翻译函数
+        const translations = {
+            'zh-CN': {
+                'trading.forex.title': '外汇交易',
+                'trading.forex.description': '全球主要货币对交易',
+                'trading.forex.chart': '图表',
+                'trading.forex.trade': '交易',
+                'trading.forex.high': '最高',
+                'trading.forex.low': '最低',
+                'trading.forex.advantages': '交易优势'
+            },
+            'en-US': {
+                'trading.forex.title': 'Forex Trading',
+                'trading.forex.description': 'Global major currency pair trading',
+                'trading.forex.chart': 'Chart',
+                'trading.forex.trade': 'Trade',
+                'trading.forex.high': 'High',
+                'trading.forex.low': 'Low',
+                'trading.forex.advantages': 'Trading Advantages'
+            },
+            'ja-JP': {
+                'trading.forex.title': 'FX取引',
+                'trading.forex.description': 'グローバル主要通貨ペア取引',
+                'trading.forex.chart': 'チャート',
+                'trading.forex.trade': '取引',
+                'trading.forex.high': '高値',
+                'trading.forex.low': '安値',
+                'trading.forex.advantages': '取引メリット'
+            },
+            'ko-KR': {
+                'trading.forex.title': '외환 거래',
+                'trading.forex.description': '글로벌 주요 통화 쌍 거래',
+                'trading.forex.chart': '차트',
+                'trading.forex.trade': '거래',
+                'trading.forex.high': '고가',
+                'trading.forex.low': '저가',
+                'trading.forex.advantages': '거래 장점'
+            },
+            'zh-TW': {
+                'trading.forex.title': '外匯交易',
+                'trading.forex.description': '全球主要貨幣對交易',
+                'trading.forex.chart': '圖表',
+                'trading.forex.trade': '交易',
+                'trading.forex.high': '最高',
+                'trading.forex.low': '最低',
+                'trading.forex.advantages': '交易優勢'
+            },
+            'th-TH': {
+                'trading.forex.title': 'การเทรดฟอเร็กซ์',
+                'trading.forex.description': 'การเทรดคู่สกุลเงินหลักทั่วโลก',
+                'trading.forex.chart': 'แผนภูมิ',
+                'trading.forex.trade': 'เทรด',
+                'trading.forex.high': 'สูงสุด',
+                'trading.forex.low': 'ต่ำสุด',
+                'trading.forex.advantages': 'ข้อดีในการเทรด'
+            }
+        };
+
+        function getCurrentLanguage() {
+            return localStorage.getItem('lang') || 'zh-CN';
+        }
+
+        function translate(key, lang = null) {
+            const language = lang || getCurrentLanguage();
+            const langTranslations = translations[language];
+            
+            if (!langTranslations) {
+                console.warn(`语言 ${language} 不存在`);
+                return key;
+            }
+            
+            const translation = langTranslations[key];
+            if (!translation) {
+                console.warn(`键值 ${key} 在语言 ${language} 中不存在`);
+                return key;
+            }
+            
+            return translation;
+        }
+
+        function changeLanguage(lang) {
+            console.log('切换语言到:', lang);
+            localStorage.setItem('lang', lang);
+            
+            // 触发自定义事件
+            window.dispatchEvent(new CustomEvent('language-changed', { 
+                detail: { locale: lang } 
+            }));
+            
+            // 更新显示
+            updateTranslationDisplay();
+            updateDebugInfo();
+        }
+
+        function testCurrentLanguage() {
+            const currentLang = getCurrentLanguage();
+            console.log('当前语言:', currentLang);
+            
+            const testKeys = [
+                'trading.forex.title',
+                'trading.forex.description',
+                'trading.forex.chart',
+                'trading.forex.trade',
+                'trading.forex.high',
+                'trading.forex.low',
+                'trading.forex.advantages'
+            ];
+            
+            const results = testKeys.map(key => {
+                const translation = translate(key);
+                return {
+                    key: key,
+                    value: translation,
+                    success: translation !== key
+                };
+            });
+            
+            displayTranslationResults(results);
+        }
+
+        function displayTranslationResults(results) {
+            const container = document.getElementById('translationResults');
+            container.innerHTML = '<h4>翻译结果：</h4>';
+            
+            results.forEach(result => {
+                const div = document.createElement('div');
+                div.className = 'translation-test';
+                div.innerHTML = `
+                    <span class="key">${result.key}:</span>
+                    <span class="value ${result.success ? 'success' : 'error'}">${result.value}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateTranslationDisplay() {
+            testCurrentLanguage();
+        }
+
+        function updateDebugInfo() {
+            const container = document.getElementById('debugInfo');
+            const currentLang = getCurrentLanguage();
+            const userAgent = navigator.userAgent;
+            const timestamp = new Date().toLocaleString();
+            
+            container.innerHTML = `
+                当前时间: ${timestamp}<br>
+                当前语言: ${currentLang}<br>
+                UserAgent: ${userAgent}<br>
+                页面URL: ${window.location.href}<br>
+                语言选择器值: ${document.getElementById('languageSelect').value}
+            `;
+        }
+
+        function updateLocalStorageInfo() {
+            const container = document.getElementById('localStorageInfo');
+            const lang = localStorage.getItem('lang');
+            const allKeys = Object.keys(localStorage);
+            
+            container.innerHTML = `
+                <p><strong>语言设置:</strong> ${lang || '未设置'}</p>
+                <p><strong>所有LocalStorage键:</strong> ${allKeys.join(', ')}</p>
+            `;
+        }
+
+        function clearLocalStorage() {
+            localStorage.clear();
+            updateLocalStorageInfo();
+            updateDebugInfo();
+            alert('LocalStorage已清除');
+        }
+
+        function setTestLanguage() {
+            const testLang = prompt('输入测试语言代码 (如: zh-CN, en-US, ja-JP):', 'zh-CN');
+            if (testLang) {
+                localStorage.setItem('lang', testLang);
+                document.getElementById('languageSelect').value = testLang;
+                updateLocalStorageInfo();
+                updateDebugInfo();
+                updateTranslationDisplay();
+            }
+        }
+
+        function reloadPage() {
+            window.location.reload();
+        }
+
+        // 页面加载时初始化
+        window.onload = function() {
+            const currentLang = getCurrentLanguage();
+            document.getElementById('languageSelect').value = currentLang;
+            
+            updateTranslationDisplay();
+            updateDebugInfo();
+            updateLocalStorageInfo();
+            
+            // 监听语言切换事件
+            window.addEventListener('language-changed', function(event) {
+                console.log('检测到语言切换事件:', event.detail);
+                updateTranslationDisplay();
+                updateDebugInfo();
+            });
+        };
+    </script>
+</body>
+</html>

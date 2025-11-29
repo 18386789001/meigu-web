@@ -1,0 +1,459 @@
+// 移动端专用样式
+@import './variables.scss';
+
+// 移动端基础优化
+@media (max-width: 768px) {
+  // 防止iOS缩放
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  textarea,
+  select {
+    font-size: 16px; // 防止iOS自动缩放
+  }
+  
+  // 触摸优化
+  button,
+  .btn,
+  [role="button"],
+  [tabindex] {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
+  
+  // 滚动优化
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
+  
+  // 文本选择优化
+  .selectable {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+  
+  // 长按优化
+  .no-long-press {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+}
+
+// 移动端布局组件
+.mobile-container {
+  @include container;
+  padding: 0 var(--spacing-md);
+}
+
+.mobile-section {
+  padding: var(--spacing-lg) 0;
+  
+  &-title {
+    font-size: var(--font-xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+  }
+}
+
+// 移动端网格
+.mobile-grid {
+  display: grid;
+  gap: var(--spacing-md);
+  
+  &-1 {
+    grid-template-columns: 1fr;
+  }
+  
+  &-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  &-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  &-auto {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+// 移动端卡片
+.mobile-card {
+  @include card;
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  
+  &-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-sm);
+    
+    .card-title {
+      font-size: var(--font-md);
+      font-weight: var(--font-semibold);
+      color: var(--text-primary);
+    }
+    
+    .card-action {
+      color: var(--primary-color);
+      font-size: var(--font-sm);
+    }
+  }
+  
+  &-body {
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+  }
+}
+
+// 移动端列表
+.mobile-list {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  
+  &-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-primary);
+    transition: background-color var(--transition-fast);
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    &:hover,
+    &:active {
+      background: var(--bg-tertiary);
+    }
+    
+    &-icon {
+      width: 40px;
+      height: 40px;
+      margin-right: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      
+      i {
+        font-size: var(--font-lg);
+        color: var(--primary-color);
+      }
+    }
+    
+    &-content {
+      flex: 1;
+      
+      .item-title {
+        font-size: var(--font-md);
+        font-weight: var(--font-medium);
+        color: var(--text-primary);
+        margin-bottom: var(--spacing-xs);
+      }
+      
+      .item-desc {
+        font-size: var(--font-sm);
+        color: var(--text-secondary);
+      }
+    }
+    
+    &-action {
+      color: var(--text-tertiary);
+      font-size: var(--font-sm);
+    }
+  }
+}
+
+// 移动端表单
+.mobile-form {
+  .form-group {
+    margin-bottom: var(--spacing-lg);
+    
+    .form-label {
+      display: block;
+      margin-bottom: var(--spacing-sm);
+      font-size: var(--font-sm);
+      font-weight: var(--font-medium);
+      color: var(--text-primary);
+    }
+    
+    .form-input {
+      @include input;
+      height: 48px;
+      font-size: var(--font-md);
+    }
+    
+    .form-textarea {
+      @include input;
+      min-height: 120px;
+      font-size: var(--font-md);
+    }
+    
+    .form-select {
+      @include input;
+      height: 48px;
+      font-size: var(--font-md);
+    }
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+    
+    .btn {
+      flex: 1;
+      height: 48px;
+      font-size: var(--font-md);
+    }
+  }
+}
+
+// 移动端导航
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-fixed);
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-primary);
+  padding: var(--spacing-sm) 0;
+  padding-bottom: calc(var(--spacing-sm) + env(safe-area-inset-bottom));
+  
+  &-items {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  
+  &-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-xs);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    border-radius: var(--radius-md);
+    min-width: 60px;
+    
+    &:hover,
+    &.active {
+      background: var(--bg-tertiary);
+    }
+    
+    .nav-icon {
+      font-size: var(--font-lg);
+      color: var(--text-tertiary);
+      margin-bottom: var(--spacing-xs);
+      transition: all var(--transition-normal);
+    }
+    
+    .nav-label {
+      font-size: var(--font-xs);
+      color: var(--text-tertiary);
+      text-align: center;
+      transition: all var(--transition-normal);
+    }
+    
+    &.active {
+      .nav-icon,
+      .nav-label {
+        color: var(--primary-color);
+      }
+    }
+  }
+}
+
+// 移动端头部
+.mobile-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-fixed);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-primary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  padding-top: calc(var(--spacing-sm) + env(safe-area-inset-top));
+  
+  &-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 44px;
+  }
+  
+  &-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+  
+  &-center {
+    flex: 1;
+    text-align: center;
+    
+    .header-title {
+      font-size: var(--font-lg);
+      font-weight: var(--font-semibold);
+      color: var(--text-primary);
+    }
+  }
+  
+  &-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+}
+
+// 移动端内容区域
+.mobile-content {
+  padding-top: calc(60px + env(safe-area-inset-top));
+  padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  min-height: 100vh;
+}
+
+// 移动端侧边栏
+.mobile-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  max-width: 85vw;
+  z-index: var(--z-modal);
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-primary);
+  transform: translateX(-100%);
+  transition: transform var(--transition-normal);
+  overflow-y: auto;
+  
+  &.visible {
+    transform: translateX(0);
+  }
+  
+  &-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg-overlay);
+    z-index: calc(var(--z-modal) - 1);
+  }
+}
+
+// 移动端工具类
+.mobile-only {
+  display: none;
+  
+  @include mobile {
+    display: block;
+  }
+}
+
+.desktop-only {
+  display: block;
+  
+  @include mobile {
+    display: none;
+  }
+}
+
+// 移动端动画
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.animate-slide-down {
+  animation: slideInDown 0.3s ease-out;
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+.animate-slide-right {
+  animation: slideInRight 0.3s ease-out;
+}
+
+// 移动端响应式工具
+.mobile-responsive {
+  @include mobile {
+    font-size: var(--font-sm);
+    padding: var(--spacing-sm);
+  }
+  
+  @include tablet {
+    font-size: var(--font-md);
+    padding: var(--spacing-md);
+  }
+  
+  @include desktop {
+    font-size: var(--font-lg);
+    padding: var(--spacing-lg);
+  }
+}

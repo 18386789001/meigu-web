@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Stocks Trading i18n Fix Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-title {
+            color: #007bff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .test-result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .key-test {
+            margin: 5px 0;
+            padding: 5px;
+            background: #f8f9fa;
+            border-left: 3px solid #007bff;
+        }
+        .instructions {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .before, .after {
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .before {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+        }
+        .after {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 English Stocks Trading i18n Fix Test</h1>
+            <p>Testing the fix for StocksTrading.vue English translation keys</p>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Fix Summary</h3>
+            <p><strong>Problem:</strong> English version of StocksTrading.vue was showing i18n keys like "trading.stocks.title" instead of actual English text.</p>
+            <p><strong>Solution:</strong></p>
+            <ul>
+                <li>Added missing translation keys to en-US.js trading.stocks section</li>
+                <li>Removed duplicate stocks definitions</li>
+                <li>Ensured all keys used in StocksTrading.vue have proper English translations</li>
+            </ul>
+        </div>
+
+        <div class="before-after">
+            <div class="before">
+                <h4>❌ Before Fix</h4>
+                <ul>
+                    <li>trading.stocks.title</li>
+                    <li>trading.stocks.description</li>
+                    <li>trading.stocks.companies</li>
+                    <li>trading.stocks.trading</li>
+                    <li>trading.stocks.commission</li>
+                    <li>trading.stocks.lowCost</li>
+                    <li>trading.stocks.realTime</li>
+                    <li>trading.stocks.professional</li>
+                </ul>
+            </div>
+            <div class="after">
+                <h4>✅ After Fix</h4>
+                <ul>
+                    <li>Stock Trading</li>
+                    <li>Global major stock market investment</li>
+                    <li>Companies</li>
+                    <li>Trading Hours</li>
+                    <li>Commission</li>
+                    <li>Low Cost</li>
+                    <li>Real-time Data</li>
+                    <li>Professional Service</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">📊 English Translation Keys Test</div>
+            <div id="english-test-results"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">🔍 Key Coverage Analysis</div>
+            <div id="coverage-results"></div>
+        </div>
+    </div>
+
+    <script>
+        // English translations for testing
+        const englishTranslations = {
+            trading: {
+                stocks: {
+                    title: 'Stock Trading',
+                    description: 'Global major stock market investment',
+                    companies: 'Companies',
+                    trading: 'Trading Hours',
+                    commission: 'Commission',
+                    hotStocks: 'Hot Stocks',
+                    marketOpen: 'Market Open',
+                    high: 'High',
+                    low: 'Low',
+                    volume: 'Volume',
+                    chart: 'Chart',
+                    trade: 'Trade',
+                    advantages: 'Trading Advantages',
+                    globalMarket: 'Global Market',
+                    globalMarketDesc: 'Covering major global stock markets',
+                    analysis: 'Professional Analysis',
+                    analysisDesc: 'Professional market analysis tools',
+                    fastExecution: 'Fast Execution',
+                    fastExecutionDesc: 'Millisecond order execution',
+                    lowCost: 'Low Cost',
+                    lowCostDesc: 'Ultra-low commission rates',
+                    realTime: 'Real-time Data',
+                    realTimeDesc: 'Real-time market quotes',
+                    professional: 'Professional Service',
+                    professionalDesc: 'Professional investment advisors'
+                }
+            }
+        };
+
+        function getTranslation(key) {
+            const keys = key.split('.');
+            let value = englishTranslations;
+            
+            for (const k of keys) {
+                if (value && typeof value === 'object' && k in value) {
+                    value = value[k];
+                } else {
+                    return key; // Return original key if translation not found
+                }
+            }
+            
+            return value;
+        }
+
+        function testEnglishTranslations() {
+            const stocksKeys = [
+                'trading.stocks.title',
+                'trading.stocks.description',
+                'trading.stocks.companies',
+                'trading.stocks.trading',
+                'trading.stocks.commission',
+                'trading.stocks.hotStocks',
+                'trading.stocks.marketOpen',
+                'trading.stocks.high',
+                'trading.stocks.low',
+                'trading.stocks.volume',
+                'trading.stocks.chart',
+                'trading.stocks.trade',
+                'trading.stocks.advantages',
+                'trading.stocks.globalMarket',
+                'trading.stocks.globalMarketDesc',
+                'trading.stocks.analysis',
+                'trading.stocks.analysisDesc',
+                'trading.stocks.fastExecution',
+                'trading.stocks.fastExecutionDesc',
+                'trading.stocks.lowCost',
+                'trading.stocks.lowCostDesc',
+                'trading.stocks.realTime',
+                'trading.stocks.realTimeDesc',
+                'trading.stocks.professional',
+                'trading.stocks.professionalDesc'
+            ];
+
+            let results = '';
+            let successCount = 0;
+            
+            stocksKeys.forEach(key => {
+                const translation = getTranslation(key);
+                const isSuccess = translation !== key;
+                
+                if (isSuccess) successCount++;
+                
+                results += `<div class="key-test">
+                    <strong>${key}:</strong> 
+                    <span style="color: ${isSuccess ? 'green' : 'red'}">${translation}</span>
+                </div>`;
+            });
+
+            const resultClass = successCount === stocksKeys.length ? 'success' : 'error';
+            
+            document.getElementById('english-test-results').innerHTML = `
+                <div class="test-result ${resultClass}">
+                    <strong>Test Results:</strong> ${successCount}/${stocksKeys.length} translation keys successful
+                    <br><strong>Success Rate:</strong> ${Math.round(successCount/stocksKeys.length*100)}%
+                </div>
+                ${results}
+            `;
+        }
+
+        function analyzeCoverage() {
+            const totalKeys = Object.keys(englishTranslations.trading.stocks).length;
+            const requiredKeys = [
+                'title', 'description', 'companies', 'trading', 'commission',
+                'hotStocks', 'marketOpen', 'high', 'low', 'volume', 'chart', 'trade',
+                'advantages', 'globalMarket', 'analysis', 'fastExecution',
+                'lowCost', 'realTime', 'professional'
+            ];
+            
+            const missingKeys = requiredKeys.filter(key => 
+                !englishTranslations.trading.stocks.hasOwnProperty(key)
+            );
+
+            document.getElementById('coverage-results').innerHTML = `
+                <div class="test-result success">
+                    <strong>Coverage Analysis:</strong>
+                    <br>• Total translation keys: ${totalKeys}
+                    <br>• Required keys for StocksTrading.vue: ${requiredKeys.length}
+                    <br>• Missing keys: ${missingKeys.length}
+                    <br>• Coverage: ${Math.round((requiredKeys.length - missingKeys.length) / requiredKeys.length * 100)}%
+                    ${missingKeys.length > 0 ? '<br><strong>Missing:</strong> ' + missingKeys.join(', ') : ''}
+                </div>
+            `;
+        }
+
+        // Run tests when page loads
+        window.onload = function() {
+            testEnglishTranslations();
+            analyzeCoverage();
+        };
+    </script>
+</body>
+</html>

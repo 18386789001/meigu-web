@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAP-Vue资讯页面i18n测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .test-item {
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .button:hover {
+            background-color: #0056b3;
+        }
+        
+        .error {
+            color: red;
+            background-color: #fff0f0;
+        }
+        
+        .success {
+            color: green;
+            background-color: #f0fff0;
+        }
+        
+        .info {
+            color: blue;
+            background-color: #f0f8ff;
+        }
+        
+        .warning {
+            color: orange;
+            background-color: #fff8e1;
+        }
+        
+        .language-selector {
+            margin-bottom: 20px;
+        }
+        
+        select {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .news-demo {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        
+        .news-item {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 3px solid #007bff;
+            background-color: white;
+        }
+        
+        .news-time {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .news-content {
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .more-btn {
+            background-color: transparent;
+            color: #007bff;
+            border: 1px solid #007bff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .more-btn:hover {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>WAP-Vue资讯页面i18n测试</h1>
+        
+        <div class="language-selector">
+            <label for="lang-select">选择语言:</label>
+            <select id="lang-select">
+                <option value="zh-CN">简体中文</option>
+                <option value="CN">繁體中文</option>
+                <option value="en">English</option>
+                <option value="Japanese">日本語</option>
+                <option value="Korean">한국어</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="pt">Português</option>
+                <option value="Italy">Italiano</option>
+                <option value="th">ไทย</option>
+                <option value="vi">Tiếng Việt</option>
+                <option value="gr">Ελληνικά</option>
+                <option value="ro">Română</option>
+                <option value="tur">Türkçe</option>
+            </select>
+        </div>
+        
+        <div id="test-results"></div>
+        
+        <div class="news-demo">
+            <h3 id="news-title">资讯</h3>
+            <div class="news-item">
+                <div class="news-time">2025-09-20 04:42:10</div>
+                <div class="news-content">穆迪:将波兰展望从稳定下调至负面,并确认其A2评级。</div>
+            </div>
+            <div class="news-item">
+                <div class="news-time">2025-09-20 04:35:15</div>
+                <div class="news-content">美联储理事米兰的采访已结束。</div>
+            </div>
+            <div class="news-item">
+                <div class="news-time">2025-09-20 04:33:33</div>
+                <div class="news-content">美联储理事米兰:人们最终会认识到,关税不会推高通货膨胀。</div>
+            </div>
+            <button class="more-btn" id="more-data-btn">更多数据</button>
+        </div>
+        
+        <div class="test-item warning">
+            <h3>⚠️ 注意事项</h3>
+            <ul>
+                <li>资讯页面标题和按钮文本应该根据选择的语言显示对应翻译</li>
+                <li>新闻内容本身通常不需要翻译（保持原文）</li>
+                <li>底部导航栏的"资讯"标签也应该正确翻译</li>
+            </ul>
+        </div>
+        
+        <div class="test-item success">
+            <h3>✅ 预期结果</h3>
+            <ul>
+                <li>页面标题"资讯"在所有语言下都显示正确翻译</li>
+                <li>"更多数据"按钮在所有语言下都显示正确翻译</li>
+                <li>底部导航栏的"资讯"标签正确翻译</li>
+                <li>语言切换后页面元素立即更新</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 模拟i18n消息对象
+        const messages = {
+            'zh-CN': {
+                news: '资讯',
+                '更多数据': '更多数据'
+            },
+            'CN': {
+                news: '資訊',
+                '更多数据': '更多數據'
+            },
+            'en': {
+                news: 'News',
+                '更多数据': 'More data'
+            },
+            'Japanese': {
+                news: '情報',
+                '更多数据': 'その他のデータ'
+            },
+            'Korean': {
+                news: '정보',
+                '更多数据': '더 많은 데이터'
+            },
+            'es': {
+                news: 'Noticias',
+                '更多数据': 'Más datos'
+            },
+            'fr': {
+                news: 'Actualités',
+                '更多数据': 'Plus de données'
+            },
+            'de': {
+                news: 'Information',
+                '更多数据': 'Mehr Daten'
+            },
+            'pt': {
+                news: 'Notícias',
+                '更多数据': 'Mais dados'
+            },
+            'Italy': {
+                news: 'Informazioni',
+                '更多数据': 'più dati'
+            },
+            'th': {
+                news: 'ข้อมูล',
+                '更多数据': 'ข้อมูลเพิ่มเติม'
+            },
+            'vi': {
+                news: 'Thông tin',
+                '更多数据': 'Dữ liệu nhiều hơn'
+            },
+            'gr': {
+                news: 'Νέα',
+                '更多数据': 'Περισσότερα δεδομένα'
+            },
+            'ro': {
+                news: '资讯',
+                '更多数据': '更多数据'
+            },
+            'tur': {
+                news: '资讯',
+                '更多数据': '更多数据'
+            }
+        };
+
+        // 翻译函数
+        function t(key, locale = 'zh-CN') {
+            return messages[locale] && messages[locale][key] ? messages[locale][key] : key;
+        }
+
+        // 更新页面翻译
+        function updateTranslations(locale) {
+            const newsTitle = document.getElementById('news-title');
+            const moreDataBtn = document.getElementById('more-data-btn');
+            
+            newsTitle.textContent = t('news', locale);
+            moreDataBtn.textContent = t('更多数据', locale);
+            
+            addTestResult(`语言已切换到: ${locale}`, 'info');
+            addTestResult(`页面标题: ${t('news', locale)}`, 'success');
+            addTestResult(`更多数据按钮: ${t('更多数据', locale)}`, 'success');
+        }
+
+        // 添加测试结果
+        function addTestResult(message, type = 'info') {
+            const resultsContainer = document.getElementById('test-results');
+            const testItem = document.createElement('div');
+            testItem.className = `test-item ${type}`;
+            testItem.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            resultsContainer.appendChild(testItem);
+            resultsContainer.scrollTop = resultsContainer.scrollHeight;
+        }
+
+        // 语言选择器事件
+        document.getElementById('lang-select').addEventListener('change', (e) => {
+            updateTranslations(e.target.value);
+        });
+
+        // 更多数据按钮事件
+        document.getElementById('more-data-btn').addEventListener('click', function() {
+            const currentLang = document.getElementById('lang-select').value;
+            const btnText = t('更多数据', currentLang);
+            addTestResult(`点击了"${btnText}"按钮`, 'info');
+        });
+
+        // 初始化
+        addTestResult('测试页面已加载，资讯页面i18n支持验证开始', 'success');
+        
+        // 验证所有语言的翻译
+        const languages = Object.keys(messages);
+        let allTranslationsValid = true;
+        
+        languages.forEach(lang => {
+            const newsTranslation = t('news', lang);
+            const moreDataTranslation = t('更多数据', lang);
+            
+            if (newsTranslation === 'news' || moreDataTranslation === '更多数据') {
+                addTestResult(`❌ ${lang}: 缺少翻译`, 'error');
+                allTranslationsValid = false;
+            } else {
+                addTestResult(`✅ ${lang}: ${newsTranslation} / ${moreDataTranslation}`, 'success');
+            }
+        });
+        
+        if (allTranslationsValid) {
+            addTestResult('🎉 所有语言的翻译都完整！', 'success');
+        } else {
+            addTestResult('⚠️ 部分语言缺少翻译，需要补充', 'warning');
+        }
+    </script>
+</body>
+</html>

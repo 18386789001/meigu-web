@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>国际化状态调试工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .status-info {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        .warning {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        .translation-test {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .key {
+            font-weight: bold;
+            color: #666;
+        }
+        .value {
+            color: #333;
+            margin-left: 10px;
+        }
+        .missing {
+            color: red;
+            font-weight: bold;
+        }
+        .found {
+            color: green;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: #f5f5f5;
+        }
+        .flag {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>国际化状态调试工具</h1>
+        
+        <div class="test-section">
+            <h3>当前状态检查</h3>
+            <button onclick="checkCurrentStatus()">检查当前状态</button>
+            <button onclick="checkLocalStorage()">检查LocalStorage</button>
+            <button onclick="testTranslations()">测试翻译</button>
+            <button onclick="simulateLanguageSwitch()">模拟语言切换</button>
+            <div id="statusInfo" class="status-info"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>语言配置检查</h3>
+            <div id="languageConfig"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>翻译键值检查</h3>
+            <div id="translationCheck"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>模拟语言切换</h3>
+            <div id="languageSwitcher"></div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟语言配置
+        const languages = [
+            { code: 'zh-CN', name: '简体中文', flag: '🇨🇳' },
+            { code: 'zh-TW', name: '繁體中文', flag: '🇹🇼' },
+            { code: 'en-US', name: 'English', flag: '🇺🇸' },
+            { code: 'ja-JP', name: '日本語', flag: '🇯🇵' },
+            { code: 'ko-KR', name: '한국어', flag: '🇰🇷' },
+            { code: 'th-TH', name: 'ไทย', flag: '🇹🇭' }
+        ];
+
+        // 模拟翻译数据
+        const translations = {
+            'zh-CN': {
+                'trading.forex.title': '外汇交易',
+                'trading.forex.description': '全球主要货币对交易',
+                'trading.forex.chart': '图表',
+                'trading.forex.trade': '交易',
+                'trading.forex.high': '最高',
+                'trading.forex.low': '最低',
+                'trading.forex.advantages': '交易优势'
+            },
+            'en-US': {
+                'trading.forex.title': 'Forex Trading',
+                'trading.forex.description': 'Global major currency pair trading',
+                'trading.forex.chart': 'Chart',
+                'trading.forex.trade': 'Trade',
+                'trading.forex.high': 'High',
+                'trading.forex.low': 'Low',
+                'trading.forex.advantages': 'Trading Advantages'
+            },
+            'ja-JP': {
+                'trading.forex.title': 'FX取引',
+                'trading.forex.description': 'グローバル主要通貨ペア取引',
+                'trading.forex.chart': 'チャート',
+                'trading.forex.trade': '取引',
+                'trading.forex.high': '高値',
+                'trading.forex.low': '安値',
+                'trading.forex.advantages': '取引メリット'
+            }
+        };
+
+        function getCurrentLanguage() {
+            return localStorage.getItem('lang') || 'zh-CN';
+        }
+
+        function checkCurrentStatus() {
+            const currentLang = getCurrentLanguage();
+            const timestamp = new Date().toLocaleString();
+            const userAgent = navigator.userAgent;
+            
+            document.getElementById('statusInfo').innerHTML = `
+                <div class="success">
+                    <strong>当前状态：</strong><br>
+                    时间: ${timestamp}<br>
+                    当前语言: ${currentLang}<br>
+                    页面URL: ${window.location.href}<br>
+                    UserAgent: ${userAgent.substring(0, 100)}...
+                </div>
+            `;
+        }
+
+        function checkLocalStorage() {
+            const lang = localStorage.getItem('lang');
+            const allKeys = Object.keys(localStorage);
+            
+            let statusClass = 'success';
+            let statusText = 'LocalStorage状态正常';
+            
+            if (!lang) {
+                statusClass = 'warning';
+                statusText = 'LocalStorage中没有语言设置';
+            } else if (!translations[lang]) {
+                statusClass = 'error';
+                statusText = `语言代码 ${lang} 不被支持`;
+            }
+            
+            document.getElementById('statusInfo').innerHTML = `
+                <div class="${statusClass}">
+                    <strong>LocalStorage检查：</strong><br>
+                    ${statusText}<br>
+                    语言设置: ${lang || '未设置'}<br>
+                    所有键: ${allKeys.join(', ')}
+                </div>
+            `;
+        }
+
+        function testTranslations() {
+            const currentLang = getCurrentLanguage();
+            const langTranslations = translations[currentLang] || {};
+            
+            const testKeys = [
+                'trading.forex.title',
+                'trading.forex.description', 
+                'trading.forex.chart',
+                'trading.forex.trade',
+                'trading.forex.high',
+                'trading.forex.low',
+                'trading.forex.advantages'
+            ];
+            
+            let html = `<h4>翻译测试结果 (${currentLang}):</h4>`;
+            
+            testKeys.forEach(key => {
+                const translation = langTranslations[key];
+                const hasTranslation = translation && translation !== key;
+                const statusClass = hasTranslation ? 'found' : 'missing';
+                const statusText = hasTranslation ? '✓' : '✗';
+                
+                html += `
+                    <div class="translation-test">
+                        <span class="key">${key}:</span>
+                        <span class="value ${statusClass}">${translation || key}</span>
+                        <span class="${statusClass}">${statusText}</span>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('translationCheck').innerHTML = html;
+        }
+
+        function simulateLanguageSwitch() {
+            let html = '<h4>语言切换测试：</h4>';
+            
+            languages.forEach(lang => {
+                html += `
+                    <button onclick="switchToLanguage('${lang.code}')">
+                        <span class="flag">${lang.flag}</span> ${lang.name}
+                    </button>
+                `;
+            });
+            
+            document.getElementById('languageSwitcher').innerHTML = html;
+        }
+
+        function switchToLanguage(langCode) {
+            console.log('切换到语言:', langCode);
+            localStorage.setItem('lang', langCode);
+            
+            // 触发自定义事件
+            window.dispatchEvent(new CustomEvent('language-changed', { 
+                detail: { locale: langCode } 
+            }));
+            
+            // 更新显示
+            testTranslations();
+            checkCurrentStatus();
+            checkLocalStorage();
+            
+            alert(`已切换到 ${languages.find(l => l.code === langCode)?.name || langCode}`);
+        }
+
+        function displayLanguageConfig() {
+            let html = '<h4>支持的语言：</h4>';
+            html += '<table>';
+            html += '<tr><th>代码</th><th>名称</th><th>标志</th><th>翻译状态</th></tr>';
+            
+            languages.forEach(lang => {
+                const hasTranslations = translations[lang.code] ? '✓' : '✗';
+                const statusClass = translations[lang.code] ? 'success' : 'error';
+                
+                html += `
+                    <tr>
+                        <td>${lang.code}</td>
+                        <td>${lang.name}</td>
+                        <td><span class="flag">${lang.flag}</span></td>
+                        <td class="${statusClass}">${hasTranslations}</td>
+                    </tr>
+                `;
+            });
+            
+            html += '</table>';
+            document.getElementById('languageConfig').innerHTML = html;
+        }
+
+        // 页面加载时初始化
+        window.onload = function() {
+            checkCurrentStatus();
+            checkLocalStorage();
+            testTranslations();
+            displayLanguageConfig();
+            simulateLanguageSwitch();
+            
+            // 监听语言切换事件
+            window.addEventListener('language-changed', function(event) {
+                console.log('检测到语言切换事件:', event.detail);
+                testTranslations();
+                checkCurrentStatus();
+            });
+        };
+    </script>
+</body>
+</html>

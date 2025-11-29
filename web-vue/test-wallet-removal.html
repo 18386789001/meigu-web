@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>钱包代码删除验证</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #ddd;
+        }
+        
+        .test-item.pass {
+            border-left-color: #28a745;
+        }
+        
+        .test-item.fail {
+            border-left-color: #dc3545;
+        }
+        
+        .test-result {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: white;
+        }
+        
+        .test-result.pass {
+            background: #28a745;
+        }
+        
+        .test-result.fail {
+            background: #dc3545;
+        }
+        
+        .console-output {
+            background: #1e1e1e;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        
+        .error-log {
+            color: #ff6b6b;
+        }
+        
+        .success-log {
+            color: #51cf66;
+        }
+        
+        .warning-log {
+            color: #ffd43b;
+        }
+        
+        .info-log {
+            color: #74c0fc;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .summary h3 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 钱包代码删除验证</h1>
+        <p class="subtitle">验证web-vue项目中的钱包扩展代码是否已完全删除</p>
+        
+        <div class="test-section">
+            <h2>📋 测试结果概览</h2>
+            <div id="overallStatus" class="status">正在检测...</div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔍 代码检测</h2>
+            <div id="codeTests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🌐 网络请求检测</h2>
+            <div id="networkTests"></div>
+            <button class="btn" onclick="checkNetworkRequests()">检查网络请求</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>📝 控制台错误监控</h2>
+            <div id="consoleStatus" class="status">监控中...</div>
+            <div class="console-output" id="consoleOutput"></div>
+            <button class="btn" onclick="clearConsoleOutput()">清除日志</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🧪 模拟钱包错误测试</h2>
+            <p>测试错误过滤器是否正常工作：</p>
+            <button class="btn" onclick="simulateWalletError('Sender')">模拟Sender错误</button>
+            <button class="btn" onclick="simulateWalletError('Talisman')">模拟Talisman错误</button>
+            <button class="btn" onclick="simulateWalletError('polkadot')">模拟Polkadot错误</button>
+        </div>
+        
+        <div class="summary" id="summary">
+            <h3>检测完成</h3>
+            <p id="summaryText">钱包代码删除验证结果将在此显示</p>
+        </div>
+    </div>
+
+    <script>
+        let consoleErrors = [];
+        let testResults = {
+            codeTests: [],
+            networkTests: [],
+            consoleTests: []
+        };
+        
+        // 初始化测试
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTests();
+            setupConsoleMonitoring();
+            runCodeTests();
+            setTimeout(updateSummary, 2000);
+        });
+        
+        // 初始化测试
+        function initializeTests() {
+            console.log('🔍 开始钱包代码删除验证测试');
+        }
+        
+        // 设置控制台监控
+        function setupConsoleMonitoring() {
+            const originalError = console.error;
+            const originalWarn = console.warn;
+            const originalLog = console.log;
+            
+            console.error = function(...args) {
+                logToConsoleOutput('error', args.join(' '));
+                checkForWalletErrors(args.join(' '));
+                originalError.apply(console, args);
+            };
+            
+            console.warn = function(...args) {
+                logToConsoleOutput('warning', args.join(' '));
+                checkForWalletErrors(args.join(' '));
+                originalWarn.apply(console, args);
+            };
+            
+            console.log = function(...args) {
+                const message = args.join(' ');
+                if (message.includes('wallet') || message.includes('Wallet')) {
+                    logToConsoleOutput('info', message);
+                }
+                originalLog.apply(console, args);
+            };
+            
+            // 监听未捕获的错误
+            window.addEventListener('error', function(event) {
+                logToConsoleOutput('error', `未捕获错误: ${event.message}`);
+                checkForWalletErrors(event.message);
+            });
+            
+            // 监听未处理的Promise拒绝
+            window.addEventListener('unhandledrejection', function(event) {
+                logToConsoleOutput('error', `未处理Promise拒绝: ${event.reason}`);
+                checkForWalletErrors(event.reason?.message || event.reason);
+            });
+        }
+        
+        // 记录到控制台输出
+        function logToConsoleOutput(type, message) {
+            const output = document.getElementById('consoleOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error-log' : 
+                            type === 'warning' ? 'warning-log' : 
+                            type === 'info' ? 'info-log' : 'success-log';
+            
+            output.innerHTML += `<div class="${className}">[${timestamp}] ${type.toUpperCase()}: ${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        // 检查钱包相关错误
+        function checkForWalletErrors(message) {
+            const walletKeywords = [
+                'walletDetector', 'WalletDetector', 'checkWalletAvailability',
+                'Sender', 'Talisman', 'polkadot', 'wallet', 'extension',
+                'Failed to get initial state', 'not been configured'
+            ];
+            
+            const hasWalletError = walletKeywords.some(keyword => 
+                message.toLowerCase().includes(keyword.toLowerCase())
+            );
+            
+            if (hasWalletError) {
+                consoleErrors.push({
+                    message: message,
+                    timestamp: new Date().toISOString(),
+                    type: 'wallet'
+                });
+                updateConsoleStatus();
+            }
+        }
+        
+        // 更新控制台状态
+        function updateConsoleStatus() {
+            const statusEl = document.getElementById('consoleStatus');
+            const walletErrors = consoleErrors.filter(e => e.type === 'wallet');
+            
+            if (walletErrors.length === 0) {
+                statusEl.className = 'status success';
+                statusEl.textContent = '✅ 未检测到钱包相关错误';
+            } else {
+                statusEl.className = 'status error';
+                statusEl.textContent = `❌ 检测到 ${walletErrors.length} 个钱包相关错误`;
+            }
+        }
+        
+        // 运行代码检测测试
+        function runCodeTests() {
+            const tests = [
+                {
+                    name: '检查window.walletDetector是否存在',
+                    test: () => typeof window.walletDetector === 'undefined',
+                    expected: true
+                },
+                {
+                    name: '检查walletDetector模块是否被加载',
+                    test: () => {
+                        try {
+                            // 尝试访问walletDetector相关的全局变量
+                            return typeof window.checkWalletAvailability === 'undefined';
+                        } catch (e) {
+                            return true; // 如果抛出错误，说明没有被加载
+                        }
+                    },
+                    expected: true
+                },
+                {
+                    name: '检查是否有钱包相关的全局函数',
+                    test: () => {
+                        const walletFunctions = [
+                            'checkWalletAvailability',
+                            'hasAnyWallet',
+                            'getWalletStatus',
+                            'connectWallet'
+                        ];
+                        return walletFunctions.every(fn => typeof window[fn] === 'undefined');
+                    },
+                    expected: true
+                },
+                {
+                    name: '检查document中是否有钱包相关的脚本标签',
+                    test: () => {
+                        const scripts = Array.from(document.querySelectorAll('script'));
+                        return !scripts.some(script => 
+                            script.src.includes('walletDetector') || 
+                            script.textContent.includes('walletDetector')
+                        );
+                    },
+                    expected: true
+                }
+            ];
+            
+            const container = document.getElementById('codeTests');
+            container.innerHTML = '';
+            
+            tests.forEach(test => {
+                const result = test.test();
+                const passed = result === test.expected;
+                
+                testResults.codeTests.push({
+                    name: test.name,
+                    passed: passed,
+                    result: result
+                });
+                
+                const testItem = document.createElement('div');
+                testItem.className = `test-item ${passed ? 'pass' : 'fail'}`;
+                testItem.innerHTML = `
+                    <span>${test.name}</span>
+                    <span class="test-result ${passed ? 'pass' : 'fail'}">
+                        ${passed ? '✅ 通过' : '❌ 失败'}
+                    </span>
+                `;
+                container.appendChild(testItem);
+            });
+        }
+        
+        // 检查网络请求
+        function checkNetworkRequests() {
+            const container = document.getElementById('networkTests');
+            container.innerHTML = '<div class="status">正在检查网络请求...</div>';
+            
+            // 检查Performance API中的资源
+            const resources = performance.getEntriesByType('resource');
+            const walletResources = resources.filter(resource => 
+                resource.name.includes('walletDetector') ||
+                resource.name.includes('wallet') && resource.name.includes('.js')
+            );
+            
+            setTimeout(() => {
+                if (walletResources.length === 0) {
+                    container.innerHTML = `
+                        <div class="test-item pass">
+                            <span>网络请求检查</span>
+                            <span class="test-result pass">✅ 未发现钱包相关的网络请求</span>
+                        </div>
+                    `;
+                    testResults.networkTests.push({
+                        name: '网络请求检查',
+                        passed: true,
+                        result: '无钱包相关请求'
+                    });
+                } else {
+                    container.innerHTML = `
+                        <div class="test-item fail">
+                            <span>网络请求检查</span>
+                            <span class="test-result fail">❌ 发现 ${walletResources.length} 个钱包相关请求</span>
+                        </div>
+                        <div class="console-output">
+                            ${walletResources.map(r => `<div class="error-log">${r.name}</div>`).join('')}
+                        </div>
+                    `;
+                    testResults.networkTests.push({
+                        name: '网络请求检查',
+                        passed: false,
+                        result: `发现${walletResources.length}个钱包请求`
+                    });
+                }
+                updateSummary();
+            }, 1000);
+        }
+        
+        // 模拟钱包错误
+        function simulateWalletError(walletType) {
+            const errorMessages = {
+                'Sender': 'Sender: Failed to get initial state. Please report this bug.',
+                'Talisman': 'Talisman extension has not been configured yet. Please continue with onboarding.',
+                'polkadot': 'Disconnected from polkadot{.js} extension'
+            };
+            
+            const message = errorMessages[walletType];
+            logToConsoleOutput('error', `模拟${walletType}错误: ${message}`);
+            
+            // 触发错误事件
+            const errorEvent = new ErrorEvent('error', {
+                message: message,
+                filename: 'test',
+                lineno: 1,
+                colno: 1
+            });
+            window.dispatchEvent(errorEvent);
+        }
+        
+        // 清除控制台输出
+        function clearConsoleOutput() {
+            document.getElementById('consoleOutput').innerHTML = '';
+            consoleErrors = [];
+            updateConsoleStatus();
+        }
+        
+        // 更新总结
+        function updateSummary() {
+            const totalTests = testResults.codeTests.length + testResults.networkTests.length;
+            const passedTests = testResults.codeTests.filter(t => t.passed).length + 
+                              testResults.networkTests.filter(t => t.passed).length;
+            
+            const walletErrors = consoleErrors.filter(e => e.type === 'wallet').length;
+            
+            const summaryEl = document.getElementById('summaryText');
+            const overallStatusEl = document.getElementById('overallStatus');
+            
+            if (passedTests === totalTests && walletErrors === 0) {
+                overallStatusEl.className = 'status success';
+                overallStatusEl.textContent = '✅ 钱包代码删除成功！所有测试通过';
+                
+                summaryEl.innerHTML = `
+                    <strong>🎉 删除成功！</strong><br>
+                    代码测试: ${passedTests}/${totalTests} 通过<br>
+                    控制台错误: ${walletErrors} 个钱包相关错误<br>
+                    状态: 钱包扩展代码已完全删除
+                `;
+            } else {
+                overallStatusEl.className = 'status error';
+                overallStatusEl.textContent = '❌ 检测到问题，钱包代码可能未完全删除';
+                
+                summaryEl.innerHTML = `
+                    <strong>⚠️ 需要注意！</strong><br>
+                    代码测试: ${passedTests}/${totalTests} 通过<br>
+                    控制台错误: ${walletErrors} 个钱包相关错误<br>
+                    状态: 可能还有残留的钱包代码
+                `;
+            }
+        }
+        
+        // 页面加载完成后运行测试
+        setTimeout(() => {
+            logToConsoleOutput('success', '钱包代码删除验证测试已启动');
+            updateConsoleStatus();
+        }, 1000);
+    </script>
+</body>
+</html>

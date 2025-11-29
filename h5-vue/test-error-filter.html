@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>错误过滤器测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .warning { color: #ffc107; }
+        .info { color: #17a2b8; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .stats {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>H5-Vue 错误过滤器测试</h1>
+        <p>此页面用于测试错误过滤器是否正确过滤钱包扩展错误</p>
+
+        <div class="test-section">
+            <h3>测试1: 钱包扩展错误过滤</h3>
+            <p>点击下面的按钮模拟钱包扩展错误，这些错误应该被静默处理</p>
+            <button onclick="testSenderError()">模拟 Sender 错误</button>
+            <button onclick="testTalismanError()">模拟 Talisman 错误</button>
+            <button onclick="testPolkadotError()">模拟 Polkadot 错误</button>
+            <div id="test1-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>测试2: 正常错误处理</h3>
+            <p>点击下面的按钮模拟正常错误，这些错误应该正常显示</p>
+            <button onclick="testNormalError()">模拟正常错误</button>
+            <div id="test2-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>测试3: 过滤统计</h3>
+            <button onclick="showFilterStats()">显示过滤统计</button>
+            <button onclick="resetFilterStats()">重置统计</button>
+            <div id="stats" class="stats"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>测试4: 控制台监控</h3>
+            <p>打开浏览器控制台，观察错误输出情况</p>
+            <div class="info">
+                <strong>预期结果：</strong>
+                <ul>
+                    <li>钱包相关错误不会在控制台显示</li>
+                    <li>正常错误会正常显示在控制台</li>
+                    <li>过滤统计会正确计数</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // 导入错误过滤器
+        import { errorFilter, getFilterStats, resetFilterStats } from './src/utils/errorFilter.js';
+
+        // 测试函数
+        window.testSenderError = function() {
+            console.log('触发 Sender 错误测试...');
+            
+            // 模拟 Sender 错误
+            const error = new Error('Sender: Failed to get initial state. Please report this bug.');
+            window.dispatchEvent(new ErrorEvent('error', {
+                message: error.message,
+                error: error
+            }));
+            
+            // 模拟 Promise 错误
+            Promise.reject(new Error('sender_getProviderState failed'));
+            
+            document.getElementById('test1-result').innerHTML = 
+                '<span class="info">✓ Sender 错误已触发，应该被静默处理</span>';
+        };
+
+        window.testTalismanError = function() {
+            console.log('触发 Talisman 错误测试...');
+            
+            const error = new Error('Talisman extension has not been configured yet. Please continue with onboarding.');
+            window.dispatchEvent(new ErrorEvent('error', {
+                message: error.message,
+                error: error
+            }));
+            
+            document.getElementById('test1-result').innerHTML = 
+                '<span class="info">✓ Talisman 错误已触发，应该被静默处理</span>';
+        };
+
+        window.testPolkadotError = function() {
+            console.log('触发 Polkadot 错误测试...');
+            
+            const error = new Error('Disconnected from polkadot extension');
+            console.error(error.message);
+            
+            document.getElementById('test1-result').innerHTML = 
+                '<span class="info">✓ Polkadot 错误已触发，应该被静默处理</span>';
+        };
+
+        window.testNormalError = function() {
+            console.log('触发正常错误测试...');
+            
+            const error = new Error('这是一个正常的测试错误');
+            console.error('正常错误:', error.message);
+            
+            document.getElementById('test2-result').innerHTML = 
+                '<span class="warning">✓ 正常错误已触发，应该在控制台显示</span>';
+        };
+
+        window.showFilterStats = function() {
+            const stats = getFilterStats();
+            document.getElementById('stats').innerHTML = `
+                <h4>过滤统计信息</h4>
+                <p><strong>已过滤错误数量:</strong> ${stats.filteredCount}</p>
+                <p><strong>过滤器状态:</strong> ${stats.isInitialized ? '已初始化' : '未初始化'}</p>
+                <p><strong>更新时间:</strong> ${new Date().toLocaleString()}</p>
+            `;
+        };
+
+        window.resetFilterStats = function() {
+            resetFilterStats();
+            document.getElementById('stats').innerHTML = 
+                '<span class="success">✓ 统计已重置</span>';
+        };
+
+        // 页面加载完成后显示初始统计
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                window.showFilterStats();
+            }, 1000);
+        });
+
+        // 监听错误事件来验证过滤效果
+        let normalErrorCount = 0;
+        const originalConsoleError = console.error;
+        console.error = function(...args) {
+            const message = args.join(' ');
+            if (!message.includes('Sender') && !message.includes('Talisman') && !message.includes('polkadot')) {
+                normalErrorCount++;
+                console.log(`正常错误计数: ${normalErrorCount}`);
+            }
+            originalConsoleError.apply(console, args);
+        };
+    </script>
+</body>
+</html>
