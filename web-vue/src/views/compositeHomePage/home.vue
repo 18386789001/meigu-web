@@ -229,6 +229,47 @@
             </div>
           </div>
         </section>
+
+        <!-- DeFi Perpetuals Section -->
+        <section class="defi-section">
+          <div class="defi-container">
+            <!-- 左侧：特性卡片网格 -->
+            <div class="defi-features">
+              <div class="features-grid">
+                <div
+                  v-for="(feature, index) in defiFeatures"
+                  :key="index"
+                  :class="[
+                    'feature-card',
+                    { 
+                      'expanded': expandedCard === index,
+                      'compressed': isCompressed(index)
+                    }
+                  ]"
+                  @click="toggleCard(index)"
+                >
+                  <div class="feature-icon">
+                    <component :is="feature.icon" />
+                  </div>
+                  <h3 class="feature-title">{{ feature.title }}</h3>
+                  <p v-if="expandedCard === index" class="feature-desc">{{ feature.desc }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 右侧：标题和按钮 -->
+            <div class="defi-content">
+              <h2 class="defi-title">DeFi Perpetuals</h2>
+              <h3 class="defi-subtitle">Long & Short On-Chain</h3>
+              <p class="defi-description">
+                Diversified returns, capturing opportunities in both rising and falling markets, supporting hedging strategies, and helping manage risk
+              </p>
+              <button class="trade-fi-btn" @click="handleTradeFi">
+                Trade Fi
+              </button>
+            </div>
+          </div>
+        </section>
       </div>
     </section>
 
@@ -243,7 +284,7 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import { Plus, ChatDotRound, ArrowLeft, ArrowRight } from "@element-plus/icons-vue";
+import { Plus, ChatDotRound, ArrowLeft, ArrowRight, Clock, TrendCharts, Promotion, Lock } from "@element-plus/icons-vue";
 import PcHeader from "@/components/layout/commonHeader.vue";
 import { reactive, onMounted, ref, computed, watch } from "vue";
 
@@ -753,6 +794,60 @@ const getAreaPath = (data) => {
 // More按钮处理
 const handleMore = () => {
   console.log('More clicked');
+};
+
+// ============ DeFi Perpetuals 逻辑 ============
+const expandedCard = ref(0); // 默认展开第一个卡片（左上角）
+
+const defiFeatures = ref([
+  {
+    icon: Clock,
+    title: 'Flexible positions, no rollover',
+    desc: 'Strategy flexibility, no contract expiry pressure'
+  },
+  {
+    icon: TrendCharts,
+    title: 'High leverage, long & short trading',
+    desc: 'Go long or short, easily capture market ups and downs'
+  },
+  {
+    icon: Promotion,
+    title: 'Deep liquidity, low slippage',
+    desc: 'Efficient matching, trade prices closely follow the market'
+  },
+  {
+    icon: Lock,
+    title: 'Stable liquidation and controllable risks',
+    desc: 'Multi-source oracle quotes to avoid incorrect liquidations caused by abnormal fluctuations'
+  }
+]);
+
+// 判断卡片是否被挤压（同行检测）
+const isCompressed = (index) => {
+  if (expandedCard.value === null) return false;
+
+  // 计算展开卡片所在的行
+  const expandedRow = Math.floor(expandedCard.value / 2);
+  // 计算当前卡片所在的行
+  const currentRow = Math.floor(index / 2);
+
+  // 同一行且不是展开的卡片，则被挤压
+  return expandedRow === currentRow && expandedCard.value !== index;
+};
+
+const toggleCard = (index) => {
+  // 如果点击的是已展开的卡片，不做任何操作
+  if (expandedCard.value === index) {
+    return;
+  }
+
+  // 切换到点击的卡片
+  expandedCard.value = index;
+};
+
+const handleTradeFi = () => {
+  console.log('Trade Fi clicked');
+  router.push('/trading');
 };
 
 onMounted(() => {
@@ -1365,6 +1460,235 @@ onMounted(() => {
   }
 }
 
+/* ============ DeFi Perpetuals Section ============ */
+.defi-section {
+  width: 100%;
+  padding: 80px 20px;
+  margin-top: 40px;
+}
+
+.defi-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: flex-start;
+}
+
+.defi-features {
+  width: 100%;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.feature-card {
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  border-radius: 16px;
+  padding: 24px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  // 统一处理所有属性的过渡动画
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              border-width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              z-index 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              max-width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              margin-left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 210px;
+
+  // 默认状态（中）：正常宽度和位置
+  width: 100%;
+  max-width: 100%;
+  opacity: 1;
+  transform: scaleX(1);
+  z-index: 1;
+
+  // 默认占一列
+  grid-column: span 1;
+
+  // 左边卡片（索引0,2）- 从左侧开始放大
+  &:nth-child(1), &:nth-child(3) {
+    transform-origin: left center;
+    margin-left: 0; // 默认左对齐
+  }
+
+  // 右边卡片（索引1,3）- 从右侧开始放大
+  &:nth-child(2), &:nth-child(4) {
+    transform-origin: right center;
+    margin-left: auto; // 默认右对齐，确保位置一致性
+  }
+
+  // 大状态（选中展开）
+  &.expanded {
+    // 视觉效果
+    border-color: #fff;
+    border-width: 2px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+
+    // 尺寸和层级
+    width: 100%;
+    max-width: 100%;
+    opacity: 1;
+    transform: scaleX(1.2);
+    z-index: 2;
+
+    // 反向缩放内容，抵消变形
+    .feature-icon {
+      transform: scaleX(0.833); // 1/1.2 ≈ 0.833
+    }
+
+    .feature-title {
+      transform: scaleX(0.833);
+    }
+
+    .feature-desc {
+      transform: scaleX(0.833);
+    }
+  }
+
+  // 小状态（同行压缩）
+  &.compressed {
+    // 视觉效果
+    border-color: #1a1a1a;
+    border-width: 1px;
+    box-shadow: none;
+
+    // 尺寸和层级
+    width: 80%;
+    max-width: 80%;
+    opacity: 0.8;
+    transform: scaleX(1);
+    z-index: 1;
+
+    // 确保内容正常显示和换行
+    .feature-icon {
+      transform: none; // 保持正常
+    }
+
+    .feature-title {
+      transform: none; // 保持正常
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    .feature-desc {
+      transform: none; // 保持正常
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      white-space: normal;
+    }
+  }
+}
+
+.feature-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  color: #bcff2f;
+  font-size: 32px;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  text-align: left; // 左对齐
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-desc {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.5;
+  margin-top: 12px;
+  text-align: left; // 左对齐
+  animation: fadeIn 0.4s ease;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.defi-content {
+  padding-left: 40px;
+  text-align: left; // 左对齐
+}
+
+.defi-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 16px;
+  line-height: 1.2;
+  text-align: left; // 左对齐
+}
+
+.defi-subtitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 24px;
+  line-height: 1.3;
+  text-align: left; // 左对齐
+}
+
+.defi-description {
+  font-size: 16px;
+  color: #888;
+  line-height: 1.6;
+  margin-bottom: 40px;
+  max-width: 500px;
+  text-align: left; // 左对齐
+}
+
+.trade-fi-btn {
+  background: #bcff2f;
+  color: #000;
+  border: none;
+  padding: 16px 48px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 0 20px rgba(188, 255, 47, 0.2);
+  display: inline-block; // 左对齐
+
+  &:hover {
+    background: #a8e628;
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(188, 255, 47, 0.4);
+  }
+}
+
 @media (max-width: 1024px) {
   .hero-title {
     font-size: 48px;
@@ -1399,6 +1723,23 @@ onMounted(() => {
   .token-chart {
     width: 80px;
   }
+
+  .defi-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .defi-content {
+    padding-left: 0;
+  }
+
+  .defi-title {
+    font-size: 36px;
+  }
+
+  .defi-subtitle {
+    font-size: 24px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1431,6 +1772,26 @@ onMounted(() => {
   .token-change {
     min-width: 55px;
     font-size: 13px;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card.expanded {
+    grid-column: span 1;
+  }
+
+  .defi-title {
+    font-size: 28px;
+  }
+
+  .defi-subtitle {
+    font-size: 20px;
+  }
+
+  .defi-description {
+    font-size: 14px;
   }
 }
 
