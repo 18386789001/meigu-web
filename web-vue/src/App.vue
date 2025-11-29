@@ -346,6 +346,13 @@ body {
 .quotes-dropdown .el-dropdown-menu__item:hover {
   background: #2c3138 !important;
 }
+
+/* 强制设置导航栏为黑色背景 */
+.page-header-background {
+  background: #000000 !important;
+  background-color: #000000 !important;
+  background-image: none !important;
+}
 </style>
 <style scoped>
 .kefu {

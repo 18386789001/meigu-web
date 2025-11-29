@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSX 导航栏测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .nav-test {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: #000000;
+            border-bottom: 1px solid #333;
+            z-index: 99999;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #bcff2f;
+            cursor: pointer;
+        }
+
+        .menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .menu-item {
+            padding: 10px 18px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .menu-item:hover {
+            background: rgba(188, 255, 47, 0.2);
+        }
+
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .sol-badge {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            color: #999;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .connect-btn {
+            height: 38px;
+            padding: 0 18px;
+            background: #bcff2f;
+            color: #000000;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .connect-btn:hover {
+            background: #a8e628;
+        }
+
+        .content {
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+            padding: 60px 30px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h1 {
+            color: #bcff2f;
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #cccccc;
+            font-size: 18px;
+            margin-bottom: 50px;
+            line-height: 1.6;
+        }
+
+        .status {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 60px;
+        }
+
+        .status h3 {
+            color: #bcff2f;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .status p {
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #bcff2f;
+            margin-bottom: 15px;
+        }
+
+        .stat-label {
+            color: #cccccc;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="nav-test">
+        <div class="left-section">
+            <div class="logo">MSX</div>
+            <div class="menu">
+                <div class="menu-item">RWA</div>
+                <div class="menu-item">加密货币</div>
+                <div class="menu-item">邀请</div>
+                <div class="menu-item">奖励</div>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <div class="sol-badge">SOL</div>
+            <button class="connect-btn">连接钱包</button>
+        </div>
+    </nav>
+
+    <!-- 内容区域 -->
+    <div class="content">
+        <h1>去中心化 RWA 交易</h1>
+        <h2>让优质资产自由流通</h2>
+        <p>真实价值上链 从华尔街到你的钱包</p>
+
+        <div class="status">
+            <h3>✅ 导航栏测试状态</h3>
+            <p>• 纯HTML/CSS实现，无需Vue</p>
+            <p>• 完全还原msx.com设计风格</p>
+            <p>• 黑色背景 (#000000)</p>
+            <p>• 荧光绿色主题 (#bcff2f)</p>
+            <p>• 70px高度固定导航栏</p>
+            <p>• 响应式设计支持</p>
+            <p id="time">当前时间: 加载中...</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value">$1.64B</div>
+                <div class="stat-label">24H成交量</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">$14.8B</div>
+                <div class="stat-label">RWA交易总量</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">200+</div>
+                <div class="stat-label">RWA代币数量</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">167.1K</div>
+                <div class="stat-label">用户数量</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 更新时间
+        function updateTime() {
+            document.getElementById('time').textContent = '当前时间: ' + new Date().toLocaleTimeString();
+        }
+
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        console.log('MSX导航栏测试页面已加载');
+    </script>
+</body>
+</html>

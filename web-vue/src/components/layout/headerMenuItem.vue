@@ -170,7 +170,7 @@ const gotoRoute = (item) => {
 }
 
 .dropdown:hover .dropbtn {
-  color: #1d91ff;
+  color: #bcff2f;
 }
 
 .dropdown-item {

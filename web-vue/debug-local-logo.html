@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Logo Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            padding-top: 56px;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: #000000;
+            border-bottom: 1px solid #bcff2f;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            z-index: 99999;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 48px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .logo img {
+            height: 32px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .menu {
+            display: flex;
+            gap: 32px;
+        }
+
+        .menu-item {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .menu-item:hover {
+            color: #bcff2f;
+        }
+
+        .menu-item.active {
+            color: #bcff2f;
+        }
+
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .icons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .icon {
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            font-size: 16px;
+            transition: color 0.2s ease;
+        }
+
+        .icon:hover {
+            color: #bcff2f;
+        }
+
+        .sol-badge {
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            color: rgba(255,255,255,0.8);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .connect-btn {
+            height: 36px;
+            padding: 0 16px;
+            background: #bcff2f;
+            color: #000000;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .connect-btn:hover {
+            background: #a8e628;
+        }
+
+        .content {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .status {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .status h2 {
+            color: #bcff2f;
+            margin-bottom: 15px;
+        }
+
+        .status p {
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .logo-info {
+            background: rgba(188,255,47,0.1);
+            border: 1px solid #bcff2f;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo-info h3 {
+            color: #bcff2f;
+            margin-bottom: 10px;
+        }
+
+        .logo-info p {
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="nav">
+        <div class="logo-section">
+            <div class="logo" onclick="alert('Logo clicked')">
+                <img src="./public/images/logo.png" alt="MSX Logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iI2JjZmYyZiIvPgo8dGV4dCB4PSIxNiIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMwMDAwMDAiPk1TWDwvdGV4dD4KPC9zdmc+'">
+            </div>
+
+            <div class="menu">
+                <div class="menu-item active" onclick="alert('RWA clicked')">RWA</div>
+                <div class="menu-item" onclick="alert('Crypto clicked')">Crypto</div>
+                <div class="menu-item" onclick="alert('Invite clicked')">Invite</div>
+                <div class="menu-item" onclick="alert('Rewards clicked')">Rewards</div>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <div class="icons">
+                <span class="icon" onclick="alert('Network clicked')">⚡</span>
+                <span class="icon" onclick="alert('Wallet clicked')">💰</span>
+                <span class="icon" onclick="alert('Settings clicked')">⚙️</span>
+            </div>
+
+            <div class="sol-badge">SOL</div>
+
+            <button class="connect-btn" onclick="alert('Connect Wallet clicked')">
+                Connect Wallet
+            </button>
+        </div>
+    </nav>
+
+    <!-- 内容 -->
+    <div class="content">
+        <div class="logo-info">
+            <h3>🖼️ Logo信息</h3>
+            <p>• 本地logo路径: ./public/images/logo.png</p>
+            <p>• 备用logo: 内置SVG</p>
+            <p>• 尺寸: 32px高度，自动宽度</p>
+            <p>• 时间: <span id="time"></span></p>
+        </div>
+
+        <div class="status">
+            <h2>✅ 本地Logo导航栏测试</h2>
+            <p>• 使用本地logo文件</p>
+            <p>• 如果本地logo加载失败，显示备用绿色方块</p>
+            <p>• 高度: 56px</p>
+            <p>• 菜单: RWA, Crypto, Invite, Rewards</p>
+            <p>• 右侧: 图标 + SOL + 连接钱包</p>
+            <p>• Hover效果: 颜色变化</p>
+        </div>
+
+        <h1>去中心化 RWA 交易</h1>
+        <p>让优质资产自由流通</p>
+    </div>
+
+    <script>
+        function updateTime() {
+            document.getElementById('time').textContent = new Date().toLocaleTimeString();
+        }
+
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        console.log('✅ 本地logo测试页面已加载');
+        console.log('✅ 导航栏应该显示在顶部');
+
+        // 测试logo加载
+        const logoImg = document.querySelector('.logo img');
+        logoImg.onload = function() {
+            console.log('✅ 本地logo加载成功');
+        };
+        logoImg.onerror = function() {
+            console.log('❌ 本地logo加载失败，使用备用SVG');
+        };
+    </script>
+</body>
+</html>
