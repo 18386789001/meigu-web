@@ -51,6 +51,35 @@
             <div class="stat-label">Users</div>
           </div>
         </div>
+
+        <!-- Banner Carousel -->
+        <div class="banner-carousel">
+          <button class="nav-btn prev-btn" @click="rotateBanner('left')">
+            <el-icon>
+              <ArrowLeft />
+            </el-icon>
+          </button>
+
+          <div class="banner-track" ref="bannerTrack">
+            <div class="banner-wrapper" :style="{ transform: `translateX(${translateX}px)` }">
+              <div v-for="banner in allBanners" :key="banner.id" class="banner-card">
+                <div class="banner-text">
+                  <h3>{{ banner.title }}</h3>
+                  <p>{{ banner.desc }}</p>
+                </div>
+                <div class="banner-img">
+                  <img :src="banner.image" :alt="banner.title" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="nav-btn next-btn" @click="rotateBanner('right')">
+            <el-icon>
+              <ArrowRight />
+            </el-icon>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -65,9 +94,9 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import { Plus, ChatDotRound } from "@element-plus/icons-vue";
+import { Plus, ChatDotRound, ArrowLeft, ArrowRight } from "@element-plus/icons-vue";
 import PcHeader from "@/components/layout/commonHeader.vue";
-import { reactive, onMounted } from "vue";
+import { reactive, onMounted, ref, computed, watch } from "vue";
 
 const router = useRouter();
 
@@ -113,6 +142,105 @@ const animateStats = () => {
   requestAnimationFrame(step);
 };
 
+// Banner Data
+const bannerList = ref([
+  {
+    id: 1,
+    title: "Black Friday M Credits Boost",
+    desc: "Pump Your Rank, Snag More Points!",
+    image: "/src/assets/images/msx/banner1.png"
+  },
+  {
+    id: 2,
+    title: "MSX has fully upgraded its domain to msx.com",
+    desc: "less typing , more trading!",
+    image: "/src/assets/images/msx/banner2.png"
+  },
+  {
+    id: 3,
+    title: "Innovative Contracts Your Future Wins",
+    desc: "Up to 100x leverage, control the high-energy trading experience!",
+    image: "/src/assets/images/msx/banner3.png"
+  }
+]);
+
+const currentIndex = ref(0);
+const translateX = ref(0);
+const bannerTrack = ref(null);
+
+// 真正的无限轮播 - 动态扩展
+const allBanners = ref([]);
+
+// 初始化轮播数据
+const initBanners = () => {
+  const initialBanners = [];
+  for (let i = 0; i < 10; i++) { // 初始化10份
+    initialBanners.push(...bannerList.value);
+  }
+  allBanners.value = initialBanners;
+};
+
+// 动态扩展轮播数据
+const expandBanners = () => {
+  for (let i = 0; i < 5; i++) { // 每次扩展5份
+    allBanners.value.push(...bannerList.value);
+  }
+};
+
+const rotateBanner = (direction) => {
+  // 获取轮播轨道的实际宽度来计算精确移动距离
+  const trackWidth = bannerTrack.value ? bannerTrack.value.offsetWidth : 0;
+  const cardWidth = (trackWidth - 56) / 3; // 卡片宽度：(总宽度 - 两个间隔) / 3
+  const gap = 28; // 间隔宽度
+  const bannerMoveDistance = cardWidth + gap; // 一个卡片+一个间隔的距离
+
+  if (direction === 'right') {
+    // 向右移动，递增索引，继续向前滚动
+    currentIndex.value++;
+    translateX.value -= bannerMoveDistance;
+
+    // 当接近右边界时，扩展更多banner
+    if (currentIndex.value > allBanners.value.length - 5) {
+      expandBanners();
+    }
+
+    // 无缝重置：当移动距离过大时，重置到中间位置
+    if (Math.abs(translateX.value) > bannerMoveDistance * 20) {
+      const resetOffset = bannerMoveDistance * 10;
+      translateX.value += resetOffset;
+      currentIndex.value -= 10;
+    }
+  } else {
+    // 向左移动，递减索引，向后滚动
+    currentIndex.value--;
+    translateX.value += bannerMoveDistance;
+
+    // 当接近左边界时，在前面添加更多banner
+    if (currentIndex.value < 5) {
+      const newBanners = [];
+      for (let i = 0; i < 5; i++) {
+        newBanners.push(...bannerList.value);
+      }
+      allBanners.value.unshift(...newBanners);
+      currentIndex.value += 5; // 调整索引
+    }
+
+    // 无缝重置：当向左移动距离过大时，重置到中间位置
+    if (translateX.value > bannerMoveDistance * 20) {
+      const resetOffset = bannerMoveDistance * 10;
+      translateX.value -= resetOffset;
+      currentIndex.value += 10;
+    }
+  }
+};
+
+// 监听原始banner数据变化
+watch(bannerList, () => {
+  if (bannerList.value.length > 0) {
+    initBanners();
+  }
+}, { immediate: true });
+
 onMounted(() => {
   setTimeout(() => {
     animateStats();
@@ -143,15 +271,15 @@ onMounted(() => {
 
 .hero-section {
   padding-top: 220px;
-  /* Increased top padding to push content down */
   display: flex;
   justify-content: center;
   text-align: center;
   min-height: 100vh;
+  padding-bottom: 100px;
 }
 
 .hero-content {
-  max-width: 1200px;
+  max-width: 1400px;
   width: 100%;
   padding: 0 20px;
   display: flex;
@@ -214,7 +342,6 @@ onMounted(() => {
   width: 100%;
   margin-top: auto;
   padding-bottom: 200px;
-  /* Increased bottom padding to push stats up */
 }
 
 .stat-item {
@@ -233,7 +360,6 @@ onMounted(() => {
   font-weight: 700;
   color: #fff;
   margin-bottom: 40px;
-  /* Increased spacing */
 }
 
 .stat-label {
@@ -245,6 +371,138 @@ onMounted(() => {
   width: 100px;
   height: 40px;
   margin-bottom: 16px;
+}
+
+/* Banner Carousel Styles */
+.banner-carousel {
+  width: 100%;
+  position: relative;
+  margin-top: -100px;
+  padding: 0 70px;
+  /* Space for arrows */
+
+  &:hover {
+    .nav-btn {
+      opacity: 1;
+    }
+  }
+}
+
+.banner-track {
+  width: 100%;
+  overflow: hidden;
+}
+
+.banner-wrapper {
+  display: flex;
+  gap: 28px;
+  /* 卡片间距 */
+  width: 100%;
+  position: relative;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.banner-card {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s;
+  height: 200px;
+  overflow: hidden;
+  will-change: transform, opacity;
+
+  &:hover {
+    border-color: #333;
+    background: #161616;
+
+    .banner-img img {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.banner-text {
+  flex: 1;
+  padding-right: 24px;
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+
+  p {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.5;
+  }
+}
+
+.banner-img {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+}
+
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 10;
+  font-size: 20px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  &.prev-btn {
+    left: 10px;
+  }
+
+  &.next-btn {
+    right: 10px;
+  }
+}
+
+/* 轮播图卡片样式 */
+.banner-card {
+  flex: 0 0 calc((100% - 56px) / 3);
+  /* 三张卡片，总间隔56px（28px * 2） */
+  width: calc((100% - 56px) / 3);
+  box-sizing: border-box;
+  min-width: 0;
+  /* 防止flex挤压 */
 }
 
 .floating-chat-btn {
@@ -278,6 +536,15 @@ onMounted(() => {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 40px;
+  }
+
+  .banner-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .banner-card {
+    height: auto;
+    min-height: 160px;
   }
 }
 
