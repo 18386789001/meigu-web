@@ -1,18 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(yarn install:*)",
-      "Bash(npm install)",
-      "Bash(npm run dev)",
-      "Bash(findstr:*)",
-      "Bash(git init:*)",
-      "Bash(git remote add:*)",
-      "Bash(git add:*)",
-      "Bash(netstat:*)",
-      "Bash(taskkill:*)",
-      "Bash(cmd /c \"taskkill /PID 63892 /F & taskkill /PID 33252 /F & taskkill /PID 22804 /F\")",
-      "Bash(dir:*)",
-      "Bash(copy \"D:\\project\\work\\PC\\MSX\\image\\MSXBridge.png\" \"D:\\project\\work\\PC\\MSX\\web-vue\\public\\image\"\")"
+      "Bash(copy:*)"
     ],
     "deny": [],
     "ask": []

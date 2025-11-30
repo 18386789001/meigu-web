@@ -431,16 +431,7 @@
       <div class="footer-content-wrapper">
         <div class="footer-left">
           <div class="footer-brand">
-            <!-- 简单的 SVG Logo -->
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 0L32 8V24L16 32L0 24V8L16 0Z" fill="#bcff2f" />
-              <path d="M16 4L28 10V22L16 28L4 22V10L16 4Z" fill="#000" />
-              <path d="M10 12L16 18L22 12" stroke="#bcff2f" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" />
-              <path d="M10 18L16 24L22 18" stroke="#bcff2f" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-            <span class="brand-name">MSX</span>
+            <img src="/image/logo-white.png" alt="MSX Logo" class="footer-logo" />
           </div>
           <p class="footer-slogan">Innovation Drive Growth<br>Do our best to help users achieve wealth growth</p>
 
@@ -2329,11 +2320,10 @@ onMounted(() => {
 
 .msx-footer {
   width: 100%;
-  padding: 80px 0 40px;
-  /* 上下padding，左右0 */
+  padding: 80px 0 0;
+  /* 移除底部padding，让footer-bottom紧贴 */
   background: #000;
   border-top: 1px solid #000;
-  /* 完全黑色的边框，避免白线 */
 }
 
 /* ... existing code ... */
@@ -2341,15 +2331,19 @@ onMounted(() => {
 .footer-bottom {
   max-width: 100%;
   margin: 0 auto;
-  padding: 24px 80px 0;
-  /* 移除顶部margin，避免白色矩形 */
-  border-top: 1px solid #000;
-  /* 完全黑色的边框，避免白线 */
+  padding: 24px 80px 24px;
+  /* 添加底部padding */
+  background: #000;
+  /* 明确设置黑色背景 */
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
   text-align: center;
 
   p {
     font-size: 12px;
     color: #666;
+    margin: 0;
+    /* 移除p的默认margin */
   }
 }
 
@@ -2411,7 +2405,7 @@ onMounted(() => {
 /* ============ FAQ Section ============ */
 .faq-section {
   width: 100%;
-  padding: 80px 20px 120px;
+  padding: 80px 20px 40px;
   background: #000;
 }
 
@@ -2484,14 +2478,14 @@ onMounted(() => {
 
 .footer-content-wrapper {
   max-width: 100%;
-  /* 占满屏幕 */
-  padding: 0 80px;
-  /* 增加左右间距 */
+  padding: 60px 80px 60px;
+  /* 添加顶部padding给边框留出空间 */
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 60px;
+  border-top: 1px solid #333;
 }
 
 .footer-left {
@@ -2508,11 +2502,10 @@ onMounted(() => {
   gap: 12px;
   margin-bottom: 24px;
 
-  .brand-name {
-    font-size: 24px;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: 1px;
+  .footer-logo {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
   }
 }
 
@@ -2548,7 +2541,7 @@ onMounted(() => {
 
 .footer-links-group {
   display: flex;
-  gap: 80px;
+  gap: 120px;
 }
 
 .footer-column {
@@ -2556,7 +2549,7 @@ onMounted(() => {
     font-size: 14px;
     font-weight: 600;
     color: #fff;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
   }
 
   ul {
@@ -2565,7 +2558,7 @@ onMounted(() => {
     margin: 0;
 
     li {
-      margin-bottom: 16px;
+      margin-bottom: 20px;
 
       a {
         font-size: 13px;

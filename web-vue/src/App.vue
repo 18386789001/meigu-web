@@ -2,63 +2,26 @@
   <div>
     <common-header v-if="route.meta.commonHeader"></common-header>
     <router-view />
-    <!-- 客服 -->
-    <div class="service-box">
-      <img
-        src="@/assets/images/exchangeHome/service1.png"
-        alt=""
-        width="60"
-        height="60"
-        @click="handleCustomerService"
-      />
-    </div>
     <!-- serviceUrl客服接口返回的地址 如果没有就用Chat组件默认客服 有就使用iframe嵌套serviceUrl地址 -->
     <div v-if="serviceUrl">
       <div v-if="show_kefu" class="kefu" style="z-index: 999999">
-        <VueDragResize
-          :isActive="true"
-          :w="500"
-          :h="620"
-          v-on:resizing="resize"
-          class="kefu-tuozhuai"
-          @click="activateEv"
-          :isResizable="false"
-          v-on:dragging="resize"
-        >
+        <VueDragResize :isActive="true" :w="500" :h="620" v-on:resizing="resize" class="kefu-tuozhuai"
+          @click="activateEv" :isResizable="false" v-on:dragging="resize">
           <div class="kefu-title">
             <span>{{ $t("message.home.home43") }}</span>
-            <img
-              src="@/assets/images/exchangeHome/Group609.png"
-              @click="() => changeChatShow(false)"
-            />
+            <img src="@/assets/images/exchangeHome/Group609.png" @click="() => changeChatShow(false)" />
           </div>
-          <iframe
-            :src="serviceUrl"
-            width="500"
-            height="600"
-            frameborder="0"
-          ></iframe>
+          <iframe :src="serviceUrl" width="500" height="600" frameborder="0"></iframe>
         </VueDragResize>
       </div>
     </div>
     <div v-else>
       <div v-if="show_kefu" class="kefu" style="z-index: 999999">
-        <VueDragResize
-          :isActive="true"
-          :w="432"
-          :h="780"
-          v-on:resizing="resize"
-          class="kefu-tuozhuai"
-          @click="activateEv"
-          :isResizable="false"
-          v-on:dragging="resize"
-        >
+        <VueDragResize :isActive="true" :w="432" :h="780" v-on:resizing="resize" class="kefu-tuozhuai"
+          @click="activateEv" :isResizable="false" v-on:dragging="resize">
           <div class="kefu-title">
             <span>{{ $t("message.home.home43") }}</span>
-            <img
-              src="@/assets/images/exchangeHome/Group609.png"
-              @click="() => changeChatShow(false)"
-            />
+            <img src="@/assets/images/exchangeHome/Group609.png" @click="() => changeChatShow(false)" />
           </div>
           <iframe src="" frameborder="0"></iframe>
           <div class="kegu-nrkegu-nr">
@@ -88,7 +51,6 @@ import {
   initDeviceDetection,
   onScreenSizeChange,
 } from "@/utils/deviceDetector";
-import { openThirdPartyCustomerService } from "@/utils/customerService";
 // import {getServiceUrl} from './api/login.js';
 
 const langStore = useLanguageStore();
@@ -274,42 +236,22 @@ const changeChatShow = (val) => {
   show_kefu.value = val;
 };
 
-const kefuBtn = () => {
-  console.log("test");
-  console.log("test2");
-  if (!serviceUrl.value) {
-    changeChatShow(true);
-  } else {
-    window.open(serviceUrl.value);
-  }
-};
-
-/**
- * 处理客服图标点击事件
- * 直接打开第三方客服链接（根据登录状态决定是否带参数）
- */
-const handleCustomerService = () => {
-  console.log("🎯 用户点击客服图标");
-  openThirdPartyCustomerService();
-};
 </script>
 
 <style>
 #app {
   min-height: 100vh;
   overflow-x: hidden;
+  background-color: #000;
+  /* 添加黑色背景 */
 }
+
 body {
   margin: 0;
+  background-color: #000;
+  /* 添加黑色背景 */
 }
-/* 客服 */
-.service-box {
-  position: fixed;
-  right: 15px;
-  bottom: 1px;
-  cursor: pointer;
-  z-index: 9999;
-}
+
 .vdr.active:before {
   display: none;
 }
@@ -362,27 +304,29 @@ body {
   cursor: pointer;
   z-index: 3;
 }
+
 .embed-responsive-item {
   width: 100%;
   height: 100%;
   border: none;
 }
+
 .kefu-title {
   width: 100%;
   height: 61px;
   position: relative;
   text-align: center;
-  background: linear-gradient(
-    90.3deg,
-    rgba(45, 45, 53, 0.71) 0.21%,
-    #23232e 99.83%
-  );
+  background: linear-gradient(90.3deg,
+      rgba(45, 45, 53, 0.71) 0.21%,
+      #23232e 99.83%);
   border-radius: 10px 10px 0px 0px;
 }
+
 .kegu-nrkegu-nr {
   width: 100%;
   height: 559px;
 }
+
 .kefu-title span {
   text-align: center;
   font-style: normal;
@@ -391,6 +335,7 @@ body {
   line-height: 61px;
   color: #ffffff;
 }
+
 .kefu-title img {
   position: absolute;
   width: 30px;
@@ -402,6 +347,7 @@ body {
 :deep(.kefu-title) .date {
   color: #fff !important;
 }
+
 .kefu-tuozhuai {
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
   outline: none;
