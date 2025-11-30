@@ -9,6 +9,7 @@ const childrenRoutes = [
     label: "home",
     meta: {
       footer_theme: "black",
+      noFooter: true, // 隐藏默认 Footer，因为在 home.vue 中已经添加了新的 MSX Footer
     },
     component: () => import("@/views/compositeHomePage/home.vue"),
   }, //标准模版
