@@ -6,15 +6,15 @@
     <!-- Hero Section -->
     <section class="hero-section">
       <div class="hero-content">
-        <h1 class="hero-title">
+        <h1 class="hero-title scroll-reveal">
           Decentralized<br />
           RWA Trading
         </h1>
-        <p class="hero-subtitle">
+        <p class="hero-subtitle scroll-reveal delay-100">
           Real Value On-Chain from Wall Street to Your Wallet
         </p>
 
-        <div class="hero-actions">
+        <div class="hero-actions scroll-reveal delay-200">
           <button class="trade-btn" @click="handleTrade">
             <el-icon class="btn-icon">
               <Plus />
@@ -24,7 +24,7 @@
         </div>
 
         <!-- Stats Grid -->
-        <div class="stats-grid">
+        <div class="stats-grid scroll-reveal delay-300">
           <div class="stat-item">
             <div class="stat-value">${{ displayStats.vol.toFixed(2) }}B</div>
             <div class="stat-label">24h Vol</div>
@@ -53,7 +53,7 @@
         </div>
 
         <!-- Banner Carousel -->
-        <div class="banner-carousel">
+        <div class="banner-carousel scroll-reveal delay-400">
           <button class="nav-btn prev-btn" @click="rotateBanner('left')">
             <el-icon>
               <ArrowLeft />
@@ -82,7 +82,7 @@
         </div>
 
         <!-- All RWA Section -->
-        <section class="all-rwa-section">
+        <section class="all-rwa-section scroll-reveal">
           <div class="section-header">
             <h2 class="section-title">All RWA</h2>
             <p class="section-subtitle">Trade up to 233 RWA & 78 contracts</p>
@@ -228,7 +228,7 @@
         </section>
 
         <!-- DeFi Perpetuals Section -->
-        <section class="defi-section">
+        <section class="defi-section scroll-reveal">
           <div class="defi-container">
             <!-- 左侧：特性卡片网格 -->
             <div class="defi-features">
@@ -265,7 +265,7 @@
         </section>
 
         <!-- MSXBridge Section -->
-        <section class="bridge-section">
+        <section class="bridge-section scroll-reveal">
           <div class="bridge-container">
             <!-- 左侧：文字内容 -->
             <div class="bridge-content">
@@ -288,7 +288,7 @@
         </section>
 
         <!-- Steps Section -->
-        <section class="steps-section">
+        <section class="steps-section scroll-reveal">
           <div class="steps-container">
             <!-- 左侧：步骤列表 -->
             <div class="steps-list">
@@ -328,7 +328,7 @@
         </section>
 
         <!-- Advantages Section -->
-        <section class="advantages-section">
+        <section class="advantages-section scroll-reveal">
           <div class="advantages-container">
             <div class="section-header">
               <h2 class="section-title">Our advantages</h2>
@@ -381,7 +381,7 @@
         </section>
 
         <!-- Partners Section -->
-        <section class="partners-section">
+        <section class="partners-section scroll-reveal">
           <div class="partners-container">
             <div class="section-header">
               <h2 class="section-title">Investors and Partners</h2>
@@ -404,7 +404,7 @@
         </section>
 
         <!-- FAQ Section -->
-        <section class="faq-section">
+        <section class="faq-section scroll-reveal">
           <div class="faq-container">
             <h2 class="section-title faq-title">MSX FAQ</h2>
             <div class="faq-list">
@@ -433,11 +433,11 @@
           <div class="footer-brand">
             <!-- 简单的 SVG Logo -->
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 0L32 8V24L16 32L0 24V8L16 0Z" fill="#fff" />
+              <path d="M16 0L32 8V24L16 32L0 24V8L16 0Z" fill="#bcff2f" />
               <path d="M16 4L28 10V22L16 28L4 22V10L16 4Z" fill="#000" />
-              <path d="M10 12L16 18L22 12" stroke="#fff" stroke-width="2" stroke-linecap="round"
+              <path d="M10 12L16 18L22 12" stroke="#bcff2f" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round" />
-              <path d="M10 18L16 24L22 18" stroke="#fff" stroke-width="2" stroke-linecap="round"
+              <path d="M10 18L16 24L22 18" stroke="#bcff2f" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round" />
             </svg>
             <span class="brand-name">MSX</span>
@@ -549,6 +549,26 @@ const animateStats = () => {
   };
 
   requestAnimationFrame(step);
+};
+
+// 滚动动画观察者
+const initScrollObserver = () => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('active');
+        }, 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  });
+
+  const elements = document.querySelectorAll('.scroll-reveal');
+  elements.forEach((el) => observer.observe(el));
 };
 
 // Banner Data
@@ -1117,7 +1137,8 @@ const toggleFaq = (index) => {
 onMounted(() => {
   setTimeout(() => {
     animateStats();
-  }, 800);
+    initScrollObserver();
+  }, 100);
 
   // 初始化榜单动画
   setTimeout(() => {
@@ -1129,6 +1150,40 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+/* 滚动动画样式 */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(80px);
+  transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+
+.scroll-reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 修复底部白线：确保背景全黑 */
+:deep(body),
+:deep(html) {
+  background-color: #000 !important;
+  border: none !important;
+  outline: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 移除所有可能的边框 */
+* {
+  box-sizing: border-box;
+}
+
+/* 确保最外层容器没有边框 */
+.msx-home {
+  border: none !important;
+  outline: none !important;
+}
+
 .msx-home {
   min-height: 100vh;
   background-color: #000;
@@ -1139,6 +1194,7 @@ onMounted(() => {
   color: #fff;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
+  padding-bottom: 0;
 }
 
 .fix-header {
@@ -2261,11 +2317,61 @@ onMounted(() => {
 .marquee-content {
   display: flex;
   width: max-content;
-  animation: scroll 40s linear infinite;
+  animation: scroll 80s linear infinite;
+  /* 减慢速度 */
 
   &:hover {
     animation-play-state: paused;
   }
+}
+
+/* ... existing code ... */
+
+.msx-footer {
+  width: 100%;
+  padding: 80px 0 40px;
+  /* 上下padding，左右0 */
+  background: #000;
+  border-top: 1px solid #000;
+  /* 完全黑色的边框，避免白线 */
+}
+
+/* ... existing code ... */
+
+.footer-bottom {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 24px 80px 0;
+  /* 移除顶部margin，避免白色矩形 */
+  border-top: 1px solid #000;
+  /* 完全黑色的边框，避免白线 */
+  text-align: center;
+
+  p {
+    font-size: 12px;
+    color: #666;
+  }
+}
+
+/* 动画延迟类 */
+.delay-100 {
+  transition-delay: 0.1s;
+}
+
+.delay-200 {
+  transition-delay: 0.2s;
+}
+
+.delay-300 {
+  transition-delay: 0.3s;
+}
+
+.delay-400 {
+  transition-delay: 0.4s;
+}
+
+.delay-500 {
+  transition-delay: 0.5s;
 }
 
 .partner-logo {
@@ -2375,13 +2481,6 @@ onMounted(() => {
 }
 
 /* ============ Footer Section ============ */
-.msx-footer {
-  width: 100%;
-  padding: 80px 0 40px;
-  /* 上下padding，左右0 */
-  background: #000;
-  border-top: 1px solid #222;
-}
 
 .footer-content-wrapper {
   max-width: 100%;
@@ -2482,19 +2581,7 @@ onMounted(() => {
   }
 }
 
-.footer-bottom {
-  max-width: 100%;
-  margin: 60px auto 0;
-  padding: 24px 80px 0;
-  /* 左右padding与上面一致 */
-  border-top: 1px solid #222;
-  text-align: center;
 
-  p {
-    font-size: 12px;
-    color: #666;
-  }
-}
 
 @media (max-width: 1024px) {
   .hero-title {
