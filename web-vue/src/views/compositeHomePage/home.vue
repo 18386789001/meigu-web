@@ -123,32 +123,29 @@
                         <defs>
                           <!-- 向下荧光渐变 -->
                           <linearGradient :id="`glowGradient_${item.id}`" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:0.5`" />
-                            <stop offset="30%" :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:0.2`" />
-                            <stop offset="100%" :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:0`" />
+                            <stop offset="0%"
+                              :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:0.5`" />
+                            <stop offset="30%"
+                              :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:0.2`" />
+                            <stop offset="100%"
+                              :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:0`" />
                           </linearGradient>
                           <!-- 线条渐变 -->
                           <linearGradient :id="`lineGradient_${item.id}`" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:1`" />
-                            <stop offset="50%" :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:1`" />
-                            <stop offset="100%" :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:1`" />
+                            <stop offset="0%"
+                              :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:1`" />
+                            <stop offset="50%"
+                              :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:1`" />
+                            <stop offset="100%"
+                              :style="`stop-color:${item.change >= 0 ? '#4caf50' : '#f44336'};stop-opacity:1`" />
                           </linearGradient>
                         </defs>
                         <!-- 绘制向下荧光填充区域 -->
-                        <path
-                          :d="getAreaPath(item.chartData)"
-                          :fill="`url(#glowGradient_${item.id})`"
-                          stroke="none"
-                        />
+                        <path :d="getAreaPath(item.chartData)" :fill="`url(#glowGradient_${item.id})`" stroke="none" />
                         <!-- 绘制折线 -->
-                        <polyline
-                          :points="getLinePoints(item.chartData)"
-                          fill="none"
-                          :stroke="`url(#lineGradient_${item.id})`"
-                          stroke-width="1"
-                          stroke-linejoin="round"
-                          stroke-linecap="round"
-                        />
+                        <polyline :points="getLinePoints(item.chartData)" fill="none"
+                          :stroke="`url(#lineGradient_${item.id})`" stroke-width="1" stroke-linejoin="round"
+                          stroke-linecap="round" />
                       </svg>
                     </div>
                     <img v-else :src="item.chart" :alt="'chart'" class="chart-img" />
@@ -236,18 +233,13 @@
             <!-- 左侧：特性卡片网格 -->
             <div class="defi-features">
               <div class="features-grid">
-                <div
-                  v-for="(feature, index) in defiFeatures"
-                  :key="index"
-                  :class="[
-                    'feature-card',
-                    { 
-                      'expanded': expandedCard === index,
-                      'compressed': isCompressed(index)
-                    }
-                  ]"
-                  @click="toggleCard(index)"
-                >
+                <div v-for="(feature, index) in defiFeatures" :key="index" :class="[
+                  'feature-card',
+                  {
+                    'expanded': expandedCard === index,
+                    'compressed': isCompressed(index)
+                  }
+                ]" @click="toggleCard(index)">
                   <div class="feature-icon">
                     <component :is="feature.icon" />
                   </div>
@@ -262,7 +254,8 @@
               <h2 class="defi-title">DeFi Perpetuals</h2>
               <h3 class="defi-subtitle">Long & Short On-Chain</h3>
               <p class="defi-description">
-                Diversified returns, capturing opportunities in both rising and falling markets, supporting hedging strategies, and helping manage risk
+                Diversified returns, capturing opportunities in both rising and falling markets, supporting hedging
+                strategies, and helping manage risk
               </p>
               <button class="trade-fi-btn" @click="handleTradeFi">
                 Trade Fi
@@ -270,8 +263,234 @@
             </div>
           </div>
         </section>
+
+        <!-- MSXBridge Section -->
+        <section class="bridge-section">
+          <div class="bridge-container">
+            <!-- 左侧：文字内容 -->
+            <div class="bridge-content">
+              <h2 class="bridge-title">MSXBridge</h2>
+              <h3 class="bridge-subtitle">Move assets freely and securely across chains</h3>
+              <p class="bridge-description">
+                Cross-chain is faster and safer, supporting multi-chain interoperability and one-click exchange,
+                allowing assets to flow freely across global networks
+              </p>
+              <button class="go-now-btn" @click="handleBridge">
+                Go Now
+              </button>
+            </div>
+
+            <!-- 右侧：图片展示 -->
+            <div class="bridge-visual">
+              <img src="/image/MSXBridge.png" alt="MSXBridge" class="bridge-img" />
+            </div>
+          </div>
+        </section>
+
+        <!-- Steps Section -->
+        <section class="steps-section">
+          <div class="steps-container">
+            <!-- 左侧：步骤列表 -->
+            <div class="steps-list">
+              <div class="step-card">
+                <span class="step-text">Step 1: Please link your wallet</span>
+                <el-icon class="step-arrow">
+                  <TopRight />
+                </el-icon>
+              </div>
+              <div class="step-card">
+                <span class="step-text">Step 2: Please perform quick top-up</span>
+                <el-icon class="step-arrow">
+                  <TopRight />
+                </el-icon>
+              </div>
+              <div class="step-card">
+                <span class="step-text">Step 3: Start your trading journey</span>
+                <el-icon class="step-arrow">
+                  <TopRight />
+                </el-icon>
+              </div>
+            </div>
+
+            <!-- 右侧：文本内容 -->
+            <div class="steps-content">
+              <h2 class="steps-title">Only 3 steps<br>required</h2>
+              <h3 class="steps-subtitle">Start your trading journey</h3>
+              <p class="steps-description">
+                MSX provides you with the simplest way to use and the best user experience, efficient and convenient at
+                your fingertips
+              </p>
+              <button class="trade-now-btn" @click="handleTrade">
+                Trade Now
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Advantages Section -->
+        <section class="advantages-section">
+          <div class="advantages-container">
+            <div class="section-header">
+              <h2 class="section-title">Our advantages</h2>
+              <p class="section-subtitle">We will escort your safe transactions</p>
+            </div>
+
+            <div class="advantages-grid">
+              <div class="advantage-item">
+                <div class="advantage-icon">
+                  <el-icon>
+                    <Sort />
+                  </el-icon>
+                </div>
+                <h3 class="advantage-title">Lightning Transfer</h3>
+                <p class="advantage-desc">10-second transfers via optimized path selection</p>
+              </div>
+
+              <div class="advantage-item">
+                <div class="advantage-icon">
+                  <el-icon>
+                    <RefreshRight />
+                  </el-icon>
+                  <span class="icon-text">24</span>
+                </div>
+                <h3 class="advantage-title">Always-On</h3>
+                <p class="advantage-desc">24/7 operation with instant failover for zero downtime</p>
+              </div>
+
+              <div class="advantage-item">
+                <div class="advantage-icon">
+                  <el-icon>
+                    <FolderChecked />
+                  </el-icon>
+                </div>
+                <h3 class="advantage-title">Triple-Shield</h3>
+                <p class="advantage-desc">Audited contracts + multisig + time-lock for attack prevention</p>
+              </div>
+
+              <div class="advantage-item">
+                <div class="advantage-icon">
+                  <el-icon>
+                    <Switch />
+                  </el-icon>
+                </div>
+                <h3 class="advantage-title">Direct Swaps</h3>
+                <p class="advantage-desc">Direct asset transfers, one-click wallet integration</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Partners Section -->
+        <section class="partners-section">
+          <div class="partners-container">
+            <div class="section-header">
+              <h2 class="section-title">Investors and Partners</h2>
+              <p class="section-subtitle">Backed by the best institutions in Crypto</p>
+            </div>
+
+            <div class="marquee-wrapper">
+              <div class="marquee-content">
+                <!-- 使用INP系列图片作为合作伙伴展示 -->
+                <div class="partner-logo" v-for="i in 14" :key="`p1-${i}`">
+                  <img :src="`/image/INP-${i}.png`" :alt="`Partner ${i}`" />
+                </div>
+                <!-- 第二组图片（用于无缝滚动） -->
+                <div class="partner-logo" v-for="i in 14" :key="`p2-${i}`">
+                  <img :src="`/image/INP-${i}.png`" :alt="`Partner ${i}`" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="faq-section">
+          <div class="faq-container">
+            <h2 class="section-title faq-title">MSX FAQ</h2>
+            <div class="faq-list">
+              <div v-for="(item, index) in faqList" :key="index" class="faq-item" :class="{ 'active': item.isOpen }"
+                @click="toggleFaq(index)">
+                <div class="faq-question">
+                  <span>{{ item.question }}</span>
+                  <el-icon class="faq-icon" :class="{ 'rotate': item.isOpen }">
+                    <ArrowRight />
+                  </el-icon>
+                </div>
+                <div class="faq-answer" :style="{ maxHeight: item.isOpen ? '200px' : '0' }">
+                  <p v-html="item.answer"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </section>
+
+    <!-- Footer Section -->
+    <footer class="msx-footer">
+      <div class="footer-content-wrapper">
+        <div class="footer-left">
+          <div class="footer-brand">
+            <!-- 简单的 SVG Logo -->
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 0L32 8V24L16 32L0 24V8L16 0Z" fill="#fff" />
+              <path d="M16 4L28 10V22L16 28L4 22V10L16 4Z" fill="#000" />
+              <path d="M10 12L16 18L22 12" stroke="#fff" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M10 18L16 24L22 18" stroke="#fff" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <span class="brand-name">MSX</span>
+          </div>
+          <p class="footer-slogan">Innovation Drive Growth<br>Do our best to help users achieve wealth growth</p>
+
+          <div class="footer-contact-info">
+            <p class="contact-label">Partnership Application</p>
+            <a href="mailto:info@msx.com" class="contact-email">info@msx.com</a>
+          </div>
+        </div>
+
+        <div class="footer-links-group">
+          <div class="footer-column">
+            <h3>Community</h3>
+            <ul>
+              <li><a href="#">MSX Official</a></li>
+              <li><a href="#">MSX CN</a></li>
+              <li><a href="#">Telegram Global</a></li>
+              <li><a href="#">Telegram CN</a></li>
+              <li><a href="#">Discord</a></li>
+              <li><a href="#">Community Voting</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>About MSX</h3>
+            <ul>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Contact us</a></li>
+              <li><a href="#">Notices</a></li>
+              <li><a href="#">Customer Support</a></li>
+              <li><a href="#">Terms of Service</a></li>
+              <li><a href="#">Privacy Protection</a></li>
+              <li><a href="#">White paper</a></li>
+              <li><a href="#">Affiliate Program</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Other</h3>
+            <ul>
+              <li><a href="#">AML Statement</a></li>
+              <li><a href="#">Disclaimer</a></li>
+              <li><a href="#">Law Enforcement Requests</a></li>
+              <li><a href="#">Proof of Reserves</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2025 MSX All rights reserved</p>
+      </div>
+    </footer>
 
     <!-- Chat/Support Button (Floating) -->
     <div class="floating-chat-btn">
@@ -284,7 +503,7 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import { Plus, ChatDotRound, ArrowLeft, ArrowRight, Clock, TrendCharts, Promotion, Lock } from "@element-plus/icons-vue";
+import { Plus, ChatDotRound, ArrowLeft, ArrowRight, Clock, TrendCharts, Promotion, Lock, TopRight, Sort, RefreshRight, FolderChecked, Connection as Switch } from "@element-plus/icons-vue";
 import PcHeader from "@/components/layout/commonHeader.vue";
 import { reactive, onMounted, ref, computed, watch } from "vue";
 
@@ -848,6 +1067,51 @@ const toggleCard = (index) => {
 const handleTradeFi = () => {
   console.log('Trade Fi clicked');
   router.push('/trading');
+};
+
+const handleBridge = () => {
+  console.log('Bridge clicked');
+  // router.push('/bridge'); // 假设有这个路由，或者暂时留空
+};
+
+// ============ FAQ 逻辑 ============
+const faqList = ref([
+  {
+    question: "What is MSX?",
+    answer: "MSX (<span style='color: #bcff2f'>msx.com</span>) is a world-leading decentralized platform for tokenized real-world assets (RWA), offering a full suite of RWA spot and derivatives trading. Users can purchase RWA spot tokens and trade RWA derivatives directly with USDT, USDC, or USD1.",
+    isOpen: true // 默认展开第一个
+  },
+  {
+    question: "Which tokens are currently available for trading?",
+    answer: "Over 100 stock tokens and ETF tokens are listed; newly added tokens include BTCS.M, DFDV.M, ANTA.M, SBET.M, and GRYP.M. The platform will continue to expand to include more Real-World Assets (RWAs). please directly visit <a href='https://msx.com/us-trading' target='_blank' style='color: #bcff2f'>https://msx.com/us-trading</a>",
+    isOpen: false
+  },
+  {
+    question: "How are dividends distributed?",
+    answer: "Airdropped directly to your wallet—no manual action required.",
+    isOpen: false
+  },
+  {
+    question: "What are RWA perpetual contracts?",
+    answer: "An on-chain contract tied to a stock-token index, with no expiration date, allowing leveraged long or short positions.",
+    isOpen: false
+  },
+  {
+    question: "What is the trading fee for MSX?",
+    answer: "The fee for RWA is 0.3%, crypto-to-crypto trading fee is 0, cross-chain bridge fee is 0.1%, contract trading maker fee is 0.02%, taker fee is 0.045%.",
+    isOpen: false
+  }
+]);
+
+const toggleFaq = (index) => {
+  // 手风琴模式：点击展开，其他关闭
+  faqList.value.forEach((item, i) => {
+    if (i === index) {
+      item.isOpen = !item.isOpen;
+    } else {
+      item.isOpen = false;
+    }
+  });
 };
 
 onMounted(() => {
@@ -1473,7 +1737,7 @@ onMounted(() => {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 80px;
-  align-items: flex-start;
+  align-items: center; // 改为center确保整体垂直居中
 }
 
 .defi-features {
@@ -1496,14 +1760,14 @@ onMounted(() => {
   overflow: hidden;
   // 统一处理所有属性的过渡动画
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-              border-width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-              z-index 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-              width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-              max-width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-              margin-left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    border-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    border-width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    z-index 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    max-width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    margin-left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 210px;
 
   // 默认状态（中）：正常宽度和位置
@@ -1517,13 +1781,15 @@ onMounted(() => {
   grid-column: span 1;
 
   // 左边卡片（索引0,2）- 从左侧开始放大
-  &:nth-child(1), &:nth-child(3) {
+  &:nth-child(1),
+  &:nth-child(3) {
     transform-origin: left center;
     margin-left: 0; // 默认左对齐
   }
 
   // 右边卡片（索引1,3）- 从右侧开始放大
-  &:nth-child(2), &:nth-child(4) {
+  &:nth-child(2),
+  &:nth-child(4) {
     transform-origin: right center;
     margin-left: auto; // 默认右对齐，确保位置一致性
   }
@@ -1630,6 +1896,7 @@ onMounted(() => {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1640,6 +1907,9 @@ onMounted(() => {
 .defi-content {
   padding-left: 40px;
   text-align: left; // 左对齐
+  display: flex;
+  flex-direction: column;
+  justify-content: center; // 垂直居中
 }
 
 .defi-title {
@@ -1686,6 +1956,543 @@ onMounted(() => {
     background: #a8e628;
     transform: translateY(-2px);
     box-shadow: 0 0 30px rgba(188, 255, 47, 0.4);
+  }
+}
+
+/* ============ MSXBridge Section ============ */
+.bridge-section {
+  width: 100%;
+  padding: 80px 20px;
+  background: #000; // 保持背景一致
+}
+
+.bridge-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center; // 垂直居中
+}
+
+.bridge-content {
+  text-align: left;
+}
+
+.bridge-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.bridge-subtitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 24px;
+  line-height: 1.3;
+}
+
+.bridge-description {
+  font-size: 16px;
+  color: #888;
+  line-height: 1.6;
+  margin-bottom: 40px;
+  max-width: 500px;
+}
+
+.go-now-btn {
+  background: #bcff2f;
+  color: #000;
+  border: none;
+  padding: 16px 48px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 0 20px rgba(188, 255, 47, 0.2);
+  display: inline-block;
+
+  &:hover {
+    background: #a8e628;
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(188, 255, 47, 0.4);
+  }
+}
+
+.bridge-visual {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bridge-img {
+  width: 100%;
+  max-width: 800px; // 增大最大宽度从600px到800px
+  height: auto;
+  object-fit: contain;
+  // 移除悬浮放大效果
+}
+
+/* ============ Steps Section ============ */
+.steps-section {
+  width: 100%;
+  padding: 80px 20px;
+  background: #000;
+}
+
+.steps-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  align-items: center;
+}
+
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.step-card {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 24px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #161616;
+    border-color: #333;
+    transform: translateX(10px);
+
+    .step-arrow {
+      color: #bcff2f;
+      transform: translate(2px, -2px);
+    }
+  }
+}
+
+.step-text {
+  font-size: 16px;
+  color: #fff;
+  font-weight: 500;
+}
+
+.step-arrow {
+  font-size: 20px;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.steps-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.steps-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.steps-subtitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 24px;
+}
+
+.steps-description {
+  font-size: 16px;
+  color: #888;
+  line-height: 1.6;
+  margin-bottom: 40px;
+  max-width: 500px;
+}
+
+.trade-now-btn {
+  background: #bcff2f;
+  color: #000;
+  border: none;
+  padding: 16px 48px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 0 20px rgba(188, 255, 47, 0.2);
+
+  &:hover {
+    background: #a8e628;
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(188, 255, 47, 0.4);
+  }
+}
+
+
+
+/* ============ Advantages Section ============ */
+.advantages-section {
+  width: 100%;
+  padding: 80px 20px;
+  background: #000;
+}
+
+.advantages-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.advantages-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  margin-top: 60px;
+}
+
+.advantage-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+}
+
+.advantage-icon {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  position: relative;
+  color: #bcff2f;
+  font-size: 64px;
+
+  /* 简单的边框效果模拟图标风格 */
+  .el-icon {
+    font-size: 64px;
+  }
+}
+
+.icon-text {
+  position: absolute;
+  font-size: 14px;
+  font-weight: 700;
+  color: #bcff2f;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #000;
+  padding: 2px;
+}
+
+.advantage-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.advantage-desc {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.6;
+  max-width: 240px;
+}
+
+/* ============ Partners Section ============ */
+/* ============ Partners Section ============ */
+.partners-section {
+  width: 100%;
+  padding: 80px 0;
+  background: #000;
+  overflow: hidden;
+}
+
+.partners-container {
+  width: 100%;
+}
+
+.marquee-wrapper {
+  width: 100%;
+  overflow: hidden;
+  margin-top: 60px;
+  position: relative;
+
+  /* 添加左右渐变遮罩 */
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  &::before {
+    left: 0;
+    background: linear-gradient(to right, #000, transparent);
+  }
+
+  &::after {
+    right: 0;
+    background: linear-gradient(to left, #000, transparent);
+  }
+}
+
+.marquee-content {
+  display: flex;
+  width: max-content;
+  animation: scroll 40s linear infinite;
+
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+.partner-logo {
+  flex-shrink: 0;
+  width: 200px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 30px;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+    filter: grayscale(100%);
+
+    &:hover {
+      opacity: 1;
+      filter: grayscale(0%);
+    }
+  }
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* ============ FAQ Section ============ */
+.faq-section {
+  width: 100%;
+  padding: 80px 20px 120px;
+  background: #000;
+}
+
+.faq-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.faq-title {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.faq-item {
+  border-bottom: 1px solid #222;
+
+  &:first-child {
+    border-top: 1px solid #222;
+  }
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px 0;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 500;
+  color: #fff;
+  transition: color 0.3s;
+}
+
+.faq-icon {
+  font-size: 24px;
+  color: #fff;
+  transition: transform 0.3s ease;
+
+  &.rotate {
+    transform: rotate(90deg);
+  }
+}
+
+.faq-answer {
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  max-height: 0;
+
+  p {
+    font-size: 16px;
+    color: #888;
+    line-height: 1.6;
+    padding-bottom: 32px;
+    text-align: left;
+  }
+}
+
+.faq-item.active {
+  .faq-question {
+    color: #fff;
+  }
+}
+
+/* ============ Footer Section ============ */
+.msx-footer {
+  width: 100%;
+  padding: 80px 0 40px;
+  /* 上下padding，左右0 */
+  background: #000;
+  border-top: 1px solid #222;
+}
+
+.footer-content-wrapper {
+  max-width: 100%;
+  /* 占满屏幕 */
+  padding: 0 80px;
+  /* 增加左右间距 */
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 60px;
+}
+
+.footer-left {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  /* 确保高度足够，以便 contact-info 可以沉底，或者依赖 margin-top: auto */
+  min-height: 200px;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+
+  .brand-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+}
+
+.footer-slogan {
+  font-size: 14px;
+  color: #fff;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.footer-contact-info {
+  margin-top: auto;
+  /* 将联系信息推到底部 */
+  padding-top: 20px;
+
+  .contact-label {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 8px;
+  }
+
+  .contact-email {
+    font-size: 14px;
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s;
+
+    &:hover {
+      color: #bcff2f;
+    }
+  }
+}
+
+.footer-links-group {
+  display: flex;
+  gap: 80px;
+}
+
+.footer-column {
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      margin-bottom: 16px;
+
+      a {
+        font-size: 13px;
+        color: #888;
+        text-decoration: none;
+        transition: color 0.3s;
+
+        &:hover {
+          color: #bcff2f;
+        }
+      }
+    }
+  }
+}
+
+.footer-bottom {
+  max-width: 100%;
+  margin: 60px auto 0;
+  padding: 24px 80px 0;
+  /* 左右padding与上面一致 */
+  border-top: 1px solid #222;
+  text-align: center;
+
+  p {
+    font-size: 12px;
+    color: #666;
   }
 }
 
@@ -1740,6 +2547,46 @@ onMounted(() => {
   .defi-subtitle {
     font-size: 24px;
   }
+
+  /* Bridge Section Responsive */
+  .bridge-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .bridge-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bridge-title {
+    font-size: 36px;
+  }
+
+  .bridge-subtitle {
+    font-size: 24px;
+  }
+
+  /* Advantages Section Tablet */
+  .advantages-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+
+  /* Footer Section Tablet */
+  .footer-content-wrapper {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .footer-links-group {
+    width: 100%;
+    justify-content: space-between;
+    gap: 20px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1756,7 +2603,7 @@ onMounted(() => {
   }
 
   .token-chart {
-    display: none; // 移动端隐藏趋势图
+    display: none;
   }
 
   .ranking-item {
@@ -1793,6 +2640,281 @@ onMounted(() => {
   .defi-description {
     font-size: 14px;
   }
+
+  /* Bridge Section Mobile */
+  .bridge-title {
+    font-size: 28px;
+  }
+
+  .bridge-subtitle {
+    font-size: 20px;
+  }
+
+  .bridge-description {
+    font-size: 14px;
+  }
+
+  /* Steps Section Mobile */
+  .steps-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .steps-content {
+    order: -1;
+    text-align: center;
+    align-items: center;
+  }
+
+  .steps-title {
+    font-size: 28px;
+  }
+
+  .steps-subtitle {
+    font-size: 20px;
+  }
+
+  .steps-description {
+    font-size: 14px;
+  }
+
+  /* Advantages Section Mobile */
+  .advantages-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .advantage-item {
+    padding: 0;
+  }
+
+  /* Partners Section Mobile */
+  .partner-logo {
+    width: 150px;
+    padding: 0 20px;
+    height: 60px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+
+  .banner-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .banner-card {
+    height: auto;
+    min-height: 160px;
+  }
+
+  .ranking-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ranking-panel:first-child {
+    grid-row: auto;
+  }
+
+  .section-title {
+    font-size: 36px;
+  }
+
+  .token-chart {
+    width: 80px;
+  }
+
+  .defi-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .defi-content {
+    padding-left: 0;
+  }
+
+  .defi-title {
+    font-size: 36px;
+  }
+
+  .defi-subtitle {
+    font-size: 24px;
+  }
+
+  /* Bridge Section Responsive */
+  .bridge-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .bridge-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bridge-title {
+    font-size: 36px;
+  }
+
+  .bridge-subtitle {
+    font-size: 24px;
+  }
+
+  /* Advantages Section Tablet */
+  .advantages-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+
+  /* Footer Section Tablet */
+  .footer-content-wrapper {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .footer-links-group {
+    width: 100%;
+    justify-content: space-between;
+    gap: 20px;
+  }
 }
 
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 36px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    font-size: 28px;
+  }
+
+  .token-chart {
+    display: none;
+  }
+
+  .ranking-item {
+    gap: 12px;
+    padding: 12px 8px;
+  }
+
+  .token-price {
+    min-width: 60px;
+    font-size: 13px;
+  }
+
+  .token-change {
+    min-width: 55px;
+    font-size: 13px;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card.expanded {
+    grid-column: span 1;
+  }
+
+  .defi-title {
+    font-size: 28px;
+  }
+
+  .defi-subtitle {
+    font-size: 20px;
+  }
+
+  .defi-description {
+    font-size: 14px;
+  }
+
+  /* Bridge Section Mobile */
+  .bridge-title {
+    font-size: 28px;
+  }
+
+  .bridge-subtitle {
+    font-size: 20px;
+  }
+
+  .bridge-description {
+    font-size: 14px;
+  }
+
+  /* Steps Section Mobile */
+  .steps-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .steps-content {
+    order: -1;
+    text-align: center;
+    align-items: center;
+  }
+
+  .steps-title {
+    font-size: 28px;
+  }
+
+  .steps-subtitle {
+    font-size: 20px;
+  }
+
+  .steps-description {
+    font-size: 14px;
+  }
+
+  /* Advantages Section Mobile */
+  .advantages-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .advantage-item {
+    padding: 0;
+  }
+
+  /* Partners Section Mobile */
+  .partner-logo {
+    width: 150px;
+    padding: 0 20px;
+    height: 60px;
+  }
+
+  /* FAQ Section Mobile */
+  .faq-title {
+    font-size: 28px;
+    margin-bottom: 40px;
+  }
+
+  .faq-question {
+    font-size: 16px;
+    padding: 16px 0;
+  }
+
+  /* Footer Section Mobile */
+  .footer-links-group {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .footer-brand {
+    justify-content: center;
+  }
+
+  .footer-left {
+    text-align: center;
+    max-width: 100%;
+  }
+}
 </style>
