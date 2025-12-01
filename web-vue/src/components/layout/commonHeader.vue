@@ -30,7 +30,7 @@
                                             </div>
                                         </div>
                                     </el-dropdown-item>
-                                    <el-dropdown-item class="msx-menu-item">
+                                    <el-dropdown-item class="msx-menu-item" @click="navigateToRWAFutures">
                                         <div class="item-content">
                                             <div class="text">
                                                 <div class="title">Futures</div>
@@ -240,6 +240,17 @@ const handleCurrencyChange = (item) => {
 
 const goRouter = (path) => {
     router.push(path);
+};
+
+const navigateToRWAFutures = () => {
+    const timestamp = Date.now();
+    router.push({
+        path: '/coin/constract/btc',
+        query: {
+            timestamp: timestamp,
+            RouterName: 'sustainable'
+        }
+    });
 };
 </script>
 

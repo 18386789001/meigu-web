@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(copy:*)"
+      "Bash(copy:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(tasklist:*)",
+      "Bash(wmic:*)",
+      "Bash(taskkill:*)",
+      "mcp__memory__create_entities",
+      "Bash(npm run lint)",
+      "Bash(npm run:*)",
+      "Bash(npx vite:*)"
     ],
     "deny": [],
     "ask": []

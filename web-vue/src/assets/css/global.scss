@@ -2,35 +2,33 @@
 @import './compositeHome/demo-tab.scss';
 @import './compositeHome/self-table.scss';
 
-// 自定义滚动条样式
+// 隐藏滚动条样式 - 保持滚动功能
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 0px;
+  height: 0px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 10px;
-  transition: background 0.3s ease;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background: #8e8e8e;
+  background: transparent;
 }
 
-// Firefox 滚动条样式
+// Firefox 隐藏滚动条
 * {
-  scrollbar-width: thin;
-  scrollbar-color: #c1c1c1 #f1f1f1;
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
 }
 
 html {
