@@ -5,9 +5,31 @@
       <div id="app">
         <div class="trade-box trade-panel-box">
           <!-- 上部分 -->
-          <div class="trade-box-top">
+          <div class="trade-box-top" style="position: relative;">
+            <!-- 货币筛选和滚动选择器 -->
+            <currency-filter
+              :currencies="allListData"
+              :currentSymbol="currencySymbol"
+              @currencyChange="handleCurrencyChange"
+              style="position: absolute; top: 0; left: 0; right: 380px; z-index: 1000;"
+            />
+
+            <!-- 左侧边栏 币种列表 -->
+            <div class="left-sidebar" style="margin-top: 60px;">
+              <coin-search-collect
+                @checkCurrency="checkCurrency"
+                @CurrencySort="CurrencySort"
+                @collectFun="collectFun"
+                @deleteCollectFun="deleteCollectFun"
+                :listData="searchCoinList"
+                :AllListData="allListData"
+                @searchFun="remoteSearchAllSymbol"
+                :pageType="pageType"
+              />
+            </div>
+
             <!-- 左边 币种和K线图 -->
-            <div class="top-left" ref="topleft">
+            <div class="top-left" ref="topleft" style="margin-top: 60px;">
               <div class="top-left-wrapper">
                 <!-- 收藏的币种 -->
                 <div class="allgoods" v-if="collectList.length > 0">
@@ -39,19 +61,8 @@
                     @showSerachCollect="showSerachCollect"
                   />
 
-                  <!-- 市场 搜索币种弹窗-->
-                  <div class="search-dialog" v-show="showSearchModal == true">
-                    <coin-search-collect
-                      @checkCurrency="checkCurrency"
-                      @CurrencySort="CurrencySort"
-                      @collectFun="collectFun"
-                      @deleteCollectFun="deleteCollectFun"
-                      :listData="searchCoinList"
-                      :AllListData="allListData"
-                      @searchFun="remoteSearchAllSymbol"
-                      :pageType="pageType"
-                    />
-                  </div>
+                  <!-- 市场 搜索币种弹窗 (已移至左侧边栏) -->
+                  <!-- <div class="search-dialog" v-show="showSearchModal == true"> ... </div> -->
                 </div>
                 <!-- K线 -->
                 <div class="top-left-k">
@@ -249,24 +260,6 @@
               </div>
             </div>
 
-            <!-- 中间 最新订单 -->
-            <div
-              v-if="!['hkStocks', 'forex'].includes(pageType)"
-              class="top-middle"
-              :style="{ display: isFullscreen ? 'none' : 'block' }"
-            >
-              <OrderBookNew
-                :pageData="pageData"
-                :pageType="pageType"
-                :changeClickData="handleChangeClickData"
-                :sellList="deepDataSort(deepSell)"
-                :buyList="deepDataSort(deepBuy)"
-                :bigIndex="bigIndex"
-                :recentList="wsTradeData"
-                :unit="unit"
-              />
-            </div>
-
             <!-- 右边 下单区 -->
             <div
               class="top-right"
@@ -410,6 +403,7 @@ import DeliveryOrderVue from "@comConstract/DeliveryContract/createOrder.vue";
 import DeliveryPositionVue from "@comConstract/DeliveryContract/position.vue";
 import FooterCom from "@comConstract/components/footer.vue";
 import coinSearchCollect from "@comConstract/components/coinSearchCollect.vue";
+import CurrencyFilter from "@comConstract/components/currencyFilter.vue";
 import { useUserStore } from "@/store/user";
 import { useCurrencyStore } from "@/store/currency";
 import ConfigURL from "@/config/index";
@@ -549,6 +543,7 @@ export default {
     coinSearchCollect,
     deepChartFullScreen,
     FooterCom,
+    CurrencyFilter,
   },
   computed: {
     ...mapState(useUserStore, ["existToken"]),
@@ -658,16 +653,23 @@ export default {
       this.getItemOptionalList();
       this.timer = setInterval(() => {
         this.getAssetTotal();
-      }, 2000);
+      }, 5000);
     }
 
     this.lineTimer = setInterval(() => {
       this.getKlineData();
-    }, 1000);
+    }, this.getUpdateInterval());
 
     bus.on("MarginRefresh", (rate, mm) => {
       this.marginRate = rate;
     });
+
+    // Start polling for sidebar list
+    this.currentTimer = setInterval(() => {
+      if (this.listData) {
+        this.getRealTimeData(this.listData);
+      }
+    }, 3000);
   },
 
   unmounted() {
@@ -733,7 +735,7 @@ export default {
     },
     //切换币种以及路由跳转
     checkCurrency(item) {
-      this.showSerachCollect();
+      // this.showSerachCollect();
       if (this.pageType !== "forex") {
         this.tradeData.close();
       }
@@ -748,17 +750,14 @@ export default {
       );
     },
 
+    // 处理货币筛选器的选择
+    handleCurrencyChange(currency) {
+      this.checkCurrency(currency);
+    },
+
     showSerachCollect() {
-      this.showSearchModal = !this.showSearchModal;
-      // 打开所有币种弹窗
-      if (this.showSearchModal) {
-        clearInterval(this.currentTimer);
-        this.currentTimer = setInterval(() => {
-          this.getRealTimeData(this.listData);
-        }, 1000);
-      } else {
-        clearInterval(this.currentTimer);
-      }
+      // Sidebar is always visible, no need to toggle
+      // this.showSearchModal = !this.showSearchModal;
     },
     //收藏
     collectFun(item) {
@@ -811,7 +810,7 @@ export default {
             clearInterval(this.intervalTimer1);
             this.intervalTimer1 = setInterval(() => {
               this.remoteSearchRealTime(this.searchSymbols);
-            }, 2000);
+            }, 5000);
           }
         });
       } else {
@@ -996,6 +995,15 @@ export default {
         this.klineIndex = "minHour";
       }
       this.kTimeIndex = item.data;
+
+      // 重新设置K线定时器频率
+      if (this.lineTimer) {
+        clearInterval(this.lineTimer);
+      }
+
+      this.lineTimer = setInterval(() => {
+        this.getKlineData();
+      }, this.getUpdateInterval());
     },
 
     //定时轮训的,获取K线数据
@@ -1223,6 +1231,18 @@ export default {
         return arr.sort((a, b) => b.price - a.price);
       }
     },
+    // 根据K线时间周期设置不同的更新频率
+    getUpdateInterval() {
+      const timeMap = {
+        '1min': 3000,    // 1分钟K线：3秒更新
+        '5min': 5000,    // 5分钟K线：5秒更新
+        '15min': 10000,  // 15分钟K线：10秒更新
+        '30min': 15000,  // 30分钟K线：15秒更新
+        '1hour': 30000,  // 1小时K线：30秒更新
+        '1day': 60000,   // 1天K线：60秒更新
+      };
+      return timeMap[this.kParamsTime] || 5000; // 默认5秒
+    },
   },
 };
 </script>
@@ -1356,8 +1376,19 @@ export default {
 
 .trade-box-top {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100vw;
+  height: calc(100vh - 64px);
+  overflow: hidden;
+}
+
+.left-sidebar {
+  width: 280px;
+  background: #171a1e;
+  border-right: 1px solid #24272c;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
 }
 .kTimeDivider {
   width: 1px;
@@ -1370,8 +1401,10 @@ export default {
   background: #171a1e;
   display: flex;
   flex: 1;
-  width: calc(100% - 300px);
+  width: auto;
+  min-width: 400px;
   border-right: 1px solid #24272c;
+  flex-direction: column;
 }
 
 .top-left-wrapper {
@@ -1382,26 +1415,31 @@ export default {
   z-index: 99;
   /* height: 660px; */
   width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   .comb-trade-kline-box {
-    height: auto;
+    height: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     .chart-kline {
       position: static !important;
+      flex: 1;
+      height: 100%;
+    }
+    .kline-table, .chart-tr, .chart-td, .chart-box {
+      height: 100%;
     }
   }
 }
 
-.top-middle,
 .top-right {
-  width: 300px;
-  /* border-top: 1px solid #9090; */
-}
-
-.top-middle {
+  width: 380px;
+  flex-shrink: 0;
   background: #171a1e;
-}
-
-.top-right {
-  border-left: 1px solid #24272c;
+  /* border-top: 1px solid #9090; */
   /* border-bottom: 1px solid #24272c; */
 }
 

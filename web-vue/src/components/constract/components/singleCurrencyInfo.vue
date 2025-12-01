@@ -1,79 +1,69 @@
 <!-- 单个币种基本信息-->
 <template>
   <div
-    class="trade-header-box"
-    :class="[isFullscreen ? 'trade-header-box-full' : '']"
+    class="currency-info-bar"
+    :class="[isFullscreen ? 'currency-info-bar-full' : '']"
   >
-    <div class="ticker-xl-box">
-      <!-- 币种名称 -->
-      <div class="watch-drop-box" @click="handleClickSymbol">
-        <span class="ticker-title">{{ pageData.name }}</span
-        ><i class="icon iconfont icon-Mul_Dropdown arrow-icon"></i>
+    <!-- 币种名称和主要信息 -->
+    <div class="main-info">
+      <div class="symbol-name" @click="handleClickSymbol">
+        {{ pageData.name }}
+        <i class="icon iconfont icon-Mul_Dropdown arrow-icon"></i>
       </div>
-      <!-- 币种的其他信息 -->
-      <div class="ticker-top-box flex-wrap">
-        <div class="ticker-item">
-          <span
-            class="label last"
-            :style="{
-              color: pageData.change_ratio >= 0 ? '#0db27c' : '#db4355',
-            }"
-            >{{ pageData.close }}</span
-          ><span
-            class="value"
-            :style="{
-              color: pageData.change_ratio >= 0 ? '#0db27c' : '#db4355',
-            }"
-            >{{ addAndSubtr(pageData.change_ratio) }}</span
-          >
-        </div>
+      <div 
+        class="price-main"
+        :class="[pageData.change_ratio >= 0 ? 'price-up' : 'price-down']"
+      >
+        {{ pageData.close }}
+      </div>
+      <div 
+        class="change-info"
+        :class="[pageData.change_ratio >= 0 ? 'price-up' : 'price-down']"
+      >
+        {{ addAndSubtr(pageData.change_ratio) }}
+      </div>
+    </div>
 
-        <div class="ticker-item">
-          <span class="label">{{ $t("message.home.biaojijiage") }}</span
-          ><span class="value">{{ pageData.close }}</span>
+    <!-- 数据指标 -->
+    <div class="stats-container">
+      <div class="stat-item">
+        <div class="stat-label">Mark price</div>
+        <div class="stat-value">{{ pageData.close }}</div>
+      </div>
+      
+      <div class="stat-item">
+        <div class="stat-label">Index Price</div>
+        <div class="stat-value">{{ pageData.close }}</div>
+      </div>
+      
+      <div class="stat-item">
+        <div class="stat-label">24h Change</div>
+        <div 
+          class="stat-value"
+          :class="[pageData.change_ratio >= 0 ? 'value-up' : 'value-down']"
+        >
+          {{ pageData.close }} {{ addAndSubtr(pageData.change_ratio) }}
         </div>
-        <div class="ticker-item">
-          <span class="label">{{ $t("message.home.zhishujiage") }}</span
-          ><span class="value">{{ pageData.close }}</span>
-        </div>
-        <div class="ticker-item">
-          <span class="label">{{ $t("message.hangqing.24hzhangfu") }}</span>
-          <span
-            class="value"
-            :class="[
-              'text-end',
-              pageData.change_ratio >= 0 ? 'color-up' : 'color-down',
-            ]"
-            >{{ pageData.close }}&nbsp; {{ pageData.change_ratio }}%</span
-          >
-        </div>
-
-        <div class="ticker-item">
-          <span class="label">24h {{ $t("message.home.zuidi") }}</span
-          ><span class="value">{{ pageData.low }}</span>
-        </div>
-        <div class="ticker-item">
-          <span class="label">24h {{ $t("message.home.zuigao") }}</span
-          ><span class="value">{{ pageData.high }}</span>
-        </div>
-        <!-- 外汇没有成交量和成交额 -->
-        <div class="ticker-item" v-if="pageType !== 'forex'">
-          <span class="label"
-            >24h{{ t("message.home.liang") }}({{
-              unitMap.amount[pageType]
-                ? t(`${unitMap.amount[pageType]}`)
-                : pageData?.symbol_data?.toUpperCase()
-            }})</span
-          >
-          <span class="value"> {{ getAmount }} </span>
-        </div>
-        <div class="ticker-item" v-if="pageType !== 'forex'">
-          <span class="label"
-            >24h{{ t("message.home.e") }}({{
-              t(`${unitMap.volumn[pageType]}`)
-            }})</span
-          ><span class="value"> {{ getVolume }}</span>
-        </div>
+      </div>
+      
+      <div class="stat-item">
+        <div class="stat-label">24h Low</div>
+        <div class="stat-value">{{ pageData.low }}</div>
+      </div>
+      
+      <div class="stat-item">
+        <div class="stat-label">24h High</div>
+        <div class="stat-value">{{ pageData.high }}</div>
+      </div>
+      
+      <div class="stat-item" v-if="pageType !== 'forex'">
+        <div class="stat-label">24hTotal()</div>
+        <div class="stat-value">{{ getAmount }}</div>
+      </div>
+      
+      <div class="stat-item" v-if="pageType !== 'forex'">
+        <div class="stat-label">24hAmount({{ t(`${unitMap.volumn[pageType]}`) }})</div>
+        <div class="stat-value">{{ getVolume }}</div>
       </div>
     </div>
   </div>
@@ -147,46 +137,105 @@ const getAmount = computed(() => {
 });
 </script>
 <style scoped>
-.trade-header-box {
+.currency-info-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: #0d0e10;
+  border-bottom: 1px solid #1a1d24;
+  padding: 12px 20px;
+  min-height: 60px;
 }
 
-.trade-header-box-full {
+.currency-info-bar-full {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  background: #171a1e;
+  background: #0d0e10;
   z-index: 3000000;
-  padding: 10px 0;
+  padding: 12px 20px;
 }
 
-.trade-header-box .ticker-xl-box,
-.trade-header-box .ticker-xl-box .ticker-top-box {
-  width: 100%;
+/* 主要信息区 */
+.main-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
-.watch-drop-box {
-  margin: 0 28px;
-  position: relative;
-}
-
-.watch-drop-box p {
-  position: absolute;
-  display: block;
-  width: 100%;
-  top: 30px;
-}
-
-.trade-header-box .ticker-item .label {
-  padding-bottom: 5px;
-  color: #707a8a;
-}
-
-.trade-header-box .ticker-item .last {
+.symbol-name {
   font-size: 16px;
   font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 120px;
+}
+
+.symbol-name:hover {
+  color: #1d91ff;
+}
+
+.arrow-icon {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.price-main {
+  font-size: 24px;
+  font-weight: 700;
+  min-width: 100px;
+}
+
+.price-up {
+  color: #62c885;
+}
+
+.price-down {
+  color: #e05561;
+}
+
+.change-info {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* 统计数据区 */
+.stats-container {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.stat-value {
+  font-size: 13px;
+  color: #fff;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.value-up {
+  color: #62c885;
+}
+
+.value-down {
+  color: #e05561;
 }
 </style>

@@ -1,17 +1,14 @@
 <template>
   <div class="makeADeal-wrapper">
     <!-- 搜索框 -->
-    <div
-      class="search-wrapper"
-      style="display: flex; align-items: center; position: relative"
-    >
-      <div class="search" style="flex: 1">
+    <div class="search-wrapper">
+      <div class="search">
         <div class="search-img">
           <img src="@/assets/images/quotes/Group2987.png" alt="" />
         </div>
         <input
           type="text"
-          :placeholder="$t('message.home.chaxun')"
+          placeholder="Search by Name or Code"
           @focus="showSearch = true"
           @blur="showSearch = false"
           @input="onInput"
@@ -19,79 +16,27 @@
         />
       </div>
     </div>
-    <!-- 标题 -->
-    <div class="title-wrapper">
-      <!-- 交易对 -->
-      <div class="title-item">
-        <span>{{ $t("message.home.jiaoyidui") }}</span>
-        <div class="to-sort">
-          <el-icon
-            ><CaretTop
-              class="el-icon-caret-top"
-              :class="[sortIndex == 1 ? 'icon-active-color' : '']"
-              @click="CurrencySort(1)"
-          /></el-icon>
-          <el-icon
-            ><CaretBottom
-              class="el-icon-caret-bottom"
-              :class="[sortIndex == 2 ? 'icon-active-color' : '']"
-              @click="CurrencySort(2)"
-          /></el-icon>
-        </div>
+
+    <!-- 标签页 -->
+    <div class="tabs-wrapper">
+      <div
+        v-for="(tab, index) in tabs"
+        :key="index"
+        class="tab-item"
+        :class="{ active: activeTab === index }"
+        @click="switchTab(index)"
+      >
+        {{ tab }}
       </div>
-      <!-- 最新价格 -->
-      <div class="title-item">
-        <span>{{ $t("message.home.jiage") }}</span>
-        <div class="to-sort">
-          <el-icon
-            ><CaretTop
-              class="el-icon-caret-top"
-              :class="[sortIndex == 3 ? 'icon-active-color' : '']"
-              @click="CurrencySort(3)"
-          /></el-icon>
-          <el-icon
-            ><CaretBottom
-              class="el-icon-caret-bottom"
-              :class="[sortIndex == 4 ? 'icon-active-color' : '']"
-              @click="CurrencySort(4)"
-          /></el-icon>
-        </div>
+    </div>
+
+    <!-- 表头 -->
+    <div class="table-header">
+      <div class="header-left">
+        <span class="header-name">Name</span>
       </div>
-      <!-- 24小时涨跌 -->
-      <div class="title-item">
-        <span>{{ $t("message.home.zhangdie") }}</span>
-        <div class="to-sort">
-          <el-icon
-            ><CaretTop
-              class="el-icon-caret-top"
-              :class="[sortIndex == 5 ? 'icon-active-color' : '']"
-              @click="CurrencySort(5)"
-          /></el-icon>
-          <el-icon
-            ><CaretBottom
-              class="el-icon-caret-bottom"
-              :class="[sortIndex == 6 ? 'icon-active-color' : '']"
-              @click="CurrencySort(6)"
-          /></el-icon>
-        </div>
-      </div>
-      <!-- 成交量 -->
-      <div class="title-item" v-if="pageType !== 'forex'">
-        <span>{{ $t("message.home.chengjiaoliang") }}</span>
-        <div class="to-sort">
-          <el-icon
-            ><CaretTop
-              class="el-icon-caret-top"
-              :class="[sortIndex == 7 ? 'icon-active-color' : '']"
-              @click="CurrencySort(7)"
-          /></el-icon>
-          <el-icon
-            ><CaretBottom
-              class="el-icon-caret-bottom"
-              :class="[sortIndex == 8 ? 'icon-active-color' : '']"
-              @click="CurrencySort(8)"
-          /></el-icon>
-        </div>
+      <div class="header-right">
+        <span>Price / Change</span>
       </div>
     </div>
     <!-- 数据 -->
@@ -102,33 +47,30 @@
         :key="index"
         @click.stop="checkCurrency(item)"
       >
-        <div class="name">
-          <div @click.stop="collect(item)">
-            <img
-              v-if="!item.isCollect"
-              src="@/assets/images/quotes/get_select.png"
-              width="12"
-              height="12"
-            />
-            <img
-              v-else
-              src="@/assets/images/quotes/get_select-1.png"
-              width="12"
-              height="12"
-            />
+        <div class="item-left">
+          <div class="star-icon" @click.stop="collect(item)">
+            <span
+              :class="['star-icon-symbol', item.isCollect ? 'star-filled' : 'star-empty']"
+            >
+              ★
+            </span>
           </div>
-          <!-- TODO 是都用symbol展示 -->
-          <div class="symbol">{{ item.name }}</div>
+          <div class="item-name">
+            <div class="symbol">{{ item.name }}</div>
+            <div class="description">
+              {{ item.fullName ||
+                (item.symbol ? item.symbol.toUpperCase() + ' - ' + getCryptoDescription(item.name) : getCryptoDescription(item.name)) }}
+            </div>
+          </div>
         </div>
-        <div class="price text-right">{{ item.close }}</div>
-        <div
-          class="ratio text-right"
-          :class="[item.change_ratio > 0 ? 'color-up' : 'color-down']"
-        >
-          {{ item.change_ratio > 0 ? "+" : "" }}{{ item.change_ratio }}%
-        </div>
-        <div class="amount text-right" v-if="pageType !== 'forex'">
-          {{ Number(item.amount || 0).toFixed(4) }}
+        <div class="item-right">
+          <div class="price">${{ item.close }}</div>
+          <div
+            class="change"
+            :class="[item.change_ratio > 0 ? 'color-up' : 'color-down']"
+          >
+            {{ item.change_ratio > 0 ? "+" : "" }}{{ item.change_ratio }}%
+          </div>
         </div>
       </div>
     </div>
@@ -156,6 +98,8 @@ export default {
       showSearch: false,
       searchValue: "",
       sortIndex: 0,
+      tabs: ['All', 'Last', 'Gainers', 'Losers'],
+      activeTab: 0,
     };
   },
 
@@ -168,6 +112,35 @@ export default {
     },
     onInput() {
       this.$emit("searchFun", this.searchValue);
+    },
+
+    // 获取币种描述信息
+    getCryptoDescription(symbol) {
+      const descriptions = {
+        'BTC': 'Bitcoin - The first and largest cryptocurrency',
+        'ETH': 'Ethereum - Smart contract platform with native cryptocurrency',
+        'BNB': 'Binance Coin - Native token of Binance exchange and ecosystem',
+        'XRP': 'Ripple - Digital payment protocol and remittance network',
+        'ADA': 'Cardano - Proof-of-stake blockchain platform',
+        'SOL': 'Solana - High-performance blockchain supporting builders',
+        'DOGE': 'Dogecoin - Peer-to-peer digital currency',
+        'DOT': 'Polkadot - Interoperable blockchain network',
+        'AVAX': 'Avalanche - High-speed, low-cost blockchain',
+        'MATIC': 'Polygon - Ethereum scaling solution and sidechain',
+        'LINK': 'Chainlink - Decentralized oracle network',
+        'UNI': 'Uniswap - Decentralized exchange protocol',
+        'LTC': 'Litecoin - Peer-to-peer cryptocurrency',
+        'ATOM': 'Cosmos - Interchain ecosystem',
+        'FIL': 'Filecoin - Decentralized storage network',
+        'TRX': 'TRON - Blockchain-based entertainment ecosystem',
+        'XLM': 'Stellar - Distributed payment network',
+        'VET': 'VeChain - Blockchain platform for supply chain',
+        'THETA': 'Theta Network - Decentralized video streaming',
+        'ICP': 'Internet Computer - Decentralized cloud computing platform'
+      };
+
+      const upperSymbol = symbol.toUpperCase();
+      return descriptions[upperSymbol] || `${symbol.toUpperCase()} - Cryptocurrency trading pair`;
     },
     CurrencySort(val) {
       this.sortIndex = val;
@@ -192,6 +165,11 @@ export default {
     checkCurrency(item) {
       this.$emit("checkCurrency", item);
     },
+    // 切换标签页
+    switchTab(index) {
+      this.activeTab = index;
+      // TODO: 根据标签页过滤数据
+    },
   },
 };
 </script>
@@ -205,42 +183,37 @@ export default {
   color: #62c885;
 }
 
-.active {
-  color: #1d91ff !important;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.mr-3 {
-  margin-right: 3px;
-}
-
 .makeADeal-wrapper {
-  padding: 21px 0 0;
+  padding: 16px 0 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background: #0d0e10;
 }
 
+/* 搜索框 */
 .search-wrapper {
-  padding: 0 16px;
+  padding: 0 12px 12px;
 }
 
 .search {
   position: relative;
-  height: 24px;
-
-  background: #2c3138;
-  border-radius: 4px;
+  height: 32px;
+  background: #1a1d24;
+  border-radius: 6px;
+  border: 1px solid #2c3138;
 }
 
 .search .search-img {
   position: absolute;
   top: 50%;
-  left: 8px;
+  left: 10px;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
   width: 14px;
+  opacity: 0.5;
 }
 
 .search .search-img img {
@@ -250,78 +223,80 @@ export default {
 .search input {
   width: 100%;
   height: 100%;
-  padding-left: 31px;
+  padding-left: 36px;
+  padding-right: 12px;
   box-sizing: border-box;
-  font-size: 12px;
+  font-size: 13px;
+  color: #fff;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.search input::placeholder {
+  color: #6b7280;
+}
+
+/* 标签页 */
+.tabs-wrapper {
+  display: flex;
+  gap: 0;
+  padding: 0 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #1a1d24;
+}
+
+.tab-item {
+  padding: 8px 16px;
+  font-size: 13px;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tab-item:hover {
   color: #fff;
 }
 
-.tabs-wrapper {
+.tab-item.active {
+  color: #fff;
+  border-bottom-color: #1d91ff;
+}
+
+/* 表头 */
+.table-header {
   display: flex;
   justify-content: space-between;
-  padding: 0 16px;
-  margin-top: 17px;
-  font-size: 12px;
-  color: #929aa5;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #6b7280;
+  background: #0d0e10;
+  border-bottom: 1px solid #1a1d24;
 }
 
-.tabs-wrapper > div {
-  cursor: pointer;
-}
-
-.tabs-wrapper img {
-  width: 14px;
-}
-
-:deep(.tabs-wrapper) .el-icon-arrow-right {
-  margin-left: 13px;
-  font-size: 16px;
-}
-
-.title-wrapper {
-  padding: 0 16px;
-  margin-top: 14px;
+.header-left {
   display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.title-wrapper .title-item {
-  display: flex;
-  justify-content: flex-end;
-  font-size: 12px;
-  color: #929aa5;
+.header-name {
   flex: 1;
 }
 
-.title-wrapper .title-item:first-child {
-  justify-content: flex-start;
+.header-right {
+  text-align: right;
 }
 
-.title-wrapper .title-item .to-sort {
-  display: flex;
-  flex-direction: column;
-  /*font-size: 8px;*/
-}
-
-/* 排序的icon  */
-:deep(.to-sort) .el-icon-caret-top,
-:deep(.to-sort) .el-icon-caret-bottom {
-  width: 12px !important;
-  height: 12px !important;
-}
-
-:deep(.to-sort) .el-icon-caret-top {
-  margin-top: -2px;
-}
-
-:deep(.to-sort) .el-icon-caret-bottom {
-  margin-top: -10px;
-}
-
+/* 列表容器 */
 .list-wrapper {
-  height: 310px;
-  padding: 0 16px;
-  overflow: auto;
-  border-bottom: 1px solid #24272c;
+  flex: 1;
+  height: auto;
+  padding: 0;
+  overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -330,32 +305,99 @@ export default {
   display: none;
 }
 
+/* 列表项 */
 .list-item {
   display: flex;
-  margin-bottom: 10px;
-  font-size: 12px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #1a1d24;
+  transition: background 0.2s;
 }
 
-.list-item > div {
-  flex: 1;
+.list-item:hover {
+  background: #1a1d24;
 }
 
-.list-item img {
-  width: 12px;
-  height: 12px;
-}
-
-.list-item .symbol {
-  margin-left: 5px;
-}
-
-.list-item .name {
+.item-left {
   display: flex;
   align-items: center;
-  cursor: pointer;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
 }
 
-.icon-active-color {
-  color: #1d91ff;
+.star-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.star-icon-symbol {
+  font-size: 22px;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.star-icon-symbol:hover {
+  transform: scale(1.1);
+}
+
+.star-filled {
+  color: #fbbf24; /* 金色 - 收藏状态 */
+  text-shadow: 0 0 6px rgba(251, 191, 36, 0.6); /* 金色光晕效果 */
+}
+
+.star-empty {
+  color: #e5e7eb; /* 浅白色 - 未收藏状态 */
+}
+
+.item-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.symbol {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.description {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 400;
+}
+
+.item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.price {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.change {
+  font-size: 11px;
+  font-weight: 500;
 }
 </style>
+```

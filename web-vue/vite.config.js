@@ -77,6 +77,8 @@ export default defineConfig({
       }
     }
   },
+  // 添加静态资源配置
+  publicDir: '../public',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
@@ -88,6 +90,7 @@ export default defineConfig({
       "@comTrade": path.resolve(__dirname, "src/components/commonTrade"),
       "@comConstract": path.resolve(__dirname, "src/components/constract"),
       "@comSpot": path.resolve(__dirname, "src/components/spot"),
+      "@image": path.resolve(__dirname, "../image"),
       "vue-i18n": "vue-i18n/dist/vue-i18n.cjs.js",
     },
   },
