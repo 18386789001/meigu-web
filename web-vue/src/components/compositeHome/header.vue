@@ -6,8 +6,8 @@
         <div class="header-left">
           <!-- Logo -->
           <div class="logo" @click="goPage('/home')">
-            <img src="@/assets/images/compositeHome/logo.png" alt="Logo" />
-            <span class="logo-text">{{ $title }}</span>
+            <img src="/image/logo.png" alt="GLOBEX Logo" />
+            <span class="logo-text">GLOBEX</span>
           </div>
 
           <!-- 导航菜单 -->
@@ -144,8 +144,8 @@
     >
       <template #header>
         <div class="drawer-header">
-          <img src="@/assets/images/compositeHome/logo.png" alt="Logo" />
-          <span>{{ $title }}</span>
+          <img src="/image/logo.png" alt="GLOBEX Logo" />
+          <span>GLOBEX</span>
         </div>
       </template>
       <div class="mobile-menu-content">

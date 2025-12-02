@@ -4,7 +4,7 @@
     <div class="flex footer-menu">
       <div class="w-300">
         <img
-          src="@/assets/images/compositeHome/logo.png"
+          src="/image/logo.png"
           width="72"
           height="72"
         />

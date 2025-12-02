@@ -20,7 +20,7 @@
     <!--  -->
     <div class="bottom flex absolute bottom-8 left-12 pt-4">
       <div class="flex mr-24">
-        <img class="logo-img" v-lazy="getImages('compositeHome/logo.png')" />
+        <img class="logo-img" src="/image/logo.png" />
         <div class="text-left ml-4">
           <div>{{ $title }}</div>
           <div>{{ t("Market Analysis") }}</div>

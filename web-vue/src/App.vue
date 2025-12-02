@@ -9,7 +9,7 @@
           @click="activateEv" :isResizable="false" v-on:dragging="resize">
           <div class="kefu-title">
             <span>{{ $t("message.home.home43") }}</span>
-            <img src="@/assets/images/exchangeHome/Group609.png" @click="() => changeChatShow(false)" />
+            <img src="/image/Group609.png" @click="() => changeChatShow(false)" />
           </div>
           <iframe :src="serviceUrl" width="500" height="600" frameborder="0"></iframe>
         </VueDragResize>
@@ -21,7 +21,7 @@
           @click="activateEv" :isResizable="false" v-on:dragging="resize">
           <div class="kefu-title">
             <span>{{ $t("message.home.home43") }}</span>
-            <img src="@/assets/images/exchangeHome/Group609.png" @click="() => changeChatShow(false)" />
+            <img src="/image/Group609.png" @click="() => changeChatShow(false)" />
           </div>
           <iframe src="" frameborder="0"></iframe>
           <div class="kegu-nrkegu-nr">

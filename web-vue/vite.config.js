@@ -78,7 +78,7 @@ export default defineConfig({
     }
   },
   // 添加静态资源配置
-  publicDir: '../public',
+  publicDir: 'public',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),

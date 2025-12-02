@@ -431,7 +431,8 @@
       <div class="footer-content-wrapper">
         <div class="footer-left">
           <div class="footer-brand">
-            <img src="/image/logo-white.png" alt="MSX Logo" class="footer-logo" />
+            <img src="/image/logo.png" alt="GLOBEX Logo" class="footer-logo" />
+            <span class="footer-brand-text">GLOBEX</span>
           </div>
           <p class="footer-slogan">Innovation Drive Growth<br>Do our best to help users achieve wealth growth</p>
 
@@ -496,7 +497,7 @@
 import { useRouter } from "vue-router";
 import { Plus, ChatDotRound, ArrowLeft, ArrowRight, Clock, TrendCharts, Promotion, Lock, TopRight, Sort, RefreshRight, FolderChecked, Connection as Switch } from "@element-plus/icons-vue";
 import PcHeader from "@/components/layout/commonHeader.vue";
-import { reactive, onMounted, ref, computed, watch } from "vue";
+import { reactive, onMounted, ref, computed, watch, nextTick } from "vue";
 
 const router = useRouter();
 
@@ -568,19 +569,19 @@ const bannerList = ref([
     id: 1,
     title: "Black Friday M Credits Boost",
     desc: "Pump Your Rank, Snag More Points!",
-    image: "/src/assets/images/msx/banner1.png"
+    image: "/image/banner1.png"
   },
   {
     id: 2,
     title: "MSX has fully upgraded its domain to msx.com",
     desc: "less typing , more trading!",
-    image: "/src/assets/images/msx/banner2.png"
+    image: "/image/banner2.png"
   },
   {
     id: 3,
     title: "Innovative Contracts Your Future Wins",
     desc: "Up to 100x leverage, control the high-energy trading experience!",
-    image: "/src/assets/images/msx/banner3.png"
+    image: "/image/banner3.png"
   }
 ]);
 
@@ -1125,6 +1126,7 @@ const toggleFaq = (index) => {
   });
 };
 
+
 onMounted(() => {
   setTimeout(() => {
     animateStats();
@@ -1173,12 +1175,9 @@ onMounted(() => {
 .msx-home {
   border: none !important;
   outline: none !important;
-}
-
-.msx-home {
   min-height: 100vh;
   background-color: #000;
-  background-image: url("@/assets/images/msx/background.png");
+  background-image: url("/image/background.png") !important;
   background-size: 100% auto;
   background-position: center top;
   background-repeat: no-repeat;
@@ -1197,7 +1196,7 @@ onMounted(() => {
 }
 
 .hero-section {
-  padding-top: 220px;
+  padding-top: 120px;
   display: flex;
   justify-content: center;
   text-align: center;
@@ -1217,19 +1216,29 @@ onMounted(() => {
 .hero-title {
   font-size: 64px;
   font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: 24px;
+  line-height: 1.2;
+  margin-bottom: 16px;
   background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.7) 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
+  padding-bottom: 4px;
+  /* 备用方案：如果渐变有问题，使用纯色 */
+  @supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+    background: none;
+    -webkit-text-fill-color: #fff;
+  }
 }
 
 .hero-subtitle {
   font-size: 18px;
   color: #888;
-  margin-bottom: 48px;
+  margin-bottom: 32px;  /* Reduced from 48px for more compact spacing */
   font-weight: 400;
 }
 
@@ -1445,6 +1454,16 @@ onMounted(() => {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  /* 备用方案：如果渐变有问题，使用纯色 */
+  @supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+    background: none;
+    -webkit-text-fill-color: #fff;
+  }
 }
 
 .section-subtitle {
@@ -2499,13 +2518,19 @@ onMounted(() => {
 .footer-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: -30px;
   margin-bottom: 24px;
 
   .footer-logo {
-    height: 40px;
+    height: 70px;
     width: auto;
     object-fit: contain;
+  }
+
+  .footer-brand-text {
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
   }
 }
 
@@ -2995,6 +3020,312 @@ onMounted(() => {
   .footer-left {
     text-align: center;
     max-width: 100%;
+  }
+}
+</style>
+
+<!-- 白天模式样式 -->
+<style lang="scss">
+/* 主页白天模式样式 */
+body.light {
+  background-color: #ffffff !important;
+}
+
+/* 主页白天模式 - 白色背景 + 背景图片 */
+body.light .msx-home {
+  background-color: #ffffff !important;
+  background-image: url("/image/background.png") !important;
+  background-size: 100% auto;
+  background-position: center top;
+  background-repeat: no-repeat;
+  color: #fff !important; /* 白色文字以在背景图片上可见 */
+}
+
+/* Hero Section 白天模式 */
+body.light .hero-section {
+  /* 保持透明，让背景图片透过 */
+}
+
+body.light .hero-title {
+  background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.8) 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+body.light .hero-subtitle {
+  color: #fff !important;
+}
+
+
+/* Stats Section 白天模式 */
+body.light .stats-container {
+  background-color: #f8f9fa !important;
+  border: 1px solid #000000 !important;
+}
+
+body.light .stats-number {
+  color: #fff !important;
+}
+
+body.light .stats-label {
+  color: #fff !important;
+}
+
+/* Section Headers 白天模式 */
+body.light .section-title {
+  background: linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.8) 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+body.light .section-subtitle {
+  color: #333 !important;
+}
+
+
+body.light .ranking-item {
+  background-color: #f8f9fa;
+  border: none;
+
+  &:hover {
+    background-color: #e9ecef;
+    border: none;
+  }
+}
+
+body.light .ranking-panel {
+  background-color: #f8f9fa;
+  border: 1px solid #000000;
+}
+
+body.light .defi-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+
+  &:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+  }
+}
+
+body.light .feature-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+
+  &:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+  }
+}
+
+/* Token Prices 白天模式 */
+body.light .token-price {
+  color: #333 !important;
+}
+
+body.light .token-change.positive {
+  color: #10b981 !important; /* 绿色 */
+}
+
+body.light .token-change.negative {
+  color: #ef4444 !important; /* 红色 */
+}
+
+/* Tab按钮白天模式 */
+body.light .tab-btn {
+  color: #999 !important;
+
+  &:hover {
+    color: #666 !important;
+  }
+
+  &.active {
+    color: #000 !important;
+    background: rgba(0, 0, 0, 0.05) !important;
+  }
+}
+
+/* Token名字白天模式 */
+body.light .token-symbol {
+  color: #000 !important;
+}
+
+body.light .token-name {
+  color: #666 !important;
+}
+
+/* 分页小点白天模式 */
+body.light .dot {
+  background: #000 !important;
+  opacity: 0.4 !important;
+
+  &:hover {
+    opacity: 0.7 !important;
+  }
+
+  &.active {
+    opacity: 1 !important;
+  }
+}
+
+/* 分界线白天模式 */
+body.light .panel-tabs {
+  border-bottom-color: #ddd !important;
+}
+
+body.light .pagination-dots {
+  border-top-color: #ddd !important;
+}
+
+/* 禁用主题切换时的过渡动画 */
+body {
+  transition: background-color 0s, color 0s, background-image 0s !important;
+}
+
+.msx-home {
+  transition: background-color 0s, color 0s, background-image 0s !important;
+}
+
+/* 针对排行榜相关元素 - 保持绘制动画但禁用主题切换过渡 */
+.ranking-panel,
+.tab-btn,
+.token-symbol,
+.token-name,
+.section-title,
+.section-subtitle {
+  transition: background-color 0s, color 0s, border-color 0s !important;
+}
+
+/* ranking-item保持绘制动画，但禁用主题相关属性的过渡 */
+.ranking-item {
+  transition: background-color 0s, color 0s, border-color 0s !important;
+}
+
+/* Footer 白天模式 */
+body.light .footer-section {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e5e7eb;
+}
+
+body.light .footer-logo {
+  filter: brightness(0.2); /* 深化logo颜色 */
+}
+
+body.light .footer-brand-text {
+  color: #fff;
+}
+
+body.light .footer-slogan {
+  color: #fff;
+}
+
+body.light .footer-link {
+  color: #fff;
+
+  &:hover {
+    color: #bcff2f;
+  }
+}
+
+body.light .footer-copyright {
+  color: #fff;
+  border-top-color: #e5e7eb;
+}
+
+body.light .footer-divider {
+  background-color: #e5e7eb;
+}
+
+/* FAQ 白天模式 */
+body.light .faq-section {
+  background-color: #f8f9fa;
+}
+
+body.light .faq-title {
+  background: linear-gradient(180deg, #333 0%, #666 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.light .faq-item {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #333;
+
+  &:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+  }
+
+  &.active {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+  }
+}
+
+body.light .faq-question {
+  color: #333;
+}
+
+body.light .faq-answer {
+  color: #666;
+}
+
+/* Partners Section 白天模式 */
+body.light .partners-section {
+  background-color: #ffffff;
+}
+
+/* 按钮白天模式 */
+body.light .trade-btn {
+  background: #bcff2f;
+  color: #000;
+
+  &:hover {
+    background: #a8e628;
+  }
+}
+
+body.light .connect-wallet-btn {
+  background: #bcff2f;
+  color: #000;
+
+  &:hover {
+    background: #a8e628;
+  }
+}
+
+/* 其他文字元素 */
+body.light .coin-name {
+  color: #333;
+}
+
+body.light .card-title {
+  color: #333;
+}
+
+body.light .card-desc {
+  color: #666;
+}
+
+body.light .feature-title {
+  color: #333;
+}
+
+body.light .feature-desc {
+  color: #666;
+}
+
+/* Banner导航按钮白天模式样式 */
+body.light .nav-btn {
+  background: rgba(0, 0, 0, 0.1) !important;
+  color: #000 !important;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.2) !important;
   }
 }
 </style>
