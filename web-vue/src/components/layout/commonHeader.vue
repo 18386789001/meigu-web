@@ -216,7 +216,8 @@
             </div>
         </div>
     </div>
-</template>
+
+  </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
@@ -250,18 +251,7 @@ const toggleTheme = () => {
   isDarkMode.value = !isDarkMode.value;
   const newTheme = isDarkMode.value ? 'dark' : 'light';
   localStorage.setItem('theme', newTheme);
-
-  // 应用主题到body
   document.body.className = newTheme;
-
-  // 调试信息
-  console.log('Theme changed to:', newTheme);
-  console.log('Body classes:', document.body.className);
-
-  // 触发自定义事件，通知其他组件主题变化
-  window.dispatchEvent(new CustomEvent('theme-changed', {
-    detail: { theme: newTheme }
-  }));
 };
 
 // 初始化主题

@@ -264,29 +264,7 @@
           </div>
         </section>
 
-        <!-- MSXBridge Section -->
-        <section class="bridge-section scroll-reveal">
-          <div class="bridge-container">
-            <!-- 左侧：文字内容 -->
-            <div class="bridge-content">
-              <h2 class="bridge-title">MSXBridge</h2>
-              <h3 class="bridge-subtitle">Move assets freely and securely across chains</h3>
-              <p class="bridge-description">
-                Cross-chain is faster and safer, supporting multi-chain interoperability and one-click exchange,
-                allowing assets to flow freely across global networks
-              </p>
-              <button class="go-now-btn" @click="handleBridge">
-                Go Now
-              </button>
-            </div>
-
-            <!-- 右侧：图片展示 -->
-            <div class="bridge-visual">
-              <img src="/image/MSXBridge.png" alt="MSXBridge" class="bridge-img" />
-            </div>
-          </div>
-        </section>
-
+        
         <!-- Steps Section -->
         <section class="steps-section scroll-reveal">
           <div class="steps-container">
@@ -380,29 +358,7 @@
           </div>
         </section>
 
-        <!-- Partners Section -->
-        <section class="partners-section scroll-reveal">
-          <div class="partners-container">
-            <div class="section-header">
-              <h2 class="section-title">Investors and Partners</h2>
-              <p class="section-subtitle">Backed by the best institutions in Crypto</p>
-            </div>
-
-            <div class="marquee-wrapper">
-              <div class="marquee-content">
-                <!-- 使用INP系列图片作为合作伙伴展示 -->
-                <div class="partner-logo" v-for="i in 14" :key="`p1-${i}`">
-                  <img :src="`/image/INP-${i}.png`" :alt="`Partner ${i}`" />
-                </div>
-                <!-- 第二组图片（用于无缝滚动） -->
-                <div class="partner-logo" v-for="i in 14" :key="`p2-${i}`">
-                  <img :src="`/image/INP-${i}.png`" :alt="`Partner ${i}`" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
+        
         <!-- FAQ Section -->
         <section class="faq-section scroll-reveal">
           <div class="faq-container">
@@ -1081,10 +1037,6 @@ const handleTradeFi = () => {
   router.push('/trading');
 };
 
-const handleBridge = () => {
-  console.log('Bridge clicked');
-  // router.push('/bridge'); // 假设有这个路由，或者暂时留空
-};
 
 // ============ FAQ 逻辑 ============
 const faqList = ref([
@@ -1147,7 +1099,8 @@ onMounted(() => {
 .scroll-reveal {
   opacity: 0;
   transform: translateY(80px);
-  transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: opacity, transform;
 }
 
@@ -2025,84 +1978,6 @@ onMounted(() => {
   }
 }
 
-/* ============ MSXBridge Section ============ */
-.bridge-section {
-  width: 100%;
-  padding: 80px 20px;
-  background: #000; // 保持背景一致
-}
-
-.bridge-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center; // 垂直居中
-}
-
-.bridge-content {
-  text-align: left;
-}
-
-.bridge-title {
-  font-size: 48px;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 16px;
-  line-height: 1.2;
-}
-
-.bridge-subtitle {
-  font-size: 28px;
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: 24px;
-  line-height: 1.3;
-}
-
-.bridge-description {
-  font-size: 16px;
-  color: #888;
-  line-height: 1.6;
-  margin-bottom: 40px;
-  max-width: 500px;
-}
-
-.go-now-btn {
-  background: #bcff2f;
-  color: #000;
-  border: none;
-  padding: 16px 48px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 0 20px rgba(188, 255, 47, 0.2);
-  display: inline-block;
-
-  &:hover {
-    background: #a8e628;
-    transform: translateY(-2px);
-    box-shadow: 0 0 30px rgba(188, 255, 47, 0.4);
-  }
-}
-
-.bridge-visual {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.bridge-img {
-  width: 100%;
-  max-width: 800px; // 增大最大宽度从600px到800px
-  height: auto;
-  object-fit: contain;
-  // 移除悬浮放大效果
-}
 
 /* ============ Steps Section ============ */
 .steps-section {
@@ -2135,7 +2010,6 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  transition: all 0.3s ease;
 
   &:hover {
     background: #161616;
@@ -2158,7 +2032,6 @@ onMounted(() => {
 .step-arrow {
   font-size: 20px;
   color: #666;
-  transition: all 0.3s ease;
 }
 
 .steps-content {
@@ -2282,58 +2155,6 @@ onMounted(() => {
   max-width: 240px;
 }
 
-/* ============ Partners Section ============ */
-/* ============ Partners Section ============ */
-.partners-section {
-  width: 100%;
-  padding: 80px 0;
-  background: #000;
-  overflow: hidden;
-}
-
-.partners-container {
-  width: 100%;
-}
-
-.marquee-wrapper {
-  width: 100%;
-  overflow: hidden;
-  margin-top: 60px;
-  position: relative;
-
-  /* 添加左右渐变遮罩 */
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    width: 100px;
-    height: 100%;
-    z-index: 2;
-    pointer-events: none;
-  }
-
-  &::before {
-    left: 0;
-    background: linear-gradient(to right, #000, transparent);
-  }
-
-  &::after {
-    right: 0;
-    background: linear-gradient(to left, #000, transparent);
-  }
-}
-
-.marquee-content {
-  display: flex;
-  width: max-content;
-  animation: scroll 80s linear infinite;
-  /* 减慢速度 */
-
-  &:hover {
-    animation-play-state: paused;
-  }
-}
 
 /* ... existing code ... */
 
@@ -2387,39 +2208,7 @@ onMounted(() => {
   transition-delay: 0.5s;
 }
 
-.partner-logo {
-  flex-shrink: 0;
-  width: 200px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 30px;
 
-  img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    opacity: 0.7;
-    transition: opacity 0.3s;
-    filter: grayscale(100%);
-
-    &:hover {
-      opacity: 1;
-      filter: grayscale(0%);
-    }
-  }
-}
-
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
-}
 
 /* ============ FAQ Section ============ */
 .faq-section {
@@ -2794,13 +2583,7 @@ onMounted(() => {
     padding: 0;
   }
 
-  /* Partners Section Mobile */
-  .partner-logo {
-    width: 150px;
-    padding: 0 20px;
-    height: 60px;
-  }
-
+  
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 40px;
@@ -2989,13 +2772,7 @@ onMounted(() => {
     padding: 0;
   }
 
-  /* Partners Section Mobile */
-  .partner-logo {
-    width: 150px;
-    padding: 0 20px;
-    height: 60px;
-  }
-
+  
   /* FAQ Section Mobile */
   .faq-title {
     font-size: 28px;
@@ -3028,7 +2805,7 @@ onMounted(() => {
 <style lang="scss">
 /* 主页白天模式样式 */
 body.light {
-  background-color: #ffffff !important;
+  background-color: #f8f9fa !important;
 }
 
 /* 主页白天模式 - 白色背景 + 背景图片 */
@@ -3111,13 +2888,96 @@ body.light .defi-card {
 }
 
 body.light .feature-card {
-  background-color: #ffffff;
+  background-color: #f5f5f5;
   border: 1px solid #e5e7eb;
 
   &:hover {
     background-color: #f9fafb;
     border-color: #d1d5db;
   }
+
+  // 展开状态：黑色边框 + 灰色背景
+  &.expanded {
+    border-color: #000 !important;
+    background-color: #f5f5f5 !important;
+  }
+
+  // 压缩状态：灰色边框 + 灰色背景
+  &.compressed {
+    border-color: #ddd !important;
+    background-color: #f5f5f5 !important;
+  }
+}
+
+/* DeFi Perpetuals 标题白天模式 */
+body.light .defi-title {
+  color: #000 !important;
+}
+
+body.light .defi-subtitle {
+  color: #333 !important;
+}
+
+/* DeFi Perpetuals 图标白天模式 */
+body.light .feature-icon {
+  color: #000 !important;
+}
+
+/* Steps Section 白天模式 */
+body.light .steps-section {
+  background: #ffffff !important;
+}
+
+body.light .step-card {
+  background: #f8f9fa !important;
+  border: 1px solid #e5e7eb !important;
+
+  &:hover {
+    background: #f1f3f4 !important;
+    border-color: #d1d5db !important;
+  }
+}
+
+body.light .steps-title {
+  color: #000 !important;
+}
+
+body.light .steps-subtitle {
+  color: #333 !important;
+}
+
+body.light .steps-description {
+  color: #666 !important;
+}
+
+body.light .step-text {
+  color: #000 !important;
+}
+
+body.light .step-arrow {
+  color: #999 !important;
+}
+
+/* Advantages Section 白天模式 */
+body.light .advantages-section {
+  background: #ffffff !important;
+}
+
+body.light .advantage-icon {
+  color: #000 !important;
+}
+
+body.light .icon-text {
+  color: #000 !important;
+  background: #ffffff !important;
+}
+
+body.light .advantage-title {
+  color: #000 !important;
+}
+
+body.light .advantage-desc {
+  color: #666 !important;
 }
 
 /* Token Prices 白天模式 */
@@ -3204,33 +3064,48 @@ body {
 }
 
 /* Footer 白天模式 */
+body.light .msx-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e5e7eb;
+}
+
 body.light .footer-section {
   background-color: #f8f9fa;
   border-top: 1px solid #e5e7eb;
 }
 
 body.light .footer-logo {
-  filter: brightness(0.2); /* 深化logo颜色 */
+  /* 移除滤镜，保持logo正常显示 */
 }
 
 body.light .footer-brand-text {
-  color: #fff;
+  color: #000 !important;
 }
 
 body.light .footer-slogan {
-  color: #fff;
+  color: #666;
+}
+
+body.light .footer-column h3 {
+  color: #000 !important;
 }
 
 body.light .footer-link {
-  color: #fff;
+  color: #333 !important;
 
   &:hover {
-    color: #bcff2f;
+    color: #bcff2f !important;
   }
 }
 
+body.light .footer-bottom {
+  background-color: #f8f9fa !important;
+  border-top: 1px solid #e5e7eb !important;
+  border-bottom: none;
+}
+
 body.light .footer-copyright {
-  color: #fff;
+  color: #666;
   border-top-color: #e5e7eb;
 }
 
@@ -3240,29 +3115,26 @@ body.light .footer-divider {
 
 /* FAQ 白天模式 */
 body.light .faq-section {
-  background-color: #f8f9fa;
+  background-color: #ffffff;
 }
 
 body.light .faq-title {
-  background: linear-gradient(180deg, #333 0%, #666 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.8) 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
 body.light .faq-item {
   background-color: #ffffff;
-  border: 1px solid #e5e7eb;
   color: #333;
 
   &:hover {
     background-color: #f9fafb;
-    border-color: #d1d5db;
   }
 
   &.active {
     background-color: #f9fafb;
-    border-color: #d1d5db;
   }
 }
 
@@ -3274,10 +3146,15 @@ body.light .faq-answer {
   color: #666;
 }
 
-/* Partners Section 白天模式 */
-body.light .partners-section {
-  background-color: #ffffff;
+body.light .faq-icon {
+  color: #666;
 }
+
+/* 修复白天模式active状态下的问题文字颜色 */
+body.light .faq-item.active .faq-question {
+  color: #333 !important;
+}
+
 
 /* 按钮白天模式 */
 body.light .trade-btn {
