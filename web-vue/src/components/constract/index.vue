@@ -2,8 +2,7 @@
 <template>
   <div class="constract-page">
     <div class="home-container" key="home-containe">
-      <div id="app">
-        <div class="trade-box trade-panel-box">
+      <div class="trade-box trade-panel-box">
           <!-- 上部分 -->
           <div class="trade-box-top" style="position: relative;">
             <!-- 货币筛选和滚动选择器 -->
@@ -375,7 +374,6 @@
               </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
     <kline-dialog ref="kline_dialog" />

@@ -1,19 +1,6 @@
 <!-- 货币筛选和滚动选择器 -->
 <template>
   <div class="currency-filter-bar">
-    <!-- 左侧筛选按钮 -->
-    <div class="filter-buttons">
-      <div 
-        v-for="filter in filters" 
-        :key="filter.value"
-        class="filter-btn"
-        :class="{ active: activeFilter === filter.value }"
-        @click="selectFilter(filter.value)"
-      >
-        {{ filter.label }}
-      </div>
-    </div>
-
     <!-- 右侧货币滚动列表 -->
     <div class="currency-scroll-container">
       <div class="scroll-btn left" @click="scrollLeft" v-if="showLeftArrow">
@@ -61,12 +48,6 @@ export default {
   },
   data() {
     return {
-      activeFilter: 'stocks',
-      filters: [
-        { label: 'Favorite', value: 'favorite' },
-        { label: 'Stocks', value: 'stocks' },
-        { label: 'Crypto', value: 'crypto' }
-      ],
       showLeftArrow: false,
       showRightArrow: true
     };
@@ -74,31 +55,12 @@ export default {
   computed: {
     filteredCurrencies() {
       if (!this.currencies || this.currencies.length === 0) return [];
-      
-      let filtered = [...this.currencies];
-      
-      switch (this.activeFilter) {
-        case 'favorite':
-          // 显示收藏的货币
-          filtered = filtered.filter(c => c.isCollect);
-          break;
-        case 'crypto':
-          // 显示加密货币（根据实际情况筛选）
-          // 这里可以根据货币类型字段筛选
-          break;
-        case 'stocks':
-        default:
-          // 显示全部或股票
-          break;
-      }
-      
-      return filtered.slice(0, 30);
+
+      // 直接显示所有货币，不进行筛选
+      return this.currencies.slice(0, 30);
     }
   },
   methods: {
-    selectFilter(value) {
-      this.activeFilter = value;
-    },
     selectCurrency(currency) {
       this.$emit('currencyChange', currency);
     },
@@ -146,41 +108,9 @@ export default {
   background: #0d0e10;
   border-bottom: 1px solid #1a1d24;
   padding: 12px 16px;
-  gap: 16px;
 }
 
-/* 左侧筛选按钮 */
-.filter-buttons {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.filter-btn {
-  padding: 8px 16px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #9ca3af;
-  background: #1a1d24;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-  user-select: none;
-}
-
-.filter-btn:hover {
-  color: #fff;
-  background: #2c2f36;
-}
-
-.filter-btn.active {
-  color: #000;
-  background: #bcff2f;
-  border-color: #bcff2f;
-}
-
-/* 右侧滚动容器 */
+/* 滚动容器 */
 .currency-scroll-container {
   flex: 1;
   display: flex;

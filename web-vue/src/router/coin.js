@@ -8,8 +8,8 @@ const coinRoutes = [
     component: () => import("@/views/coin/spot/index.vue"),
   },
   {
-    path: "/coin/constract/:id",
-    label: "constarct",
+    path: "/coin/constract/:type/:id",
+    label: "contract",
     meta: {
       commonHeader: true,
     },

@@ -13,8 +13,8 @@
                     <!-- 导航菜单 -->
                     <div class="nav-menu">
                         <!-- RWA Dropdown -->
-                        <el-dropdown trigger="hover" popper-class="msx-dark-dropdown" :show-timeout="0"
-                            :hide-timeout="200">
+                        <el-dropdown trigger="hover" popper-class="msx-rwa-dropdown" :show-timeout="0"
+                            :hide-timeout="100" :persistent="true">
                             <div class="nav-item">
                                 RWA
                                 <el-icon class="arrow-icon">
@@ -39,21 +39,13 @@
                                             </div>
                                         </div>
                                     </el-dropdown-item>
-                                    <el-dropdown-item class="msx-menu-item">
-                                        <div class="item-content">
-                                            <div class="text">
-                                                <div class="title">Options</div>
-                                                <div class="desc">Manage Risk with Options</div>
-                                            </div>
-                                        </div>
-                                    </el-dropdown-item>
-                                </el-dropdown-menu>
+                                  </el-dropdown-menu>
                             </template>
                         </el-dropdown>
 
                         <!-- Crypto Dropdown -->
-                        <el-dropdown trigger="hover" popper-class="msx-dark-dropdown" :show-timeout="0"
-                            :hide-timeout="200">
+                        <el-dropdown trigger="hover" popper-class="msx-crypto-dropdown" :show-timeout="0"
+                            :hide-timeout="100" :persistent="true">
                             <div class="nav-item">
                                 Crypto
                                 <el-icon class="arrow-icon">
@@ -70,7 +62,7 @@
                                             </div>
                                         </div>
                                     </el-dropdown-item>
-                                    <el-dropdown-item class="msx-menu-item">
+                                    <el-dropdown-item class="msx-menu-item" @click="navigateToCryptoFutures">
                                         <div class="item-content">
                                             <div class="text">
                                                 <div class="title">Futures</div>
@@ -78,37 +70,13 @@
                                             </div>
                                         </div>
                                     </el-dropdown-item>
-                                    <el-dropdown-item class="msx-menu-item">
-                                        <div class="item-content">
-                                            <div class="text">
-                                                <div class="title">Watchlist</div>
-                                                <div class="desc">Add Favorites Instantly</div>
-                                            </div>
-                                        </div>
-                                    </el-dropdown-item>
-                                    <el-dropdown-item class="msx-menu-item">
-                                        <div class="item-content">
-                                            <div class="text">
-                                                <div class="title">Bridge</div>
-                                                <div class="desc">Transfer Assets Across Chains</div>
-                                            </div>
-                                        </div>
-                                    </el-dropdown-item>
-                                    <el-dropdown-item class="msx-menu-item">
-                                        <div class="item-content">
-                                            <div class="text">
-                                                <div class="title">Options</div>
-                                                <div class="desc">Manage Crypto Risk Strategically</div>
-                                            </div>
-                                        </div>
-                                    </el-dropdown-item>
-                                </el-dropdown-menu>
+                                  </el-dropdown-menu>
                             </template>
                         </el-dropdown>
 
                         <!-- Referrals Dropdown -->
-                        <el-dropdown trigger="hover" popper-class="msx-dark-dropdown" :show-timeout="0"
-                            :hide-timeout="200">
+                        <el-dropdown trigger="hover" popper-class="msx-referrals-dropdown" :show-timeout="0"
+                            :hide-timeout="100" :persistent="true">
                             <div class="nav-item">
                                 Referrals
                                 <el-icon class="arrow-icon">
@@ -140,8 +108,8 @@
                         </el-dropdown>
 
                         <!-- Reward Dropdown -->
-                        <el-dropdown trigger="hover" popper-class="msx-dark-dropdown" :show-timeout="0"
-                            :hide-timeout="200">
+                        <el-dropdown trigger="hover" popper-class="msx-reward-dropdown" :show-timeout="0"
+                            :hide-timeout="100" :persistent="true">
                             <div class="nav-item reward-item">
                                 <div class="diamond-icon"></div>
                                 Reward
@@ -171,6 +139,16 @@
                                 </el-dropdown-menu>
                             </template>
                         </el-dropdown>
+
+                        <!-- US Stock Tokens -->
+                        <div class="nav-item" @click="navigateToUSTokens">
+                            US Stock Tokens
+                        </div>
+
+                        <!-- Primary Market -->
+                        <div class="nav-item" @click="navigateToPrimaryMarket">
+                            Primary Market
+                        </div>
                     </div>
                 </div>
 
@@ -211,18 +189,25 @@
                     </div>
 
                     <!-- Connect Wallet Button -->
-                    <button class="connect-wallet-btn">Connect wallet</button>
+                    <button class="connect-wallet-btn" @click="showWalletDialog = true">Connect wallet</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 钱包连接弹窗 -->
+    <WalletConnectDialog
+      :visible="showWalletDialog"
+      @close="showWalletDialog = false"
+      @connect="handleWalletConnect"
+    />
   </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { ArrowDown } from "@element-plus/icons-vue";
+import WalletConnectDialog from '@/components/common/WalletConnectDialog.vue';
 
 const router = useRouter();
 
@@ -282,12 +267,56 @@ const goRouter = (path) => {
 const navigateToRWAFutures = () => {
     const timestamp = Date.now();
     router.push({
-        path: '/coin/constract/btc',
+        path: '/coin/constract/rwa/btc',
         query: {
             timestamp: timestamp,
             RouterName: 'sustainable'
         }
     });
+};
+
+const navigateToCryptoFutures = () => {
+    const timestamp = Date.now();
+    router.push({
+        path: '/coin/constract/crypto/ltc',
+        query: {
+            timestamp: timestamp,
+            RouterName: 'sustainable'
+        }
+    });
+};
+
+const navigateToUSTokens = () => {
+    // 美股代币页面 - 暂时跳转到美股页面
+    const timestamp = Date.now();
+    router.push({
+        path: '/usStocks',
+        query: {
+            timestamp: timestamp
+        }
+    });
+};
+
+const navigateToPrimaryMarket = () => {
+    // 一级市场页面 - 暂时跳转到新股申购页面
+    const timestamp = Date.now();
+    router.push({
+        path: '/newShares',
+        query: {
+            timestamp: timestamp
+        }
+    });
+};
+
+// 钱包弹窗控制
+const showWalletDialog = ref(false);
+
+// 处理钱包连接
+const handleWalletConnect = (walletType) => {
+    console.log('Connecting to wallet:', walletType);
+    showWalletDialog.value = false;
+    // TODO: 实现实际的钱包连接逻辑
+    // 这里可以添加具体钱包的连接代码
 };
 </script>
 
@@ -327,6 +356,188 @@ const navigateToRWAFutures = () => {
         &:focus {
             background-color: var(--el-fill-color-light) !important;
             color: #fff !important;
+        }
+    }
+}
+
+/* RWA Dropdown 样式 */
+.el-popper.msx-rwa-dropdown {
+    --el-bg-color-overlay: #1a1a1a !important;
+    --el-text-color-regular: #fff !important;
+    --el-border-color-light: #333 !important;
+    --el-fill-color-light: #2c2c2c !important;
+    --el-dropdown-menuItem-hover-fill: #2c2c2c !important;
+    --el-dropdown-menuItem-hover-color: #fff !important;
+
+    background-color: var(--el-bg-color-overlay) !important;
+    border: 1px solid var(--el-border-color-light) !important;
+    margin-top: 12px !important;
+    z-index: 1001 !important;
+
+    /* 隐藏小箭头 */
+    .el-popper__arrow {
+        display: none !important;
+    }
+
+    .el-dropdown-menu {
+        background-color: transparent !important;
+        padding: 8px !important;
+    }
+
+    .el-dropdown-menu__item {
+        color: var(--el-text-color-regular) !important;
+        border-radius: 4px;
+        padding: 10px 16px !important;
+        margin-bottom: 2px;
+
+        &:hover,
+        &:focus {
+            background-color: var(--el-fill-color-light) !important;
+            color: #fff !important;
+        }
+    }
+}
+
+/* Crypto Dropdown 样式 */
+.el-popper.msx-crypto-dropdown {
+    --el-bg-color-overlay: #1a1a1a !important;
+    --el-text-color-regular: #fff !important;
+    --el-border-color-light: #333 !important;
+    --el-fill-color-light: #2c2c2c !important;
+    --el-dropdown-menuItem-hover-fill: #2c2c2c !important;
+    --el-dropdown-menuItem-hover-color: #fff !important;
+
+    background-color: var(--el-bg-color-overlay) !important;
+    border: 1px solid var(--el-border-color-light) !important;
+    margin-top: 12px !important;
+    z-index: 1002 !important;
+
+    /* 隐藏小箭头 */
+    .el-popper__arrow {
+        display: none !important;
+    }
+
+    .el-dropdown-menu {
+        background-color: transparent !important;
+        padding: 8px !important;
+    }
+
+    .el-dropdown-menu__item {
+        color: var(--el-text-color-regular) !important;
+        border-radius: 4px;
+        padding: 10px 16px !important;
+        margin-bottom: 2px;
+
+        &:hover,
+        &:focus {
+            background-color: var(--el-fill-color-light) !important;
+            color: #fff !important;
+        }
+    }
+}
+
+/* Referrals Dropdown 样式 */
+.el-popper.msx-referrals-dropdown {
+    --el-bg-color-overlay: #1a1a1a !important;
+    --el-text-color-regular: #fff !important;
+    --el-border-color-light: #333 !important;
+    --el-fill-color-light: #2c2c2c !important;
+    --el-dropdown-menuItem-hover-fill: #2c2c2c !important;
+    --el-dropdown-menuItem-hover-color: #fff !important;
+
+    background-color: var(--el-bg-color-overlay) !important;
+    border: 1px solid var(--el-border-color-light) !important;
+    margin-top: 12px !important;
+    z-index: 1003 !important;
+
+    /* 隐藏小箭头 */
+    .el-popper__arrow {
+        display: none !important;
+    }
+
+    .el-dropdown-menu {
+        background-color: transparent !important;
+        padding: 8px !important;
+    }
+
+    .el-dropdown-menu__item {
+        color: var(--el-text-color-regular) !important;
+        border-radius: 4px;
+        padding: 10px 16px !important;
+        margin-bottom: 2px;
+
+        &:hover,
+        &:focus {
+            background-color: var(--el-fill-color-light) !important;
+            color: #fff !important;
+        }
+    }
+}
+
+/* Reward Dropdown 样式 */
+.el-popper.msx-reward-dropdown {
+    --el-bg-color-overlay: #1a1a1a !important;
+    --el-text-color-regular: #fff !important;
+    --el-border-color-light: #333 !important;
+    --el-fill-color-light: #2c2c2c !important;
+    --el-dropdown-menuItem-hover-fill: #2c2c2c !important;
+    --el-dropdown-menuItem-hover-color: #fff !important;
+
+    background-color: var(--el-bg-color-overlay) !important;
+    border: 1px solid var(--el-border-color-light) !important;
+    margin-top: 12px !important;
+    z-index: 1004 !important;
+
+    /* 隐藏小箭头 */
+    .el-popper__arrow {
+        display: none !important;
+    }
+
+    .el-dropdown-menu {
+        background-color: transparent !important;
+        padding: 8px !important;
+    }
+
+    .el-dropdown-menu__item {
+        color: var(--el-text-color-regular) !important;
+        border-radius: 4px;
+        padding: 10px 16px !important;
+        margin-bottom: 2px;
+
+        &:hover,
+        &:focus {
+            background-color: var(--el-fill-color-light) !important;
+            color: #fff !important;
+        }
+    }
+}
+
+/* 菜单项内容布局 */
+.msx-rwa-dropdown .msx-menu-item .item-content,
+.msx-crypto-dropdown .msx-menu-item .item-content,
+.msx-referrals-dropdown .msx-menu-item .item-content,
+.msx-reward-dropdown .msx-menu-item .item-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    .text {
+        display: flex;
+        flex-direction: column;
+
+        .title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            line-height: 1.2;
+        }
+
+        .desc {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+            white-space: normal;
+            max-width: 200px;
         }
     }
 }
@@ -714,7 +925,11 @@ body.light .icon-btn {
 
 /* Element Plus Dropdown 白天模式覆盖 */
 body.light .el-popper.msx-dark-dropdown,
-body.light .el-popper.msx-currency-pop {
+body.light .el-popper.msx-currency-pop,
+body.light .el-popper.msx-rwa-dropdown,
+body.light .el-popper.msx-crypto-dropdown,
+body.light .el-popper.msx-referrals-dropdown,
+body.light .el-popper.msx-reward-dropdown {
   --el-bg-color-overlay: #ffffff !important;
   --el-text-color-regular: #333 !important;
   --el-border-color-light: #ddd !important;
@@ -740,7 +955,10 @@ body.light .currency-item .currency-row .item-name {
   color: #333 !important;
 }
 
-body.light .msx-menu-item .item-content .text {
+body.light .msx-rwa-dropdown .msx-menu-item .item-content .text,
+body.light .msx-crypto-dropdown .msx-menu-item .item-content .text,
+body.light .msx-referrals-dropdown .msx-menu-item .item-content .text,
+body.light .msx-reward-dropdown .msx-menu-item .item-content .text {
   .title {
     color: #333 !important;
   }
@@ -758,4 +976,25 @@ body.light .reward-item .diamond-icon {
 body.light .reward-item:hover .diamond-icon {
   background-image: url('/image/diamond-green.png') !important;
 }
+
+/* 简单的下拉菜单动画效果 */
+.el-popper.msx-rwa-dropdown .el-dropdown-menu,
+.el-popper.msx-crypto-dropdown .el-dropdown-menu,
+.el-popper.msx-referrals-dropdown .el-dropdown-menu,
+.el-popper.msx-reward-dropdown .el-dropdown-menu {
+    animation: dropdownSlideIn 0.2s ease-out;
+}
+
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
 </style>
