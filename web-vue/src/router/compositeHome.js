@@ -9,10 +9,28 @@ const childrenRoutes = [
     label: "home",
     meta: {
       footer_theme: "black",
-      noFooter: true, // 隐藏默认 Footer，因为在 home.vue 中已经添加了新的 MSX Footer
+      noFooter: true,
     },
     component: () => import("@/views/compositeHomePage/home.vue"),
-  }, //标准模版
+  },
+  {
+    path: "/spot",
+    name: "spot",
+    label: "spot",
+    meta: {
+      noFooter: true, // Disable default layout footer
+    },
+    component: () => import("@/views/compositeHomePage/spot/index.vue"),
+  },
+  {
+    path: "/crypto-spot",
+    name: "crypto-spot",
+    label: "crypto-spot",
+    meta: {
+      noFooter: true,
+    },
+    component: () => import("@/views/compositeHomePage/cryptoSpot/index.vue"),
+  },
   // tradingview
   {
     path: "/tradingview",

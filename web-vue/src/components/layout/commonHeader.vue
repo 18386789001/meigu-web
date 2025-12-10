@@ -23,7 +23,7 @@
                             </div>
                             <template #dropdown>
                                 <el-dropdown-menu>
-                                    <el-dropdown-item class="msx-menu-item">
+                                    <el-dropdown-item class="msx-menu-item" @click="goRouter('/spot')">
                                         <div class="item-content">
                                             <div class="text">
                                                 <div class="title">Spot</div>
@@ -54,7 +54,7 @@
                             </div>
                             <template #dropdown>
                                 <el-dropdown-menu>
-                                    <el-dropdown-item class="msx-menu-item">
+                                    <el-dropdown-item class="msx-menu-item" @click="goRouter('/crypto-spot')">
                                         <div class="item-content">
                                             <div class="text">
                                                 <div class="title">Spot</div>

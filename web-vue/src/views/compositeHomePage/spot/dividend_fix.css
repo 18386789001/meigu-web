@@ -1,0 +1,26 @@
+/* CSS fix specific for Dividend Tab layout */
+
+/* Set a slightly wider logic for asset column in Dividend Tab specially, to prevent it from squeezing */
+.dividend-asset-col {
+    min-width: 260px !important;  /* Ensure enough width for long names */
+    padding-left: 20px;          /* Add some left padding for better visual alignment */
+}
+
+/* Adjust general column flex for Date and others to be more uniform */
+.col-div-share, .col-split, .col-date, .col-position, .col-pnl {
+    flex: 1;
+    min-width: 140px;           /* Increased from 120px to give more breathing room */
+    justify-content: flex-start; /* Align these columns */
+}
+
+/* Code column in Dividend tab */
+.col-codes {
+    min-width: 100px;
+    margin-right: 20px;
+}
+
+/* Align numeric columns if needed */
+.col-position, .col-pnl {
+  justify-content: flex-end; /* Usually positions and PnL might look better right-aligned if numeric, but user image shows left/center, keeping flex-start based on image unless specified */
+  justify-content: flex-start; /* Reverting to default flex-start as per image look */
+}
