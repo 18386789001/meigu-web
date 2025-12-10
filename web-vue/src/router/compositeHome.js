@@ -31,6 +31,15 @@ const childrenRoutes = [
     },
     component: () => import("@/views/compositeHomePage/cryptoSpot/index.vue"),
   },
+  {
+    path: "/invite",
+    name: "invite",
+    label: "invite",
+    meta: {
+      noFooter: true,
+    },
+    component: () => import("@/views/compositeHomePage/invite/index.vue"),
+  },
   // tradingview
   {
     path: "/tradingview",

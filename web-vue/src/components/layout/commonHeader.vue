@@ -39,7 +39,7 @@
                                             </div>
                                         </div>
                                     </el-dropdown-item>
-                                  </el-dropdown-menu>
+                                </el-dropdown-menu>
                             </template>
                         </el-dropdown>
 
@@ -70,7 +70,7 @@
                                             </div>
                                         </div>
                                     </el-dropdown-item>
-                                  </el-dropdown-menu>
+                                </el-dropdown-menu>
                             </template>
                         </el-dropdown>
 
@@ -85,7 +85,7 @@
                             </div>
                             <template #dropdown>
                                 <el-dropdown-menu>
-                                    <el-dropdown-item class="msx-menu-item">
+                                    <el-dropdown-item class="msx-menu-item" @click="goRouter('/invite')">
                                         <div class="item-content">
                                             <div class="text">
                                                 <div class="title">Invite Friends</div>
@@ -196,12 +196,8 @@
     </div>
 
     <!-- 钱包连接弹窗 -->
-    <WalletConnectDialog
-      :visible="showWalletDialog"
-      @close="showWalletDialog = false"
-      @connect="handleWalletConnect"
-    />
-  </template>
+    <WalletConnectDialog :visible="showWalletDialog" @close="showWalletDialog = false" @connect="handleWalletConnect" />
+</template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
@@ -216,11 +212,11 @@ const logoSrc = "/image/logo.png";
 
 // 响应式图标引用
 const bellIconSrc = computed(() => {
-  return isDarkMode.value ? "/image/bell-white.png" : "/image/bell-black.png";
+    return isDarkMode.value ? "/image/bell-white.png" : "/image/bell-black.png";
 });
 
 const earthIconSrc = computed(() => {
-  return isDarkMode.value ? "/image/earth-white.png" : "/image/earth-black.png";
+    return isDarkMode.value ? "/image/earth-white.png" : "/image/earth-black.png";
 });
 
 // 主题状态管理
@@ -228,22 +224,22 @@ const isDarkMode = ref(localStorage.getItem('theme') === 'light' ? false : true)
 
 // 计算主题图标
 const themeIconSrc = computed(() => {
-  return isDarkMode.value ? "/image/moon.png" : "/image/sun.png";
+    return isDarkMode.value ? "/image/moon.png" : "/image/sun.png";
 });
 
 // 主题切换函数
 const toggleTheme = () => {
-  isDarkMode.value = !isDarkMode.value;
-  const newTheme = isDarkMode.value ? 'dark' : 'light';
-  localStorage.setItem('theme', newTheme);
-  document.body.className = newTheme;
+    isDarkMode.value = !isDarkMode.value;
+    const newTheme = isDarkMode.value ? 'dark' : 'light';
+    localStorage.setItem('theme', newTheme);
+    document.body.className = newTheme;
 };
 
 // 初始化主题
 onMounted(() => {
-  const savedTheme = localStorage.getItem('theme') || 'dark';
-  isDarkMode.value = savedTheme === 'light' ? false : true;
-  document.body.className = savedTheme;
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    isDarkMode.value = savedTheme === 'light' ? false : true;
+    document.body.className = savedTheme;
 });
 
 // 货币列表
@@ -838,53 +834,53 @@ const handleWalletConnect = (walletType) => {
 <style lang="scss">
 /* 全局白天模式样式 */
 body.light {
-  background-color: #ffffff !important;
-  color: #333 !important;
+    background-color: #ffffff !important;
+    color: #333 !important;
 }
 
 /* Header白天模式样式 */
 body.light .msx-header-container {
-  background-color: #ffffff !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+    background-color: #ffffff !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 body.light .page-header-background {
-  background-color: #ffffff !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+    background-color: #ffffff !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 body.light .logo-text {
-  color: #333 !important;
+    color: #333 !important;
 }
 
 body.light .nav-item {
-  color: #333 !important;
+    color: #333 !important;
 
-  &:hover {
-    color: #bcff2f !important;
-  }
+    &:hover {
+        color: #bcff2f !important;
+    }
 }
 
 body.light .currency-selector {
-  background: #f5f5f5 !important;
+    background: #f5f5f5 !important;
 
-  &:hover {
-    background: #e8e8e8 !important;
-  }
+    &:hover {
+        background: #e8e8e8 !important;
+    }
 
-  .currency-name {
-    color: #333 !important;
-  }
+    .currency-name {
+        color: #333 !important;
+    }
 
-  .arrow-icon {
-    color: #666 !important;
-  }
+    .arrow-icon {
+        color: #666 !important;
+    }
 }
 
 body.light .icon-btn {
-  &:hover {
-    background: rgba(0, 0, 0, 0.05) !important;
-  }
+    &:hover {
+        background: rgba(0, 0, 0, 0.05) !important;
+    }
 }
 
 /* 禁用货币选择器的过渡动画 */
@@ -892,7 +888,7 @@ body.light .icon-btn {
 .currency-selector *,
 .currency-item,
 .currency-item * {
-  transition: background-color 0s, color 0s, transform 0s !important;
+    transition: background-color 0s, color 0s, transform 0s !important;
 }
 
 /* 禁用Element Plus下拉菜单的过渡动画 */
@@ -904,23 +900,23 @@ body.light .icon-btn {
 .el-dropdown-menu *,
 .el-dropdown-item,
 .el-dropdown-item * {
-  transition: all 0s !important;
-  animation-duration: 0s !important;
+    transition: all 0s !important;
+    animation-duration: 0s !important;
 }
 
 /* 移除货币选择下拉菜单项目的边框 */
 .msx-currency-pop .el-dropdown-menu,
 .msx-currency-pop .el-dropdown-menu .el-dropdown-item,
 .msx-currency-pop .currency-item {
-  border: none !important;
-  border-bottom: none !important;
-  border-top: none !important;
-  outline: none !important;
+    border: none !important;
+    border-bottom: none !important;
+    border-top: none !important;
+    outline: none !important;
 }
 
 /* 移除所有分隔线 */
 .msx-currency-pop .el-dropdown-menu .el-dropdown-menu__item {
-  border-bottom: none !important;
+    border-bottom: none !important;
 }
 
 /* Element Plus Dropdown 白天模式覆盖 */
@@ -930,51 +926,51 @@ body.light .el-popper.msx-rwa-dropdown,
 body.light .el-popper.msx-crypto-dropdown,
 body.light .el-popper.msx-referrals-dropdown,
 body.light .el-popper.msx-reward-dropdown {
-  --el-bg-color-overlay: #ffffff !important;
-  --el-text-color-regular: #333 !important;
-  --el-border-color-light: #ddd !important;
-  --el-fill-color-light: #f5f5f5 !important;
-  --el-dropdown-menuItem-hover-fill: #f5f5f5 !important;
-  --el-dropdown-menuItem-hover-color: #333 !important;
+    --el-bg-color-overlay: #ffffff !important;
+    --el-text-color-regular: #333 !important;
+    --el-border-color-light: #ddd !important;
+    --el-fill-color-light: #f5f5f5 !important;
+    --el-dropdown-menuItem-hover-fill: #f5f5f5 !important;
+    --el-dropdown-menuItem-hover-color: #333 !important;
 
-  background-color: var(--el-bg-color-overlay) !important;
-  border: 1px solid var(--el-border-color-light) !important;
+    background-color: var(--el-bg-color-overlay) !important;
+    border: 1px solid var(--el-border-color-light) !important;
 
-  .el-dropdown-menu__item {
-    color: var(--el-text-color-regular) !important;
+    .el-dropdown-menu__item {
+        color: var(--el-text-color-regular) !important;
 
-    &:hover,
-    &:focus {
-      background-color: var(--el-fill-color-light) !important;
-      color: #333 !important;
+        &:hover,
+        &:focus {
+            background-color: var(--el-fill-color-light) !important;
+            color: #333 !important;
+        }
     }
-  }
 }
 
 body.light .currency-item .currency-row .item-name {
-  color: #333 !important;
+    color: #333 !important;
 }
 
 body.light .msx-rwa-dropdown .msx-menu-item .item-content .text,
 body.light .msx-crypto-dropdown .msx-menu-item .item-content .text,
 body.light .msx-referrals-dropdown .msx-menu-item .item-content .text,
 body.light .msx-reward-dropdown .msx-menu-item .item-content .text {
-  .title {
-    color: #333 !important;
-  }
+    .title {
+        color: #333 !important;
+    }
 
-  .desc {
-    color: #666 !important;
-  }
+    .desc {
+        color: #666 !important;
+    }
 }
 
 /* 钻石图标白天模式 */
 body.light .reward-item .diamond-icon {
-  background-image: url('/image/diamond-black.png') !important;
+    background-image: url('/image/diamond-black.png') !important;
 }
 
 body.light .reward-item:hover .diamond-icon {
-  background-image: url('/image/diamond-green.png') !important;
+    background-image: url('/image/diamond-green.png') !important;
 }
 
 /* 简单的下拉菜单动画效果 */
@@ -990,11 +986,10 @@ body.light .reward-item:hover .diamond-icon {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
-
-
 </style>
