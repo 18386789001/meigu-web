@@ -94,7 +94,7 @@
                                             </div>
                                         </div>
                                     </el-dropdown-item>
-                                    <el-dropdown-item class="msx-menu-item">
+                                    <el-dropdown-item class="msx-menu-item" @click="goRouter('/affiliate')">
                                         <div class="item-content">
                                             <div class="text">
                                                 <div class="title">Affiliate Program</div>
